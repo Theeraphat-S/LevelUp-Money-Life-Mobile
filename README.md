@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Mobile App Standard
 
 ## Getting Started
@@ -416,3 +417,6 @@ xcrun notarytool submit "path/to/YourApp.ipa" \
 xcrun notarytool log <submission-id> \
   --keychain-profile "AC_PASSWORD"
 ```
+=======
+# POS
+>>>>>>> origin/main
