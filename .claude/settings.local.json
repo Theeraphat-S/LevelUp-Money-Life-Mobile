@@ -17,7 +17,13 @@
       "Bash(fvm flutter pub:*)",
       "Bash(fvm list:*)",
       "Bash(fvm install:*)",
-      "Bash(fvm flutter:*)"
+      "Bash(fvm flutter:*)",
+      "PowerShell(fvm --version)",
+      "PowerShell(fvm use 3.38.9)",
+      "PowerShell(fvm flutter pub get)",
+      "Bash(./generate_i18n.sh)",
+      "PowerShell(fvm dart run build_runner build --delete-conflicting-outputs)",
+      "PowerShell(fvm flutter analyze)"
     ]
   }
 }
