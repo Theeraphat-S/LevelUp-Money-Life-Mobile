@@ -5,22 +5,33 @@ import 'package:mobile_app_standard/shared/components/appbar/language_dropdown.d
 
 class AppBarCustom extends StatelessWidget
     implements ObstructingPreferredSizeWidget {
-  final String currentRouteName;
+  final String? currentRouteName;
+  final String? title;
+  final bool automaticallyImplyLeading;
   final List<Widget>? actions;
 
-  const AppBarCustom({super.key, required this.currentRouteName, this.actions});
+  const AppBarCustom({
+    super.key,
+    this.currentRouteName,
+    this.title,
+    this.automaticallyImplyLeading = false,
+    this.actions,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final displayTitle = title ?? 'LevelUp Money Life';
+
     if (Platform.isIOS) {
       return CupertinoNavigationBar(
-        backgroundColor: Colors.white.withOpacity(0.8), // Translucent
+        backgroundColor: Colors.white.withOpacity(0.8),
+        automaticallyImplyLeading: automaticallyImplyLeading,
         border: const Border(
           bottom: BorderSide(color: Color(0x33000000), width: 0.0),
-        ), // Remove explicit border for glass effect
-        middle: const Text(
-          'Fakduai',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        middle: Text(
+          displayTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         trailing: Material(
           type: MaterialType.transparency,
@@ -29,7 +40,6 @@ class AppBarCustom extends StatelessWidget
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               LanguageDropdown(context: context),
-
               if (actions != null) ...actions!,
             ],
           ),
@@ -50,19 +60,20 @@ class AppBarCustom extends StatelessWidget
         ],
       ),
       child: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: automaticallyImplyLeading,
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Fakduai',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: Text(
+          displayTitle,
+          style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
         actions: [
           LanguageDropdown(context: context),
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.black),
-            onPressed: () {},
-          ),
           if (actions != null) ...actions!,
         ],
       ),

@@ -11,6 +11,22 @@
 part of 'router.dart';
 
 /// generated route for
+/// [DashboardPage]
+class DashboardRoute extends PageRouteInfo<void> {
+  const DashboardRoute({List<PageRouteInfo>? children})
+    : super(DashboardRoute.name, initialChildren: children);
+
+  static const String name = 'DashboardRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const DashboardPage();
+    },
+  );
+}
+
+/// generated route for
 /// [HomePage]
 class HomeRoute extends PageRouteInfo<void> {
   const HomeRoute({List<PageRouteInfo>? children})
@@ -27,6 +43,22 @@ class HomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [QuestPage]
+class QuestRoute extends PageRouteInfo<void> {
+  const QuestRoute({List<PageRouteInfo>? children})
+    : super(QuestRoute.name, initialChildren: children);
+
+  static const String name = 'QuestRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const QuestPage();
+    },
+  );
+}
+
+/// generated route for
 /// [TodoPage]
 class TodoRoute extends PageRouteInfo<void> {
   const TodoRoute({List<PageRouteInfo>? children})
@@ -38,6 +70,22 @@ class TodoRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const TodoPage();
+    },
+  );
+}
+
+/// generated route for
+/// [TransactionPage]
+class TransactionRoute extends PageRouteInfo<void> {
+  const TransactionRoute({List<PageRouteInfo>? children})
+    : super(TransactionRoute.name, initialChildren: children);
+
+  static const String name = 'TransactionRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const TransactionPage();
     },
   );
 }
