@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/router/router.dart';
 import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
 
@@ -13,8 +12,9 @@ class BottomBarCustom extends HookWidget {
   const BottomBarCustom({super.key, required this.currentRouteName});
 
   int _getIndexFromRoute(String routeName) {
-    if (routeName == HomeRoute.name) return 0;
-    if (routeName == TodoRoute.name) return 1;
+    if (routeName == DashboardRoute.name) return 0;
+    if (routeName == TransactionRoute.name) return 1;
+    if (routeName == QuestRoute.name) return 2;
     return 0;
   }
 
@@ -28,30 +28,34 @@ class BottomBarCustom extends HookWidget {
     }, [currentRouteName]);
 
     void onItemTapped(int index) {
-      if (index == 0 && currentRouteName != HomeRoute.name) {
-        context.router.push(const HomeRoute());
-      } else if (index == 1 && currentRouteName != TodoRoute.name) {
-        context.router.push(const TodoRoute());
+      if (index == 0 && currentRouteName != DashboardRoute.name) {
+        context.router.push(const DashboardRoute());
+      } else if (index == 1 && currentRouteName != TransactionRoute.name) {
+        context.router.push(const TransactionRoute());
+      } else if (index == 2 && currentRouteName != QuestRoute.name) {
+        context.router.push(const QuestRoute());
       }
       selectedIndex.value = index;
     }
-
-    final msg = AppLocalizations(context).appbar;
 
     if (Platform.isIOS) {
       return CupertinoTabBar(
         currentIndex: selectedIndex.value,
         onTap: onItemTapped,
         activeColor: PColor.primaryColor,
-        inactiveColor: Colors.black,
-        items: [
+        inactiveColor: Colors.grey.shade600,
+        items: const [
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.home),
-            label: msg.home_route_name,
+            icon: Icon(CupertinoIcons.gamecontroller_fill),
+            label: 'หน้าหลัก',
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.list_bullet),
-            label: msg.todo_route_name,
+            label: 'ธุรกรรม',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.flag_fill),
+            label: 'เควส & EXP',
           ),
         ],
       );
@@ -61,15 +65,20 @@ class BottomBarCustom extends HookWidget {
       currentIndex: selectedIndex.value,
       onTap: onItemTapped,
       selectedItemColor: PColor.primaryColor,
-      unselectedItemColor: Colors.black,
-      items: [
+      unselectedItemColor: Colors.grey.shade600,
+      type: BottomNavigationBarType.fixed,
+      items: const [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: msg.home_route_name,
+          icon: Icon(Icons.dashboard_rounded),
+          label: 'หน้าหลัก',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.list),
-          label: msg.todo_route_name,
+          icon: Icon(Icons.receipt_long_rounded),
+          label: 'ธุรกรรม',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.military_tech_rounded),
+          label: 'เควส & EXP',
         ),
       ],
     );
