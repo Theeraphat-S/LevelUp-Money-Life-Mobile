@@ -1,15 +1,103 @@
 {
-    "@@locale": "th",
-    "cancel": "ยกเลิก",
-    "@cancel": {},
-    "ok": "ตกลง",
-    "@ok": {},
-    "yes": "ใช่",
-    "@yes": {},
-    "no": "ไม่ใช่",
-    "@no": {},
-    "add": "เพิ่ม",
-    "@add": {},
-    "close": "ปิด",
-    "@close": {}
+  "@@locale": "th",
+  "cancel": "ยกเลิก",
+  "@cancel": {
+    "description": "Cancel"
+  },
+  "ok": "ตกลง",
+  "@ok": {
+    "description": "OK"
+  },
+  "yes": "ใช่",
+  "@yes": {
+    "description": "Yes"
+  },
+  "no": "ไม่ใช่",
+  "@no": {
+    "description": "No"
+  },
+  "add": "เพิ่ม",
+  "@add": {
+    "description": "Add"
+  },
+  "close": "ปิด",
+  "@close": {
+    "description": "Close"
+  },
+  "save": "บันทึก",
+  "@save": {
+    "description": "Save"
+  },
+  "edit": "แก้ไข",
+  "@edit": {
+    "description": "Edit"
+  },
+  "delete": "ลบ",
+  "@delete": {
+    "description": "Delete"
+  },
+  "confirm": "ยืนยัน",
+  "@confirm": {
+    "description": "Confirm"
+  },
+  "status": "สถานะ",
+  "@status": {
+    "description": "Status"
+  },
+  "language": "ภาษา",
+  "@language": {
+    "description": "Language"
+  },
+  "thai": "ไทย",
+  "@thai": {
+    "description": "Thai"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English"
+  },
+  "theme_light": "โหมดสว่าง (Light)",
+  "@theme_light": {
+    "description": "Light Mode"
+  },
+  "theme_dark": "โหมดมืด (Dark)",
+  "@theme_dark": {
+    "description": "Dark Mode"
+  },
+  "theme_system": "ตามระบบ (System)",
+  "@theme_system": {
+    "description": "System Theme"
+  },
+  "data_manager": "จัดการข้อมูล",
+  "@data_manager": {
+    "description": "Data Manager"
+  },
+  "backup_data": "สำรองข้อมูล (JSON)",
+  "@backup_data": {
+    "description": "Backup Data"
+  },
+  "restore_data": "กู้คืนข้อมูล (JSON)",
+  "@restore_data": {
+    "description": "Restore Data"
+  },
+  "reset_data": "รีเซ็ตข้อมูลทั้งหมด",
+  "@reset_data": {
+    "description": "Reset All Data"
+  },
+  "reset_confirm": "คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตข้อมูลทั้งหมดกลับเป็นค่าเริ่มต้น?",
+  "@reset_confirm": {
+    "description": "Reset confirmation"
+  },
+  "data_restored_success": "กู้คืนข้อมูลสำเร็จเรียบร้อยแล้ว!",
+  "@data_restored_success": {
+    "description": "Data restored successfully"
+  },
+  "data_restore_failed": "กู้คืนข้อมูลไม่สำเร็จ รูปแบบ JSON ไม่ถูกต้อง",
+  "@data_restore_failed": {
+    "description": "Failed to restore data"
+  },
+  "copied_to_clipboard": "คัดลอกลงคลิปบอร์ดแล้ว",
+  "@copied_to_clipboard": {
+    "description": "Copied to clipboard"
+  }
 }

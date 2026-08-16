@@ -11,7 +11,9 @@ import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
+import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
 
 void main() {
   late AppDatabase db;
@@ -21,6 +23,7 @@ void main() {
   late AppGlobalBloc appGlobalBloc;
   late GamificationBloc gamificationBloc;
   late TransactionBloc transactionBloc;
+  late LanguageBloc languageBloc;
 
   setUp(() async {
     db = AppDatabase.forTesting(NativeDatabase.memory());
@@ -42,9 +45,11 @@ void main() {
       gamificationRepository: gamificationRepo,
     );
     transactionBloc.add(const LoadTransactionsEvent());
+    languageBloc = LanguageBloc(db);
   });
 
   tearDown(() async {
+    await languageBloc.close();
     await transactionBloc.close();
     await gamificationBloc.close();
     await appGlobalBloc.close();
@@ -54,6 +59,9 @@ void main() {
   Widget buildTestableAnalyticsPage(
       {required double width, double height = 800}) {
     return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('th'),
       home: MediaQuery(
         data: MediaQueryData(
           size: Size(width, height),
@@ -64,6 +72,7 @@ void main() {
             BlocProvider<AppGlobalBloc>.value(value: appGlobalBloc),
             BlocProvider<GamificationBloc>.value(value: gamificationBloc),
             BlocProvider<TransactionBloc>.value(value: transactionBloc),
+            BlocProvider<LanguageBloc>.value(value: languageBloc),
           ],
           child: const AnalyticsPage(),
         ),
@@ -83,8 +92,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AnalyticsPage), findsOneWidget);
-      expect(find.textContaining('เปรียบเทียบกระแสเงินสด'), findsOneWidget);
-      expect(find.textContaining('สัดส่วนการใช้จ่ายตามหมวดหมู่'), findsOneWidget);
+      expect(find.textContaining('เปรียบเทียบรายรับ'), findsOneWidget);
+      expect(find.textContaining('สัดส่วนรายจ่ายตามหมวดหมู่'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 

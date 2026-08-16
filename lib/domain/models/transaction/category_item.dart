@@ -121,6 +121,39 @@ class CategoryItem {
     );
   }
 
+  String getLocalizedName(BuildContext context) {
+    final locale = Localizations.localeOf(context).languageCode;
+    return getLocalizedCategoryName(id, locale);
+  }
+
+  static String getLocalizedCategoryName(String categoryId, String langCode) {
+    if (langCode == 'th') {
+      return getCategoryThaiName(categoryId);
+    }
+    switch (categoryId) {
+      case 'Income':
+        return 'Income';
+      case 'Food':
+        return 'Food & Dining';
+      case 'Transport':
+        return 'Transportation';
+      case 'Home':
+        return 'Housing & Bills';
+      case 'Health':
+        return 'Health & Medical';
+      case 'Learning':
+        return 'Education & Skills';
+      case 'Fun':
+        return 'Entertainment & Travel';
+      case 'Debt':
+        return 'Debt & Loan Payments';
+      case 'Savings':
+        return 'Savings & Investments';
+      default:
+        return categoryId;
+    }
+  }
+
   static String getCategoryThaiName(String categoryId) {
     switch (categoryId) {
       case 'Income':

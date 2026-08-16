@@ -1,0 +1,93 @@
+{
+  "@@locale": "th",
+  "monthly_income": "รายรับเดือนนี้",
+  "@monthly_income": {
+    "description": "Monthly Income"
+  },
+  "monthly_expense": "รายจ่ายเดือนนี้",
+  "@monthly_expense": {
+    "description": "Monthly Expense"
+  },
+  "net_savings": "กระแสเงินสดสุทธิ (NET SAVINGS)",
+  "@net_savings": {
+    "description": "Net Savings"
+  },
+  "status_healthy": "สถานะปกติ",
+  "@status_healthy": {
+    "description": "Healthy Flow Status"
+  },
+  "status_overspent": "ใช้เกินรายรับ",
+  "@status_overspent": {
+    "description": "Overspent Flow Status"
+  },
+  "day_streak": "ต่อเนื่อง {days} วัน 🔥",
+  "@day_streak": {
+    "description": "Day streak label",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "total_xp_score": "คะแนนสะสมรวม: {xp} XP",
+  "@total_xp_score": {
+    "description": "Total XP Score",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "view_quests_achievements": "ดูเควส & ความสำเร็จ →",
+  "@view_quests_achievements": {
+    "description": "View quests link"
+  },
+  "add_expense": "เพิ่มรายจ่าย",
+  "@add_expense": {
+    "description": "Add Expense button"
+  },
+  "add_income": "เพิ่มรายรับ",
+  "@add_income": {
+    "description": "Add Income button"
+  },
+  "scan_slip": "สแกนสลิป",
+  "@scan_slip": {
+    "description": "Scan Slip button"
+  },
+  "daily_quests": "เควสประจำวัน (Daily Quests)",
+  "@daily_quests": {
+    "description": "Daily Quests Header"
+  },
+  "view_all": "ดูทั้งหมด",
+  "@view_all": {
+    "description": "View All link"
+  },
+  "recent_transactions": "รายการล่าสุด (Recent Transactions)",
+  "@recent_transactions": {
+    "description": "Recent Transactions Header"
+  },
+  "no_transactions_month": "ยังไม่มีรายการในเดือนนี้",
+  "@no_transactions_month": {
+    "description": "Empty transactions message"
+  },
+  "slip_scan_tooltip": "สแกนสลิปโอนเงิน (+25 XP)",
+  "@slip_scan_tooltip": {
+    "description": "Scan slip tooltip"
+  },
+  "quick_add_tooltip": "เพิ่มรายการด่วน",
+  "@quick_add_tooltip": {
+    "description": "Quick add tooltip"
+  },
+  "theme_toggle_tooltip": "สลับ Light/Dark Mode",
+  "@theme_toggle_tooltip": {
+    "description": "Theme toggle tooltip"
+  },
+  "data_manager_tooltip": "สำรอง/กู้คืนข้อมูล (JSON)",
+  "@data_manager_tooltip": {
+    "description": "Data manager tooltip"
+  },
+  "language_toggle_tooltip": "เปลี่ยนภาษา",
+  "@language_toggle_tooltip": {
+    "description": "Language toggle tooltip"
+  }
+}

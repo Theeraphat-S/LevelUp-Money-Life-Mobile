@@ -58,6 +58,7 @@ class AppLocalizations {
   static List<LocalizationsDelegate<dynamic>> get localizationsDelegates => [
         GlobalCupertinoLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
 EOF
 
 # เพิ่ม delegate

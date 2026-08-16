@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
 
 class LevelUpDialog extends StatelessWidget {
@@ -30,6 +31,8 @@ class LevelUpDialog extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final surfaceColor = PColor.surface(context);
     final borderColor = PColor.line(context);
+    final i18n = AppLocalizations(context).gamification;
+    final currentLang = Localizations.localeOf(context).languageCode;
 
     return Dialog(
       backgroundColor: surfaceColor,
@@ -74,7 +77,9 @@ class LevelUpDialog extends StatelessWidget {
             const SizedBox(height: 6),
 
             Text(
-              'ขอแสดงความยินดี! คุณก้าวสู่เลเวล $level',
+              currentLang == 'th'
+                  ? 'ขอแสดงความยินดี! คุณก้าวสู่เลเวล $level'
+                  : 'Congratulations! You reached Level $level',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -93,7 +98,7 @@ class LevelUpDialog extends StatelessWidget {
                 border: Border.all(color: PColor.primary(context).withValues(alpha: 0.3)),
               ),
               child: Text(
-                'ฉายาใหม่: $rankTitle',
+                '${i18n.hero_profile}: $rankTitle',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
@@ -115,9 +120,9 @@ class LevelUpDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  'รับพลังและก้าวต่อไป',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                child: Text(
+                  currentLang == 'th' ? 'รับพลังและก้าวต่อไป' : 'Claim & Continue',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ),

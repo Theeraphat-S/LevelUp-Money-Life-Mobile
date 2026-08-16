@@ -1,27 +1,103 @@
 {
-    "@@locale": "en",
-    "cancel": "Cancel",
-    "@cancel": {
-        "description": "Cancel"
-    },
-    "ok": "OK",
-    "@ok": {
-        "description": "OK"
-    },
-    "yes": "Yes",
-    "@yes": {
-        "description": "Yes"
-    },
-    "no": "No",
-    "@no": {
-        "description": "No"
-    },
-    "add": "Add",
-    "@add": {
-        "description": "Add"
-    },
-    "close": "Close",
-    "@close": {
-        "description": "Close"
-    }
+  "@@locale": "en",
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "OK"
+  },
+  "yes": "Yes",
+  "@yes": {
+    "description": "Yes"
+  },
+  "no": "No",
+  "@no": {
+    "description": "No"
+  },
+  "add": "Add",
+  "@add": {
+    "description": "Add"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Close"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Save"
+  },
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm"
+  },
+  "status": "Status",
+  "@status": {
+    "description": "Status"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language"
+  },
+  "thai": "Thai",
+  "@thai": {
+    "description": "Thai"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English"
+  },
+  "theme_light": "Light Mode",
+  "@theme_light": {
+    "description": "Light Mode"
+  },
+  "theme_dark": "Dark Mode",
+  "@theme_dark": {
+    "description": "Dark Mode"
+  },
+  "theme_system": "System Theme",
+  "@theme_system": {
+    "description": "System Theme"
+  },
+  "data_manager": "Data Manager",
+  "@data_manager": {
+    "description": "Data Manager"
+  },
+  "backup_data": "Backup Data (JSON)",
+  "@backup_data": {
+    "description": "Backup Data"
+  },
+  "restore_data": "Restore Data (JSON)",
+  "@restore_data": {
+    "description": "Restore Data"
+  },
+  "reset_data": "Reset All Data",
+  "@reset_data": {
+    "description": "Reset All Data"
+  },
+  "reset_confirm": "Are you sure you want to reset all data to default?",
+  "@reset_confirm": {
+    "description": "Reset confirmation"
+  },
+  "data_restored_success": "Data restored successfully!",
+  "@data_restored_success": {
+    "description": "Data restored successfully"
+  },
+  "data_restore_failed": "Failed to restore data. Invalid JSON.",
+  "@data_restore_failed": {
+    "description": "Failed to restore data"
+  },
+  "copied_to_clipboard": "Copied to clipboard",
+  "@copied_to_clipboard": {
+    "description": "Copied to clipboard"
+  }
 }

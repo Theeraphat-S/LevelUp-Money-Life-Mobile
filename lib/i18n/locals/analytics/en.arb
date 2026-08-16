@@ -1,0 +1,43 @@
+{
+  "@@locale": "en",
+  "analytics_title": "Spending Analytics",
+  "@analytics_title": {
+    "description": "Analytics Page Title"
+  },
+  "expense_by_category": "Expense by Category",
+  "@expense_by_category": {
+    "description": "Expense by Category"
+  },
+  "income_vs_expense": "Income vs Expense",
+  "@income_vs_expense": {
+    "description": "Income vs Expense"
+  },
+  "savings_rate": "Net Savings Rate",
+  "@savings_rate": {
+    "description": "Savings Rate"
+  },
+  "financial_health": "Financial Health Score",
+  "@financial_health": {
+    "description": "Financial Health Score"
+  },
+  "no_data_month": "No spending records found for this month",
+  "@no_data_month": {
+    "description": "Empty analytics data message"
+  },
+  "top_spending": "Top Expense Breakdown",
+  "@top_spending": {
+    "description": "Top spending header"
+  },
+  "health_grade_excellent": "Excellent Financial Discipline 🌟",
+  "@health_grade_excellent": {
+    "description": "Health grade"
+  },
+  "health_grade_good": "Good Budget Balance 👍",
+  "@health_grade_good": {
+    "description": "Health grade"
+  },
+  "health_grade_warning": "High Spending Warning ⚠️",
+  "@health_grade_warning": {
+    "description": "Health grade"
+  }
+}

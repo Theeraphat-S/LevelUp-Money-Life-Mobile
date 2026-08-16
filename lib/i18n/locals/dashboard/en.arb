@@ -1,0 +1,93 @@
+{
+  "@@locale": "en",
+  "monthly_income": "Monthly Income",
+  "@monthly_income": {
+    "description": "Monthly Income"
+  },
+  "monthly_expense": "Monthly Expense",
+  "@monthly_expense": {
+    "description": "Monthly Expense"
+  },
+  "net_savings": "NET SAVINGS",
+  "@net_savings": {
+    "description": "Net Savings"
+  },
+  "status_healthy": "Healthy",
+  "@status_healthy": {
+    "description": "Healthy Flow Status"
+  },
+  "status_overspent": "Overspent",
+  "@status_overspent": {
+    "description": "Overspent Flow Status"
+  },
+  "day_streak": "{days}-Day Streak 🔥",
+  "@day_streak": {
+    "description": "Day streak label",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "total_xp_score": "Total Score: {xp} XP",
+  "@total_xp_score": {
+    "description": "Total XP Score",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "view_quests_achievements": "View Quests & Badges →",
+  "@view_quests_achievements": {
+    "description": "View quests link"
+  },
+  "add_expense": "Add Expense",
+  "@add_expense": {
+    "description": "Add Expense button"
+  },
+  "add_income": "Add Income",
+  "@add_income": {
+    "description": "Add Income button"
+  },
+  "scan_slip": "Scan Slip",
+  "@scan_slip": {
+    "description": "Scan Slip button"
+  },
+  "daily_quests": "Daily Quests",
+  "@daily_quests": {
+    "description": "Daily Quests Header"
+  },
+  "view_all": "View All",
+  "@view_all": {
+    "description": "View All link"
+  },
+  "recent_transactions": "Recent Transactions",
+  "@recent_transactions": {
+    "description": "Recent Transactions Header"
+  },
+  "no_transactions_month": "No transactions in this month",
+  "@no_transactions_month": {
+    "description": "Empty transactions message"
+  },
+  "slip_scan_tooltip": "Scan Transfer Slip (+25 XP)",
+  "@slip_scan_tooltip": {
+    "description": "Scan slip tooltip"
+  },
+  "quick_add_tooltip": "Quick Add Transaction",
+  "@quick_add_tooltip": {
+    "description": "Quick add tooltip"
+  },
+  "theme_toggle_tooltip": "Toggle Light/Dark Theme",
+  "@theme_toggle_tooltip": {
+    "description": "Theme toggle tooltip"
+  },
+  "data_manager_tooltip": "Data Manager (Backup/Restore)",
+  "@data_manager_tooltip": {
+    "description": "Data manager tooltip"
+  },
+  "language_toggle_tooltip": "Change Language",
+  "@language_toggle_tooltip": {
+    "description": "Language toggle tooltip"
+  }
+}

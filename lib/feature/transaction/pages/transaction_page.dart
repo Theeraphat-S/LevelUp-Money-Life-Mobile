@@ -12,6 +12,7 @@ import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.da
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_state.dart';
 import 'package:mobile_app_standard/feature/transaction/widgets/quick_add_sheet.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/router/router.dart';
 import 'package:mobile_app_standard/shared/components/appbar/bottombar_custom.dart';
 import 'package:mobile_app_standard/shared/components/header_command_deck.dart';
@@ -48,6 +49,9 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final currencyFormat = NumberFormat('#,##0.00', 'en_US');
     final borderColor = PColor.line(context);
+    final i18n = AppLocalizations(context).transaction;
+    final generalI18n = AppLocalizations(context).general;
+    final currentLang = Localizations.localeOf(context).languageCode;
 
     return Scaffold(
       backgroundColor: PColor.base(context),
@@ -62,8 +66,8 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
         backgroundColor: PColor.primary(context),
         foregroundColor: isDark ? PColor.darkBase : Colors.white,
         icon: const Icon(Icons.add_rounded),
-        label: const Text('บันทึกรายการ',
-            style: TextStyle(fontWeight: FontWeight.w700)),
+        label: Text(i18n.quick_add_title,
+            style: const TextStyle(fontWeight: FontWeight.w700)),
       ),
       body: BlocBuilder<TransactionBloc, TransactionState>(
         builder: (context, state) {
@@ -86,7 +90,7 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
                       },
                       style: TextStyle(fontSize: 13, color: PColor.ink(context)),
                       decoration: InputDecoration(
-                        hintText: 'ค้นหาชื่อรายการ, หมวดหมู่, หรือโน้ต...',
+                        hintText: i18n.search_placeholder,
                         prefixIcon: Icon(Icons.search_rounded,
                             size: 18, color: PColor.inkSoft(context)),
                         suffixIcon: _searchController.text.isNotEmpty
@@ -127,7 +131,7 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
                       child: Row(
                         children: [
                           _buildCategoryPill(
-                            label: 'ทั้งหมด',
+                            label: i18n.filter_all,
                             isSelected: state.categoryFilter == null,
                             onTap: () => context.read<TransactionBloc>().add(
                                 const SetTransactionFilterEvent(
@@ -135,7 +139,7 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
                           ),
                           ...CategoryItem.defaultCategories.map((cat) {
                             return _buildCategoryPill(
-                              label: CategoryItem.getCategoryThaiName(cat.id),
+                              label: CategoryItem.getLocalizedCategoryName(cat.id, currentLang),
                               color: cat.color,
                               isSelected: state.categoryFilter == cat.id,
                               onTap: () => context.read<TransactionBloc>().add(
@@ -161,10 +165,10 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
                     _buildSmallFilterButton(
                       context: context,
                       label: state.clearedFilter == null
-                          ? 'สถานะ: ทั้งหมด'
+                          ? '${generalI18n.status}: ${i18n.filter_all}'
                           : state.clearedFilter == true
-                              ? 'สถานะ: เคลียร์แล้ว ✓'
-                              : 'สถานะ: ยังไม่เคลียร์ ⌛',
+                              ? '${generalI18n.status}: Cleared ✓'
+                              : '${generalI18n.status}: Pending ⌛',
                       onTap: () {
                         if (state.clearedFilter == null) {
                           context.read<TransactionBloc>().add(
@@ -188,10 +192,10 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
                           ? Icons.arrow_upward_rounded
                           : Icons.arrow_downward_rounded,
                       label: state.sortField == TransactionSortField.date
-                          ? 'วันที่'
+                          ? i18n.date
                           : state.sortField == TransactionSortField.amount
-                              ? 'จำนวนเงิน'
-                              : 'ชื่อ',
+                              ? i18n.amount_thb
+                              : i18n.transaction_name,
                       onTap: () {
                         // Cycle sort fields
                         if (state.sortField == TransactionSortField.date) {
@@ -215,7 +219,7 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
 
                     // Bulk Clear Menu
                     PopupMenuButton<String>(
-                      tooltip: 'การจัดการหลายรายการ',
+                      tooltip: 'Bulk Actions',
                       icon: Icon(Icons.more_horiz_rounded,
                           size: 18, color: PColor.ink(context)),
                       color: PColor.surface(context),
@@ -230,13 +234,13 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
                         }
                       },
                       itemBuilder: (context) => [
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'clear_all',
-                          child: Text('ทำเครื่องหมายเคลียร์ทั้งหมด'),
+                          child: Text(currentLang == 'th' ? 'ทำเครื่องหมายเคลียร์ทั้งหมด' : 'Mark All Cleared'),
                         ),
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'unclear_all',
-                          child: Text('ยกเลิกการเคลียร์ทั้งหมด'),
+                          child: Text(currentLang == 'th' ? 'ยกเลิกการเคลียร์ทั้งหมด' : 'Unmark All Cleared'),
                         ),
                       ],
                     ),
@@ -255,7 +259,7 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
                                 size: 56, color: PColor.line(context)),
                             const SizedBox(height: 12),
                             Text(
-                              'ไม่พบรายการธุรกรรมตามเงื่อนไขที่เลือก',
+                              i18n.no_transactions_found,
                               style: TextStyle(
                                   fontSize: 13,
                                   color: PColor.inkSoft(context)),
@@ -479,7 +483,7 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
             children: [
               const SizedBox(height: 2),
               Text(
-                '${CategoryItem.getCategoryThaiName(tx.category)} • ${tx.date}',
+                '${CategoryItem.getLocalizedCategoryName(tx.category, Localizations.localeOf(context).languageCode)} • ${tx.date}',
                 style: TextStyle(
                   fontSize: 11,
                   color: PColor.inkSoft(context),

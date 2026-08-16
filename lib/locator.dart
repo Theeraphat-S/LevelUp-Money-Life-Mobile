@@ -72,5 +72,6 @@ Future<void> initLocator() async {
 
   locator.registerLazySingleton<TodoBloc>(TodoBloc.new);
   locator.registerLazySingleton<WebsocketBloc>(WebsocketBloc.new);
-  locator.registerLazySingleton<LanguageBloc>(LanguageBloc.new);
+  locator.registerLazySingleton<LanguageBloc>(
+      () => LanguageBloc(locator<AppDatabase>()));
 }

@@ -106,6 +106,42 @@ abstract class AppbarLocalizations {
   /// In en, this message translates to:
   /// **'Todo'**
   String get todo_route_name;
+
+  /// Navigation Overview
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get nav_overview;
+
+  /// Navigation Transactions
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get nav_transactions;
+
+  /// Navigation Budget
+  ///
+  /// In en, this message translates to:
+  /// **'Budget 50/30/20'**
+  String get nav_budget;
+
+  /// Navigation Analytics
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics'**
+  String get nav_analytics;
+
+  /// Navigation Quests & XP
+  ///
+  /// In en, this message translates to:
+  /// **'Quests & XP'**
+  String get nav_quests;
+
+  /// App Title
+  ///
+  /// In en, this message translates to:
+  /// **'LevelUp Money Life'**
+  String get app_title;
 }
 
 class _AppbarLocalizationsDelegate extends LocalizationsDelegate<AppbarLocalizations> {

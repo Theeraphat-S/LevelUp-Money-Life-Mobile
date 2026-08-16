@@ -13,8 +13,10 @@ import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
 import 'package:mobile_app_standard/feature/transaction/widgets/quick_add_sheet.dart';
 import 'package:mobile_app_standard/feature/transaction/widgets/slip_scan_sheet.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/locator.dart';
 import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
+import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
 import 'package:mobile_app_standard/shared/components/data_manager_dialog.dart';
 
 void main() {
@@ -28,6 +30,7 @@ void main() {
   late TransactionBloc transactionBloc;
   late DashboardBloc dashboardBloc;
   late BudgetBloc budgetBloc;
+  late LanguageBloc languageBloc;
 
   setUp(() async {
     db = AppDatabase.forTesting(NativeDatabase.memory());
@@ -62,9 +65,11 @@ void main() {
       transactionRepository: transactionRepo,
       gamificationRepository: gamificationRepo,
     );
+    languageBloc = LanguageBloc(db);
   });
 
   tearDown(() async {
+    await languageBloc.close();
     await budgetBloc.close();
     await dashboardBloc.close();
     await transactionBloc.close();
@@ -80,6 +85,9 @@ void main() {
     double height = 800,
   }) {
     return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('th'),
       home: MediaQuery(
         data: MediaQueryData(
           size: Size(width, height),
@@ -92,6 +100,7 @@ void main() {
             BlocProvider<TransactionBloc>.value(value: transactionBloc),
             BlocProvider<DashboardBloc>.value(value: dashboardBloc),
             BlocProvider<BudgetBloc>.value(value: budgetBloc),
+            BlocProvider<LanguageBloc>.value(value: languageBloc),
           ],
           child: Scaffold(
             body: Center(child: child),

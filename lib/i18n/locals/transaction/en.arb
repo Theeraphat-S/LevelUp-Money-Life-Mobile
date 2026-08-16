@@ -1,0 +1,128 @@
+{
+  "@@locale": "en",
+  "transactions_title": "Transactions",
+  "@transactions_title": {
+    "description": "Transactions Page Title"
+  },
+  "total_income": "Total Income",
+  "@total_income": {
+    "description": "Total Income"
+  },
+  "total_expense": "Total Expense",
+  "@total_expense": {
+    "description": "Total Expense"
+  },
+  "net_flow": "Net Flow",
+  "@net_flow": {
+    "description": "Net Flow"
+  },
+  "filter_all": "All",
+  "@filter_all": {
+    "description": "Filter All"
+  },
+  "filter_income": "Income",
+  "@filter_income": {
+    "description": "Filter Income"
+  },
+  "filter_expense": "Expense",
+  "@filter_expense": {
+    "description": "Filter Expense"
+  },
+  "search_placeholder": "Search transaction name...",
+  "@search_placeholder": {
+    "description": "Search field placeholder"
+  },
+  "no_transactions_found": "No transactions found",
+  "@no_transactions_found": {
+    "description": "Empty list search message"
+  },
+  "quick_add_title": "Quick Record Transaction",
+  "@quick_add_title": {
+    "description": "Quick add sheet title"
+  },
+  "edit_transaction_title": "Edit Transaction",
+  "@edit_transaction_title": {
+    "description": "Edit transaction sheet title"
+  },
+  "transaction_name": "Item Name",
+  "@transaction_name": {
+    "description": "Transaction item name label"
+  },
+  "transaction_name_hint": "e.g. Lunch, Coffee, Salary",
+  "@transaction_name_hint": {
+    "description": "Transaction name placeholder"
+  },
+  "amount_thb": "Amount (THB)",
+  "@amount_thb": {
+    "description": "Amount label"
+  },
+  "category": "Category",
+  "@category": {
+    "description": "Category label"
+  },
+  "date": "Date",
+  "@date": {
+    "description": "Date label"
+  },
+  "notes": "Notes (Optional)",
+  "@notes": {
+    "description": "Notes label"
+  },
+  "notes_hint": "Add extra details...",
+  "@notes_hint": {
+    "description": "Notes placeholder"
+  },
+  "save_transaction": "Save Transaction (+15 XP)",
+  "@save_transaction": {
+    "description": "Save transaction button"
+  },
+  "saving": "Saving...",
+  "@saving": {
+    "description": "Saving state text"
+  },
+  "delete_transaction": "Delete Transaction",
+  "@delete_transaction": {
+    "description": "Delete button"
+  },
+  "delete_confirm_title": "Delete Transaction?",
+  "@delete_confirm_title": {
+    "description": "Delete dialog title"
+  },
+  "delete_confirm_msg": "Are you sure you want to delete this transaction record?",
+  "@delete_confirm_msg": {
+    "description": "Delete dialog message"
+  },
+  "scan_slip_title": "Scan Transfer Slip",
+  "@scan_slip_title": {
+    "description": "Scan slip dialog title"
+  },
+  "scan_slip_subtitle": "Extract details automatically & earn +25 XP!",
+  "@scan_slip_subtitle": {
+    "description": "Scan slip description"
+  },
+  "select_slip_image": "Select Slip Image",
+  "@select_slip_image": {
+    "description": "Select slip button"
+  },
+  "use_demo_slip": "Use Demo Slip",
+  "@use_demo_slip": {
+    "description": "Demo slip button"
+  },
+  "slip_analyzed_success": "Slip scanned successfully!",
+  "@slip_analyzed_success": {
+    "description": "Slip success message"
+  },
+  "exp_reward_title": "Mission Complete!",
+  "@exp_reward_title": {
+    "description": "EXP reward dialog title"
+  },
+  "exp_reward_msg": "You earned +{xp} XP!",
+  "@exp_reward_msg": {
+    "description": "EXP earned message",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  }
+}

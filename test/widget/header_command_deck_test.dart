@@ -7,7 +7,9 @@ import 'package:mobile_app_standard/domain/repositories/gamification_repository.
 import 'package:mobile_app_standard/domain/repositories/user_repository.dart';
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
+import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
 import 'package:mobile_app_standard/shared/components/gamification_badges.dart';
 import 'package:mobile_app_standard/shared/components/header_command_deck.dart';
 
@@ -17,6 +19,7 @@ void main() {
   late UserRepository userRepo;
   late AppGlobalBloc appGlobalBloc;
   late GamificationBloc gamificationBloc;
+  late LanguageBloc languageBloc;
 
   setUp(() async {
     db = AppDatabase.forTesting(NativeDatabase.memory());
@@ -28,10 +31,12 @@ void main() {
       gamificationRepository: gamificationRepo,
       userRepository: userRepo,
     );
+    languageBloc = LanguageBloc(db);
     gamificationBloc.add(const LoadGamificationDataEvent());
   });
 
   tearDown(() async {
+    await languageBloc.close();
     await appGlobalBloc.close();
     await gamificationBloc.close();
     await db.close();
@@ -39,6 +44,9 @@ void main() {
 
   Widget buildTestableHeader({required double width, double height = 640}) {
     return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('th'),
       home: MediaQuery(
         data: MediaQueryData(
           size: Size(width, height),
@@ -48,6 +56,7 @@ void main() {
           providers: [
             BlocProvider<AppGlobalBloc>.value(value: appGlobalBloc),
             BlocProvider<GamificationBloc>.value(value: gamificationBloc),
+            BlocProvider<LanguageBloc>.value(value: languageBloc),
           ],
           child: Scaffold(
             appBar: HeaderCommandDeck(

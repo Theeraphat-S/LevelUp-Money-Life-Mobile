@@ -13,4 +13,22 @@ class AppbarLocalizationsEn extends AppbarLocalizations {
 
   @override
   String get todo_route_name => 'Todo';
+
+  @override
+  String get nav_overview => 'Overview';
+
+  @override
+  String get nav_transactions => 'Transactions';
+
+  @override
+  String get nav_budget => 'Budget 50/30/20';
+
+  @override
+  String get nav_analytics => 'Analytics';
+
+  @override
+  String get nav_quests => 'Quests & XP';
+
+  @override
+  String get app_title => 'LevelUp Money Life';
 }
