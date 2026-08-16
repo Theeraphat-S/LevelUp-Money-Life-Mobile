@@ -1,24 +1,25 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app_standard/domain/models/transaction/category_item.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
-import 'package:mobile_app_standard/domain/models/transaction/wallet_item.dart';
 import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_bloc.dart';
 import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_event.dart';
 import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_state.dart';
-import 'package:mobile_app_standard/feature/dashboard/widgets/daily_quests_section.dart';
-import 'package:mobile_app_standard/feature/dashboard/widgets/financial_overview_card.dart';
-import 'package:mobile_app_standard/feature/dashboard/widgets/quick_actions_bar.dart';
-import 'package:mobile_app_standard/feature/dashboard/widgets/recent_transactions_section.dart';
-import 'package:mobile_app_standard/feature/dashboard/widgets/rpg_hud_card.dart';
+import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
+import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
-import 'package:mobile_app_standard/feature/transaction/widgets/add_transaction_sheet.dart';
-import 'package:mobile_app_standard/locator.dart';
+import 'package:mobile_app_standard/feature/transaction/widgets/quick_add_sheet.dart';
+import 'package:mobile_app_standard/feature/transaction/widgets/slip_scan_sheet.dart';
 import 'package:mobile_app_standard/router/router.dart';
-import 'package:mobile_app_standard/shared/components/appbar/appbar_custom.dart';
+import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
 import 'package:mobile_app_standard/shared/components/appbar/bottombar_custom.dart';
+import 'package:mobile_app_standard/shared/components/bento_card.dart';
+import 'package:mobile_app_standard/shared/components/header_command_deck.dart';
+import 'package:mobile_app_standard/shared/components/metric_tile.dart';
+import 'package:mobile_app_standard/shared/components/xp_progress_bar.dart';
+import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
 
 @RoutePage()
 class DashboardPage extends StatelessWidget {
@@ -26,40 +27,13 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _DashboardPageView();
-  }
-}
-
-class _DashboardPageView extends StatelessWidget {
-  const _DashboardPageView();
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: AppBarCustom(
-        title: 'LevelUp Money Life 🎮',
-        automaticallyImplyLeading: false,
+      backgroundColor: PColor.base(context),
+      appBar: HeaderCommandDeck(
+        onOpenQuests: () => context.router.push(const QuestRoute()),
       ),
       bottomNavigationBar: BottomBarCustom(
         currentRouteName: DashboardRoute.name,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          final txState = context.read<TransactionBloc>().state;
-          AddTransactionSheet.show(
-            context,
-            initialType: TransactionType.expense,
-            categories: txState.categories.isNotEmpty
-                ? txState.categories
-                : CategoryItem.defaultCategories,
-            wallets: txState.wallets.isNotEmpty
-                ? txState.wallets
-                : WalletItem.defaultWallets,
-          );
-        },
-        backgroundColor: const Color(0xFF3B82F6),
-        child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
       ),
       body: BlocConsumer<DashboardBloc, DashboardState>(
         listener: (context, state) {
@@ -67,7 +41,7 @@ class _DashboardPageView extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.notificationMessage!),
-                backgroundColor: const Color(0xFF10B981),
+                backgroundColor: PColor.jadeLight,
                 duration: const Duration(seconds: 3),
               ),
             );
@@ -79,14 +53,25 @@ class _DashboardPageView extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
+          final summary = state.summary;
+          final totalIncome = summary['totalIncome'] ?? 0.0;
+          final totalExpense = summary['totalExpense'] ?? 0.0;
+          final netSavings = summary['netSavings'] ?? 0.0;
           final user = state.userProfile;
+          final currencyFormat = NumberFormat('#,##0.00', 'en_US');
 
           return RefreshIndicator(
             onRefresh: () async {
-              context.read<DashboardBloc>().add(const LoadDashboardData());
+              final activeMonth = context.read<AppGlobalBloc>().state.activeMonth;
+              context
+                  .read<DashboardBloc>()
+                  .add(LoadDashboardData(monthFilter: activeMonth));
               context
                   .read<TransactionBloc>()
-                  .add(const LoadTransactionsEvent());
+                  .add(LoadTransactionsEvent(monthFilter: activeMonth));
+              context
+                  .read<GamificationBloc>()
+                  .add(const LoadGamificationDataEvent());
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -94,86 +79,457 @@ class _DashboardPageView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 1. RPG HUD Card (Level, EXP, Streak, HP)
-                  if (user != null)
-                    RpgHudCard(
-                      user: user,
-                      onCheckIn: () {
-                        context
-                            .read<DashboardBloc>()
-                            .add(const CheckInDailyEvent());
-                      },
+                  // 1. Metric Tiles Row
+                  Row(
+                    children: [
+                      Expanded(
+                        child: MetricTile(
+                          icon: const Icon(Icons.arrow_upward_rounded),
+                          label: 'รายรับเดือนนี้',
+                          value: '฿${currencyFormat.format(totalIncome)}',
+                          tone: MetricTone.jade,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: MetricTile(
+                          icon: const Icon(Icons.arrow_downward_rounded),
+                          label: 'รายจ่ายเดือนนี้',
+                          value: '฿${currencyFormat.format(totalExpense)}',
+                          tone: MetricTone.rose,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+
+                  // 2. Net Savings / Flow Bento Card
+                  BentoCard(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'กระแสเงินสดสุทธิ (NET SAVINGS)',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.5,
+                                color: PColor.inkSoft(context),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${netSavings >= 0 ? '+' : ''}฿${currencyFormat.format(netSavings)}',
+                              style: TextStyle(
+                                fontFamily: 'monospace',
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                                color: netSavings >= 0
+                                    ? PColor.jadeInk(context)
+                                    : PColor.roseInk(context),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: netSavings >= 0
+                                ? PColor.jadeSoft(context)
+                                : PColor.roseSoft(context),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            netSavings >= 0 ? 'สถานะปกติ' : 'ใช้เกินรายรับ',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: netSavings >= 0
+                                  ? PColor.jadeInk(context)
+                                  : PColor.roseInk(context),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  // 3. Gamification Progression Bento Card
+                  if (user != null)
+                    BentoCard(
+                      header: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.military_tech_rounded,
+                                  size: 16, color: PColor.jade(context)),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Lv.${user.level} · ${user.rankTitle}',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color: PColor.ink(context),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            '${user.streakDays}-Day Streak 🔥',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: PColor.amberInk(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          XPProgressBar(
+                            currentXp: user.currentExp,
+                            xpForNextLevel: user.maxExp,
+                            progressPercent: user.expProgress * 100.0,
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'คะแนนสะสมรวม: ${user.totalXp} XP',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontFamily: 'monospace',
+                                  color: PColor.inkSoft(context),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () =>
+                                    context.router.push(const QuestRoute()),
+                                child: Text(
+                                  'ดูเควส & ความสำเร็จ →',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                    color: PColor.primary(context),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  const SizedBox(height: 14),
+
+                  // 4. Quick Action Deck
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildActionButton(
+                          context: context,
+                          icon: Icons.add_rounded,
+                          label: 'เพิ่มรายจ่าย',
+                          toneColor: PColor.rose(context),
+                          onTap: () => QuickAddSheet.show(context,
+                              initialType: TransactionType.expense),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildActionButton(
+                          context: context,
+                          icon: Icons.add_rounded,
+                          label: 'เพิ่มรายรับ',
+                          toneColor: PColor.jade(context),
+                          onTap: () => QuickAddSheet.show(context,
+                              initialType: TransactionType.income),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildActionButton(
+                          context: context,
+                          icon: Icons.document_scanner_outlined,
+                          label: 'สแกนสลิป',
+                          toneColor: PColor.primary(context),
+                          onTap: () => SlipScanSheet.show(context),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 16),
 
-                  // 2. Financial Overview Card (Balance, Income, Expense)
-                  FinancialOverviewCard(summary: state.summary),
-                  const SizedBox(height: 20),
+                  // 5. Daily Quests Snapshot
+                  BentoCard(
+                    header: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.checklist_rounded,
+                                size: 16, color: PColor.primary(context)),
+                            const SizedBox(width: 6),
+                            Text(
+                              'เควสประจำวัน (Daily Quests)',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: PColor.ink(context),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () =>
+                              context.router.push(const QuestRoute()),
+                          child: Text(
+                            'ดูทั้งหมด',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: PColor.primary(context),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: state.activeQuests.take(3).map((quest) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                  color: PColor.lineSubtle(context), width: 1),
+                            ),
+                          ),
+                          child: ListTile(
+                            dense: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 0),
+                            leading: Checkbox(
+                              value: quest.done,
+                              activeColor: PColor.primary(context),
+                              onChanged: (_) {
+                                context
+                                    .read<GamificationBloc>()
+                                    .add(ToggleQuestEvent(quest.id));
+                                context.read<DashboardBloc>().add(
+                                    const LoadDashboardData());
+                              },
+                            ),
+                            title: Text(
+                              quest.title,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: quest.done
+                                    ? PColor.inkFaint(context)
+                                    : PColor.ink(context),
+                                decoration: quest.done
+                                    ? TextDecoration.lineThrough
+                                    : null,
+                              ),
+                            ),
+                            trailing: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: PColor.jadeSoft(context),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                '+${quest.xp} XP',
+                                style: TextStyle(
+                                  fontFamily: 'monospace',
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  color: PColor.jadeInk(context),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
 
-                  // 3. Quick Action Buttons
-                  QuickActionsBar(
-                    onAddExpense: () {
-                      final txState = context.read<TransactionBloc>().state;
-                      AddTransactionSheet.show(
-                        context,
-                        initialType: TransactionType.expense,
-                        categories: txState.categories.isNotEmpty
-                            ? txState.categories
-                            : CategoryItem.defaultCategories,
-                        wallets: txState.wallets.isNotEmpty
-                            ? txState.wallets
-                            : WalletItem.defaultWallets,
-                      );
-                    },
-                    onAddIncome: () {
-                      final txState = context.read<TransactionBloc>().state;
-                      AddTransactionSheet.show(
-                        context,
-                        initialType: TransactionType.income,
-                        categories: txState.categories.isNotEmpty
-                            ? txState.categories
-                            : CategoryItem.defaultCategories,
-                        wallets: txState.wallets.isNotEmpty
-                            ? txState.wallets
-                            : WalletItem.defaultWallets,
-                      );
-                    },
-                    onOpenQuests: () {
-                      context.router.push(const QuestRoute());
-                    },
-                    onOpenHistory: () {
-                      context.router.push(const TransactionRoute());
-                    },
+                  // 6. Recent Transactions
+                  BentoCard(
+                    header: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.receipt_long_outlined,
+                                size: 16, color: PColor.primary(context)),
+                            const SizedBox(width: 6),
+                            Text(
+                              'รายการล่าสุด (Recent Transactions)',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: PColor.ink(context),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () =>
+                              context.router.push(const TransactionRoute()),
+                          child: Text(
+                            'ดูทั้งหมด',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: PColor.primary(context),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    padding: EdgeInsets.zero,
+                    child: state.recentTransactions.isEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Center(
+                              child: Text(
+                                'ยังไม่มีรายการในเดือนนี้',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: PColor.inkFaint(context),
+                                ),
+                              ),
+                            ),
+                          )
+                        : Column(
+                            children: state.recentTransactions.map((tx) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                        color: PColor.lineSubtle(context),
+                                        width: 1),
+                                  ),
+                                ),
+                                child: ListTile(
+                                  dense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 14, vertical: 2),
+                                  leading: Container(
+                                    padding: const EdgeInsets.all(7),
+                                    decoration: BoxDecoration(
+                                      color: tx.isIncome
+                                          ? PColor.jadeSoft(context)
+                                          : PColor.roseSoft(context),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Icon(
+                                      tx.isIncome
+                                          ? Icons.arrow_upward_rounded
+                                          : Icons.arrow_downward_rounded,
+                                      size: 16,
+                                      color: tx.isIncome
+                                          ? PColor.amountIconJade(context)
+                                          : PColor.amountIconRose(context),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    tx.name,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: PColor.ink(context),
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  subtitle: Text(
+                                    '${tx.category} • ${tx.date}',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: PColor.inkSoft(context),
+                                    ),
+                                  ),
+                                  trailing: Text(
+                                    '${tx.isIncome ? '+' : '-'}฿${currencyFormat.format(tx.absAmount)}',
+                                    style: TextStyle(
+                                      fontFamily: 'monospace',
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w700,
+                                      color: tx.isIncome
+                                          ? PColor.jadeInk(context)
+                                          : PColor.roseInk(context),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
                   ),
                   const SizedBox(height: 24),
-
-                  // 4. Daily Quests Section
-                  DailyQuestsSection(
-                    quests: state.activeQuests,
-                    onClaim: (questId) {
-                      context
-                          .read<DashboardBloc>()
-                          .add(ClaimQuestRewardEvent(questId));
-                    },
-                    onViewAll: () {
-                      context.router.push(const QuestRoute());
-                    },
-                  ),
-                  const SizedBox(height: 20),
-
-                  // 5. Recent Transactions Section
-                  RecentTransactionsSection(
-                    transactions: state.recentTransactions,
-                    onViewAll: () {
-                      context.router.push(const TransactionRoute());
-                    },
-                  ),
-                  const SizedBox(height: 40),
                 ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required Color toneColor,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: PColor.surface(context),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: PColor.line(context)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: toneColor.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: toneColor, size: 16),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: PColor.ink(context),
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

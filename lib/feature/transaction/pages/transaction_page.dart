@@ -2,14 +2,20 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_app_standard/domain/models/transaction/category_item.dart';
 import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
+import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_bloc.dart';
+import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_event.dart';
+import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
+import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_state.dart';
-import 'package:mobile_app_standard/feature/transaction/widgets/add_transaction_sheet.dart';
-import 'package:mobile_app_standard/locator.dart';
-import 'package:mobile_app_standard/shared/components/appbar/appbar_custom.dart';
-import 'package:mobile_app_standard/shared/tokens/p_radius.dart';
+import 'package:mobile_app_standard/feature/transaction/widgets/quick_add_sheet.dart';
+import 'package:mobile_app_standard/router/router.dart';
+import 'package:mobile_app_standard/shared/components/appbar/bottombar_custom.dart';
+import 'package:mobile_app_standard/shared/components/header_command_deck.dart';
+import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
 
 @RoutePage()
 class TransactionPage extends StatelessWidget {
@@ -21,284 +27,250 @@ class TransactionPage extends StatelessWidget {
   }
 }
 
-class _TransactionPageView extends StatelessWidget {
+class _TransactionPageView extends StatefulWidget {
   const _TransactionPageView();
 
-  IconData _getIconData(String iconName) {
-    switch (iconName) {
-      case 'restaurant':
-        return Icons.restaurant_rounded;
-      case 'directions_car':
-        return Icons.directions_car_rounded;
-      case 'shopping_bag':
-        return Icons.shopping_bag_rounded;
-      case 'receipt_long':
-        return Icons.receipt_long_rounded;
-      case 'sports_esports':
-        return Icons.sports_esports_rounded;
-      case 'favorite':
-        return Icons.favorite_rounded;
-      case 'account_balance_wallet':
-        return Icons.account_balance_wallet_rounded;
-      case 'work':
-        return Icons.work_rounded;
-      case 'trending_up':
-        return Icons.trending_up_rounded;
-      default:
-        return Icons.category_rounded;
-    }
+  @override
+  State<_TransactionPageView> createState() => _TransactionPageViewState();
+}
+
+class _TransactionPageViewState extends State<_TransactionPageView> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final currencyFormat = NumberFormat('#,##0.00', 'en_US');
-    final dateFormat = DateFormat('dd MMM yyyy, HH:mm', 'th');
+    final borderColor = PColor.line(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: AppBarCustom(
-        title: 'ประวัติธุรกรรม',
-        automaticallyImplyLeading: true,
+      backgroundColor: PColor.base(context),
+      appBar: HeaderCommandDeck(
+        onOpenQuests: () => context.router.push(const QuestRoute()),
+      ),
+      bottomNavigationBar: BottomBarCustom(
+        currentRouteName: TransactionRoute.name,
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          final state = context.read<TransactionBloc>().state;
-          AddTransactionSheet.show(
-            context,
-            categories: state.categories,
-            wallets: state.wallets,
-          );
-        },
-        backgroundColor: const Color(0xFF3B82F6),
-        foregroundColor: Colors.white,
+        onPressed: () => QuickAddSheet.show(context),
+        backgroundColor: PColor.primary(context),
+        foregroundColor: isDark ? PColor.darkBase : Colors.white,
         icon: const Icon(Icons.add_rounded),
-        label: const Text(
-          'บันทึกรายการ',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        label: const Text('บันทึกรายการ',
+            style: TextStyle(fontWeight: FontWeight.w700)),
       ),
       body: BlocBuilder<TransactionBloc, TransactionState>(
         builder: (context, state) {
-          if (state.status == TransactionStatus.loading &&
-              state.allTransactions.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
+          final transactions = state.filteredTransactions;
 
           return Column(
             children: [
-              // Filter Chips Row
+              // 1. Search & Filter Bar Section
               Container(
-                color: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
+                color: PColor.surface(context),
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: Column(
                   children: [
-                    _buildFilterChip(
-                      context: context,
-                      label: 'ทั้งหมด',
-                      isSelected: state.currentFilter == null,
-                      onTap: () => context
-                          .read<TransactionBloc>()
-                          .add(const FilterTransactionsByTypeEvent(null)),
+                    // Search Field
+                    TextField(
+                      controller: _searchController,
+                      onChanged: (val) {
+                        context.read<TransactionBloc>().add(
+                            SetTransactionFilterEvent(search: val));
+                      },
+                      style: TextStyle(fontSize: 13, color: PColor.ink(context)),
+                      decoration: InputDecoration(
+                        hintText: 'ค้นหาชื่อรายการ, หมวดหมู่, หรือโน้ต...',
+                        prefixIcon: Icon(Icons.search_rounded,
+                            size: 18, color: PColor.inkSoft(context)),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear_rounded, size: 16),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  context.read<TransactionBloc>().add(
+                                      const SetTransactionFilterEvent(
+                                          search: ''));
+                                },
+                              )
+                            : null,
+                        filled: true,
+                        fillColor: PColor.surfaceSubtle(context),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: borderColor),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: borderColor),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                              color: PColor.primary(context), width: 1.5),
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 8),
-                    _buildFilterChip(
-                      context: context,
-                      label: 'รายจ่าย',
-                      isSelected:
-                          state.currentFilter == TransactionType.expense,
-                      onTap: () => context.read<TransactionBloc>().add(
-                          const FilterTransactionsByTypeEvent(
-                              TransactionType.expense)),
-                    ),
-                    const SizedBox(width: 8),
-                    _buildFilterChip(
-                      context: context,
-                      label: 'รายรับ',
-                      isSelected:
-                          state.currentFilter == TransactionType.income,
-                      onTap: () => context.read<TransactionBloc>().add(
-                          const FilterTransactionsByTypeEvent(
-                              TransactionType.income)),
+                    const SizedBox(height: 8),
+
+                    // Category Filter Horizontal Scroll
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _buildCategoryPill(
+                            label: 'ทั้งหมด',
+                            isSelected: state.categoryFilter == null,
+                            onTap: () => context.read<TransactionBloc>().add(
+                                const SetTransactionFilterEvent(
+                                    clearCategory: true)),
+                          ),
+                          ...CategoryItem.defaultCategories.map((cat) {
+                            return _buildCategoryPill(
+                              label: CategoryItem.getCategoryThaiName(cat.id),
+                              color: cat.color,
+                              isSelected: state.categoryFilter == cat.id,
+                              onTap: () => context.read<TransactionBloc>().add(
+                                  SetTransactionFilterEvent(
+                                      category: cat.id)),
+                            );
+                          }),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              const Divider(height: 1, color: Color(0xFFE2E8F0)),
+              const Divider(height: 1, thickness: 1),
 
-              // Transactions List
+              // 2. Secondary Filter & Bulk Actions Strip
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                color: PColor.surfaceSubtle(context),
+                child: Row(
+                  children: [
+                    // Cleared Toggle Pill
+                    _buildSmallFilterButton(
+                      context: context,
+                      label: state.clearedFilter == null
+                          ? 'สถานะ: ทั้งหมด'
+                          : state.clearedFilter == true
+                              ? 'สถานะ: เคลียร์แล้ว ✓'
+                              : 'สถานะ: ยังไม่เคลียร์ ⌛',
+                      onTap: () {
+                        if (state.clearedFilter == null) {
+                          context.read<TransactionBloc>().add(
+                              const SetTransactionFilterEvent(cleared: true));
+                        } else if (state.clearedFilter == true) {
+                          context.read<TransactionBloc>().add(
+                              const SetTransactionFilterEvent(cleared: false));
+                        } else {
+                          context.read<TransactionBloc>().add(
+                              const SetTransactionFilterEvent(
+                                  clearCleared: true));
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 8),
+
+                    // Sort Order Button
+                    _buildSmallFilterButton(
+                      context: context,
+                      icon: state.sortAscending
+                          ? Icons.arrow_upward_rounded
+                          : Icons.arrow_downward_rounded,
+                      label: state.sortField == TransactionSortField.date
+                          ? 'วันที่'
+                          : state.sortField == TransactionSortField.amount
+                              ? 'จำนวนเงิน'
+                              : 'ชื่อ',
+                      onTap: () {
+                        // Cycle sort fields
+                        if (state.sortField == TransactionSortField.date) {
+                          context.read<TransactionBloc>().add(
+                              const SetTransactionFilterEvent(
+                                  sortField: TransactionSortField.amount));
+                        } else if (state.sortField ==
+                            TransactionSortField.amount) {
+                          context.read<TransactionBloc>().add(
+                              const SetTransactionFilterEvent(
+                                  sortField: TransactionSortField.name));
+                        } else {
+                          context.read<TransactionBloc>().add(
+                              SetTransactionFilterEvent(
+                                  sortField: TransactionSortField.date,
+                                  sortAscending: !state.sortAscending));
+                        }
+                      },
+                    ),
+                    const Spacer(),
+
+                    // Bulk Clear Menu
+                    PopupMenuButton<String>(
+                      tooltip: 'การจัดการหลายรายการ',
+                      icon: Icon(Icons.more_horiz_rounded,
+                          size: 18, color: PColor.ink(context)),
+                      color: PColor.surface(context),
+                      onSelected: (val) {
+                        if (val == 'clear_all') {
+                          context
+                              .read<TransactionBloc>()
+                              .add(const BulkToggleTransactionClearedEvent(true));
+                        } else if (val == 'unclear_all') {
+                          context.read<TransactionBloc>().add(
+                              const BulkToggleTransactionClearedEvent(false));
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 'clear_all',
+                          child: Text('ทำเครื่องหมายเคลียร์ทั้งหมด'),
+                        ),
+                        const PopupMenuItem(
+                          value: 'unclear_all',
+                          child: Text('ยกเลิกการเคลียร์ทั้งหมด'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              // 3. Transactions Ledger List
               Expanded(
-                child: state.filteredTransactions.isEmpty
+                child: transactions.isEmpty
                     ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(
-                              Icons.receipt_long_outlined,
-                              size: 56,
-                              color: Color(0xFFCBD5E1),
-                            ),
-                            SizedBox(height: 12),
+                          children: [
+                            Icon(Icons.receipt_long_outlined,
+                                size: 56, color: PColor.line(context)),
+                            const SizedBox(height: 12),
                             Text(
-                              'ยังไม่มีรายการตามตัวกรองนี้',
-                              style: TextStyle(color: Color(0xFF94A3B8)),
+                              'ไม่พบรายการธุรกรรมตามเงื่อนไขที่เลือก',
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: PColor.inkSoft(context)),
                             ),
                           ],
                         ),
                       )
                     : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: state.filteredTransactions.length,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        itemCount: transactions.length,
                         itemBuilder: (context, index) {
-                          final tx = state.filteredTransactions[index];
-                          final isIncome = tx.type == TransactionType.income;
-
-                          return Dismissible(
-                            key: Key(tx.id),
-                            direction: DismissDirection.endToStart,
-                            background: Container(
-                              alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.only(right: 20),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFEF4444),
-                                borderRadius:
-                                    BorderRadius.circular(PRadius.medium),
-                              ),
-                              child: const Icon(
-                                Icons.delete_outline_rounded,
-                                color: Colors.white,
-                              ),
-                            ),
-                            onDismissed: (_) {
-                              context
-                                  .read<TransactionBloc>()
-                                  .add(DeleteTransactionEvent(tx.id));
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              padding: const EdgeInsets.all(14),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.circular(PRadius.medium),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.02),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: Color(tx.categoryColor)
-                                          .withOpacity(0.12),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      _getIconData(tx.categoryIcon),
-                                      color: Color(tx.categoryColor),
-                                      size: 22,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                tx.title,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Color(0xFF1E293B),
-                                                ),
-                                                maxLines: 1,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 6,
-                                                vertical: 2,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFFE0F2FE),
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
-                                              ),
-                                              child: Text(
-                                                '+${tx.expGained} EXP',
-                                                style: const TextStyle(
-                                                  color: Color(0xFF0284C7),
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          '${tx.categoryName} • ${tx.walletName}',
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xFF64748B),
-                                          ),
-                                        ),
-                                        if (tx.note != null &&
-                                            tx.note!.isNotEmpty) ...[
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            '📝 ${tx.note}',
-                                            style: const TextStyle(
-                                              fontSize: 11,
-                                              color: Color(0xFF94A3B8),
-                                              fontStyle: FontStyle.italic,
-                                            ),
-                                          ),
-                                        ],
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        '${isIncome ? '+' : '-'}฿${currencyFormat.format(tx.amount)}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: isIncome
-                                              ? const Color(0xFF16A34A)
-                                              : const Color(0xFFDC2626),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        dateFormat.format(tx.date),
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          color: Color(0xFF94A3B8),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
+                          final tx = transactions[index];
+                          return _buildTransactionCard(
+                              context, tx, currencyFormat);
                         },
                       ),
               ),
@@ -309,28 +281,235 @@ class _TransactionPageView extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChip({
-    required BuildContext context,
+  Widget _buildCategoryPill({
     required String label,
+    Color? color,
     required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 6.0),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? PColor.primary(context)
+                : PColor.surfaceSubtle(context),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isSelected
+                  ? PColor.primary(context)
+                  : PColor.line(context),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (color != null) ...[
+                Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 5),
+              ],
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  color: isSelected
+                      ? Colors.white
+                      : PColor.ink(context),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSmallFilterButton({
+    required BuildContext context,
+    IconData? icon,
+    required String label,
     required VoidCallback onTap,
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color:
-              isSelected ? const Color(0xFF3B82F6) : const Color(0xFFF1F5F9),
-          borderRadius: BorderRadius.circular(20),
+          color: PColor.surface(context),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: PColor.line(context)),
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : const Color(0xFF64748B),
-            fontSize: 12,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, size: 14, color: PColor.inkSoft(context)),
+              const SizedBox(width: 4),
+            ],
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: PColor.ink(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTransactionCard(
+    BuildContext context,
+    TransactionItem tx,
+    NumberFormat currencyFormat,
+  ) {
+    final catItem = tx.categoryItem;
+
+    return Dismissible(
+      key: Key(tx.id),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        decoration: BoxDecoration(
+          color: PColor.rose(context),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
+      ),
+      onDismissed: (_) {
+        context
+            .read<TransactionBloc>()
+            .add(DeleteTransactionItemEvent(tx.id));
+        context.read<DashboardBloc>().add(const LoadDashboardData());
+        context
+            .read<GamificationBloc>()
+            .add(const LoadGamificationDataEvent());
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: PColor.surface(context),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: PColor.line(context)),
+        ),
+        child: ListTile(
+          onTap: () => QuickAddSheet.show(context, initialTransaction: tx),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: catItem.color.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(
+              tx.isIncome
+                  ? Icons.arrow_upward_rounded
+                  : Icons.arrow_downward_rounded,
+              color: catItem.color,
+              size: 18,
+            ),
+          ),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  tx.name,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: PColor.ink(context),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  context
+                      .read<TransactionBloc>()
+                      .add(ToggleTransactionClearedEvent(tx.id));
+                  context
+                      .read<DashboardBloc>()
+                      .add(const LoadDashboardData());
+                },
+                borderRadius: BorderRadius.circular(6),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: tx.cleared
+                        ? PColor.jadeSoft(context)
+                        : PColor.amberSoft(context),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    tx.cleared ? 'Cleared ✓' : 'Pending',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: tx.cleared
+                          ? PColor.jadeInk(context)
+                          : PColor.amberInk(context),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 2),
+              Text(
+                '${CategoryItem.getCategoryThaiName(tx.category)} • ${tx.date}',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: PColor.inkSoft(context),
+                ),
+              ),
+              if (tx.notes != null && tx.notes!.isNotEmpty) ...[
+                const SizedBox(height: 2),
+                Text(
+                  '📝 ${tx.notes}',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: PColor.inkFaint(context),
+                    fontStyle: FontStyle.italic,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ],
+          ),
+          trailing: Text(
+            '${tx.isIncome ? '+' : '-'}฿${currencyFormat.format(tx.absAmount)}',
+            style: TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              color: tx.isIncome
+                  ? PColor.jadeInk(context)
+                  : PColor.roseInk(context),
+            ),
           ),
         ),
       ),

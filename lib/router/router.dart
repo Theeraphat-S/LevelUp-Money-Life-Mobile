@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:mobile_app_standard/feature/analytics/pages/analytics_page.dart';
+import 'package:mobile_app_standard/feature/budget/pages/budget_page.dart';
 import 'package:mobile_app_standard/feature/dashboard/pages/dashboard_page.dart';
 import 'package:mobile_app_standard/feature/gamification/pages/quest_page.dart';
 import 'package:mobile_app_standard/feature/home/pages/home_page.dart';
@@ -18,11 +20,19 @@ class AppRouter extends RootStackRouter {
         ),
         CustomRoute(
           page: TransactionRoute.page,
-          transitionsBuilder: TransitionsBuilders.slideRightWithFade,
+          transitionsBuilder: TransitionsBuilders.noTransition,
+        ),
+        CustomRoute(
+          page: BudgetRoute.page,
+          transitionsBuilder: TransitionsBuilders.noTransition,
+        ),
+        CustomRoute(
+          page: AnalyticsRoute.page,
+          transitionsBuilder: TransitionsBuilders.noTransition,
         ),
         CustomRoute(
           page: QuestRoute.page,
-          transitionsBuilder: TransitionsBuilders.slideRightWithFade,
+          transitionsBuilder: TransitionsBuilders.noTransition,
         ),
         CustomRoute(
           page: HomeRoute.page,

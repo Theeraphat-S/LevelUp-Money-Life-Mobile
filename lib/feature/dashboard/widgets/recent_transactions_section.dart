@@ -111,18 +111,19 @@ class RecentTransactionsSection extends StatelessWidget {
                 final tx = transactions[index];
                 final isIncome = tx.type == TransactionType.income;
 
+                final cat = tx.categoryItem;
                 return ListTile(
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   leading: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Color(tx.categoryColor).withOpacity(0.12),
+                      color: cat.color.withOpacity(0.12),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
-                      _getIconData(tx.categoryIcon),
-                      color: Color(tx.categoryColor),
+                      _getIconData(cat.iconName),
+                      color: cat.color,
                       size: 22,
                     ),
                   ),
@@ -130,7 +131,7 @@ class RecentTransactionsSection extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          tx.title,
+                          tx.name,
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -160,7 +161,7 @@ class RecentTransactionsSection extends StatelessWidget {
                     ],
                   ),
                   subtitle: Text(
-                    '${tx.categoryName} • ${tx.walletName}',
+                    '${tx.category} • ${tx.date}',
                     style: const TextStyle(
                       fontSize: 12,
                       color: Color(0xFF64748B),
@@ -171,7 +172,7 @@ class RecentTransactionsSection extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        '${isIncome ? '+' : '-'}฿${currencyFormat.format(tx.amount)}',
+                        '${isIncome ? '+' : '-'}฿${currencyFormat.format(tx.absAmount)}',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -182,7 +183,7 @@ class RecentTransactionsSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        dateFormat.format(tx.date),
+                        dateFormat.format(tx.parsedDate),
                         style: const TextStyle(
                           fontSize: 11,
                           color: Color(0xFF94A3B8),

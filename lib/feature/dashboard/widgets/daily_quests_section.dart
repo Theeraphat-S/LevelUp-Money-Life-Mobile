@@ -186,7 +186,7 @@ class DailyQuestsSection extends StatelessWidget {
             )
           else
             Text(
-              '${quest.currentProgress}/${quest.targetProgress}',
+              quest.done ? '1/1' : '0/1',
               style: const TextStyle(
                 color: Color(0xFF64748B),
                 fontSize: 12,

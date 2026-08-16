@@ -95,7 +95,7 @@ class RpgHudCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      user.title,
+                      user.rankTitle,
                       style: TextStyle(
                         color: Colors.blue.shade200,
                         fontSize: 12,
@@ -201,24 +201,20 @@ class RpgHudCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // HP / Financial Health Bar
+          // Progression Info
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: const [
-                  Text(
-                    '❤️ วินัยการเงิน (HP)',
-                    style: TextStyle(
-                      color: Color(0xFF94A3B8),
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+              const Text(
+                '🏅 ฉายาทางการเงิน',
+                style: TextStyle(
+                  color: Color(0xFF94A3B8),
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
-                '${user.healthPoint}/100 HP',
+                user.rankTitle,
                 style: const TextStyle(
                   color: Color(0xFF4ADE80),
                   fontSize: 11,
@@ -226,16 +222,6 @@ class RpgHudCard extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 6),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: LinearProgressIndicator(
-              value: user.hpProgress,
-              minHeight: 6,
-              backgroundColor: const Color(0xFF334155),
-              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF22C55E)),
-            ),
           ),
         ],
       ),
