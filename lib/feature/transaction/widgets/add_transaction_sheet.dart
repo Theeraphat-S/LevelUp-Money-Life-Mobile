@@ -51,7 +51,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   final _noteController = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
+  final DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -358,7 +358,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                           horizontal: 6, vertical: 8),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? Color(cat.colorValue).withOpacity(0.15)
+                            ? Color(cat.colorValue).withValues(alpha: 0.15)
                             : const Color(0xFFF8FAFC),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(

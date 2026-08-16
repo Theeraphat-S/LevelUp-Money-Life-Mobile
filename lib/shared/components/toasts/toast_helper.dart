@@ -13,18 +13,18 @@ void showErrorToast({
   toastification.show(
       context: context,
       alignment: Alignment.topCenter,
-      title: Text(title ?? "", style: TextStyle(fontSize: 18)),
+      title: Text(title ?? '', style: const TextStyle(fontSize: 18)),
       description: Text(description),
       type: ToastificationType.error,
       style: ToastificationStyle.flat,
       autoCloseDuration: autoCloseDuration,
       icon: Icon(Icons.error_outline, color: PColor.errorColor),
-      closeButtonShowType: CloseButtonShowType.always,
+      closeButton: const ToastCloseButton(showType: CloseButtonShowType.always),
       closeOnClick: true,
       backgroundColor: Colors.white,
       foregroundColor: Colors.black,
-      padding: EdgeInsets.all(PSpacing.lg),
-      margin: EdgeInsets.all(PSpacing.xl),
+      padding: const EdgeInsets.all(PSpacing.lg),
+      margin: const EdgeInsets.all(PSpacing.xl),
       borderRadius: BorderRadius.circular(PRadius.md),
       progressBarTheme: ProgressIndicatorThemeData(
         color: PColor.errorColor,
@@ -41,20 +41,21 @@ void showSuccessToast({
   toastification.show(
       context: context,
       alignment: Alignment.topCenter,
-      title: Text(title!, style: TextStyle(fontSize: 18)),
+      title: Text(title ?? '', style: const TextStyle(fontSize: 18)),
       description: Text(description),
       type: ToastificationType.success,
       style: ToastificationStyle.flat,
       autoCloseDuration: autoCloseDuration,
       icon: Icon(Icons.check_circle_outline, color: PColor.primaryColor),
-      closeButtonShowType: CloseButtonShowType.always,
+      closeButton: const ToastCloseButton(showType: CloseButtonShowType.always),
       closeOnClick: true,
       backgroundColor: Colors.white,
       foregroundColor: Colors.black,
-      padding: EdgeInsets.all(PSpacing.lg),
-      margin: EdgeInsets.all(PSpacing.xl),
+      padding: const EdgeInsets.all(PSpacing.lg),
+      margin: const EdgeInsets.all(PSpacing.xl),
       borderRadius: BorderRadius.circular(PRadius.md),
       progressBarTheme: ProgressIndicatorThemeData(
         color: PColor.primaryColor,
       ));
 }
+

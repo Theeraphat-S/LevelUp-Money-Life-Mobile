@@ -54,7 +54,7 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
       appBar: HeaderCommandDeck(
         onOpenQuests: () => context.router.push(const QuestRoute()),
       ),
-      bottomNavigationBar: BottomBarCustom(
+      bottomNavigationBar: const BottomBarCustom(
         currentRouteName: TransactionRoute.name,
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -223,10 +223,10 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
                         if (val == 'clear_all') {
                           context
                               .read<TransactionBloc>()
-                              .add(const BulkToggleTransactionClearedEvent(true));
+                              .add(const BulkToggleTransactionClearedEvent(cleared: true));
                         } else if (val == 'unclear_all') {
                           context.read<TransactionBloc>().add(
-                              const BulkToggleTransactionClearedEvent(false));
+                              const BulkToggleTransactionClearedEvent(cleared: false));
                         }
                       },
                       itemBuilder: (context) => [
@@ -416,7 +416,7 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
           leading: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: catItem.color.withOpacity(0.12),
+              color: catItem.color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(

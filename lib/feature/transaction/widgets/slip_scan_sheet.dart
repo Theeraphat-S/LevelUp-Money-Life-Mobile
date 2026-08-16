@@ -117,16 +117,16 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
     Navigator.of(context).pop();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle_rounded, color: Colors.white, size: 18),
-            const SizedBox(width: 8),
+            Icon(Icons.check_circle_rounded, color: Colors.white, size: 18),
+            SizedBox(width: 8),
             Text('สแกนสลิปสำเร็จ! บันทึกรายการ +40 XP'),
           ],
         ),
         backgroundColor: PColor.jadeLight,
-        duration: const Duration(seconds: 3),
+        duration: Duration(seconds: 3),
       ),
     );
   }
@@ -215,7 +215,7 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                   color: PColor.surfaceSubtle(context),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: PColor.primary(context).withOpacity(0.35),
+                    color: PColor.primary(context).withValues(alpha: 0.35),
                     style: BorderStyle.solid,
                     width: 1.5,
                   ),
@@ -357,7 +357,7 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                     color: PColor.jadeSoft(context),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: PColor.jade(context).withOpacity(0.3),
+                      color: PColor.jade(context).withValues(alpha: 0.3),
                     ),
                   ),
                   child: Column(
@@ -423,7 +423,7 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                               horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
                             color: (isDark ? PColor.darkBase : Colors.white)
-                                .withOpacity(0.2),
+                                .withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(999),
                           ),
                           child: Text(

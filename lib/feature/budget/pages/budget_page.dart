@@ -59,8 +59,8 @@ class _BudgetPageState extends State<BudgetPage> {
     context.read<BudgetBloc>().add(UpdateAllocationsEvent(updatedAllocs));
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('บันทึกแผนการจัดสรรงบประมาณ 50/30/20 สำเร็จ!'),
+      const SnackBar(
+        content: Text('บันทึกแผนการจัดสรรงบประมาณ 50/30/20 สำเร็จ!'),
         backgroundColor: PColor.jadeLight,
       ),
     );
@@ -78,7 +78,7 @@ class _BudgetPageState extends State<BudgetPage> {
       appBar: HeaderCommandDeck(
         onOpenQuests: () => context.router.push(const QuestRoute()),
       ),
-      bottomNavigationBar: BottomBarCustom(
+      bottomNavigationBar: const BottomBarCustom(
         currentRouteName: BudgetRoute.name,
       ),
       body: BlocConsumer<BudgetBloc, BudgetState>(
@@ -414,7 +414,7 @@ class _BudgetPageState extends State<BudgetPage> {
             activeTrackColor: color,
             inactiveTrackColor: PColor.line(context),
             thumbColor: color,
-            overlayColor: color.withOpacity(0.15),
+            overlayColor: color.withValues(alpha: 0.15),
             trackHeight: 6,
           ),
           child: Slider(

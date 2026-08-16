@@ -26,9 +26,9 @@ Future<void> initLocator() async {
   locator.registerSingleton<AppDatabase>(db);
 
   // 2. Register Http / API Clients (for external or websocket utilities)
-  locator.registerLazySingleton<ApiClient>(() => ApiClient());
-  locator.registerLazySingleton<IpClient>(() => IpClient());
-  locator.registerLazySingleton<WebSocketClient>(() => WebSocketClient());
+  locator.registerLazySingleton<ApiClient>(ApiClient.new);
+  locator.registerLazySingleton<IpClient>(IpClient.new);
+  locator.registerLazySingleton<WebSocketClient>(WebSocketClient.new);
 
   // 3. Register Repositories (Backed by Drift SQLite)
   locator.registerLazySingleton<UserRepositoryInterface>(
@@ -70,7 +70,7 @@ Future<void> initLocator() async {
         userRepository: locator<UserRepositoryInterface>(),
       ));
 
-  locator.registerLazySingleton<TodoBloc>(() => TodoBloc());
-  locator.registerLazySingleton<WebsocketBloc>(() => WebsocketBloc());
-  locator.registerLazySingleton<LanguageBloc>(() => LanguageBloc());
+  locator.registerLazySingleton<TodoBloc>(TodoBloc.new);
+  locator.registerLazySingleton<WebsocketBloc>(WebsocketBloc.new);
+  locator.registerLazySingleton<LanguageBloc>(LanguageBloc.new);
 }

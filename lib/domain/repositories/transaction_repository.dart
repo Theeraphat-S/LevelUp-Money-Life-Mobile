@@ -10,7 +10,7 @@ abstract class TransactionRepositoryInterface {
   Future<TransactionItem> updateTransaction(TransactionItem tx);
   Future<void> deleteTransaction(String id);
   Future<void> toggleCleared(String id);
-  Future<void> bulkToggleCleared(bool cleared, {String? monthFilter});
+  Future<void> bulkToggleCleared({required bool cleared, String? monthFilter});
   Future<Map<String, double>> getFinancialSummary({String? monthFilter});
 }
 
@@ -100,7 +100,7 @@ class TransactionRepository implements TransactionRepositoryInterface {
   }
 
   @override
-  Future<void> bulkToggleCleared(bool cleared, {String? monthFilter}) async {
+  Future<void> bulkToggleCleared({required bool cleared, String? monthFilter}) async {
     final updateQuery = db.update(db.transactions);
     if (monthFilter != null && monthFilter.isNotEmpty) {
       updateQuery.where((t) => t.date.like('$monthFilter%'));

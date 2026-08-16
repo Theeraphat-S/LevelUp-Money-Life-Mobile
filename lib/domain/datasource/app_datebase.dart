@@ -6,7 +6,6 @@ import 'package:mobile_app_standard/domain/datasource/hive_config.dart';
 import 'package:mobile_app_standard/domain/datasource/tables.dart';
 import 'package:mobile_app_standard/domain/models/budget/allocation_item.dart';
 import 'package:mobile_app_standard/domain/models/gamification/quest.dart';
-import 'package:mobile_app_standard/domain/models/gamification/user_profile.dart';
 import 'package:mobile_app_standard/domain/models/todo_table.dart';
 import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
 import 'package:mobile_app_standard/domain/services/gamification_engine.dart';

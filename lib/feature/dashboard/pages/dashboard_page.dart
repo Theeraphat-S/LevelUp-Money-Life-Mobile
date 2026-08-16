@@ -32,7 +32,7 @@ class DashboardPage extends StatelessWidget {
       appBar: HeaderCommandDeck(
         onOpenQuests: () => context.router.push(const QuestRoute()),
       ),
-      bottomNavigationBar: BottomBarCustom(
+      bottomNavigationBar: const BottomBarCustom(
         currentRouteName: DashboardRoute.name,
       ),
       body: BlocConsumer<DashboardBloc, DashboardState>(
@@ -511,7 +511,7 @@ class DashboardPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: toneColor.withOpacity(0.12),
+                  color: toneColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(icon, color: toneColor, size: 16),

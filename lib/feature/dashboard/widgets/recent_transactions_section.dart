@@ -92,7 +92,7 @@ class RecentTransactionsSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(PRadius.medium),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.02),
+                  color: Colors.black.withValues(alpha: 0.02),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -118,7 +118,7 @@ class RecentTransactionsSection extends StatelessWidget {
                   leading: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: cat.color.withOpacity(0.12),
+                      color: cat.color.withValues(alpha: 0.12),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(

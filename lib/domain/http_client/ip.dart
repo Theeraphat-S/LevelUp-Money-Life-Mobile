@@ -16,7 +16,11 @@ class IpClient {
       final response = await _dio.get(apiUrl);
 
       if (response.statusCode == 200) {
-        return response.data['ip'];
+        final data = response.data;
+        if (data is Map) {
+          return data['ip']?.toString() ?? '';
+        }
+        return data?.toString() ?? '';
       } else {
         throw Exception('Failed to load IP: Status ${response.statusCode}');
       }

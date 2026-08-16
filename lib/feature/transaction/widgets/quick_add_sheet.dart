@@ -525,7 +525,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.check_rounded, size: 18),
+                      const Icon(Icons.check_rounded, size: 18),
                       const SizedBox(width: 6),
                       Text(
                         isEditing ? 'บันทึกการแก้ไข' : 'บันทึกรายการ',
@@ -535,7 +535,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: (isDark ? PColor.darkBase : Colors.white).withOpacity(0.2),
+                          color: (isDark ? PColor.darkBase : Colors.white).withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Text(

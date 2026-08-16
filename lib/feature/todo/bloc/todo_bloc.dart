@@ -24,14 +24,13 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     try {
       final todos = await todoRepo.getAllTodoItems();
       if (kDebugMode) {
-        print('Loaded todos: $todos');
+        debugPrint('Loaded todos: $todos');
       }
-      final todoModels =
-          todos.map((todo) => TodoModel.fromDrift(todo)).toList();
+      final todoModels = todos.map(TodoModel.fromDrift).toList();
       emit(TodoLoaded(todoModels));
     } catch (e) {
       if (kDebugMode) {
-        print('Failed to load todos: $e');
+        debugPrint('Failed to load todos: $e');
       }
       emit(TodoError('Failed to load todos.'));
     }

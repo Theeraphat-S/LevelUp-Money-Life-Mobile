@@ -25,7 +25,7 @@ class AnalyticsPage extends StatelessWidget {
       appBar: HeaderCommandDeck(
         onOpenQuests: () => context.router.push(const QuestRoute()),
       ),
-      bottomNavigationBar: BottomBarCustom(
+      bottomNavigationBar: const BottomBarCustom(
         currentRouteName: AnalyticsRoute.name,
       ),
       body: BlocBuilder<TransactionBloc, TransactionState>(

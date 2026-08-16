@@ -83,7 +83,7 @@ class TodoPage extends HookWidget {
                       Container(
                         padding: const EdgeInsets.all(PSpacing.xs),
                         decoration: BoxDecoration(
-                          color: PColor.primaryColor.withOpacity(0.1),
+                          color: PColor.primaryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
@@ -94,7 +94,7 @@ class TodoPage extends HookWidget {
                       const SizedBox(width: PSpacing.md),
                       Text(
                         msg.title_todo,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: PText.text2xl,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
@@ -128,12 +128,12 @@ class TodoPage extends HookWidget {
                         Icon(
                           Icons.assignment_outlined,
                           size: 80,
-                          color: PColor.textNeutralColor.withOpacity(0.3),
+                          color: PColor.textNeutralColor.withValues(alpha: 0.3),
                         ),
                         const SizedBox(height: PSpacing.lg),
                         Text(
                           msg.text_no_todo,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: PText.textLg,
                             color: PColor.textNeutralColor,
                             fontWeight: FontWeight.w600,
@@ -144,7 +144,7 @@ class TodoPage extends HookWidget {
                           'Tap + to create a new task',
                           style: TextStyle(
                             fontSize: PText.textSm,
-                            color: PColor.textNeutralColor.withOpacity(0.7),
+                            color: PColor.textNeutralColor.withValues(alpha: 0.7),
                           ),
                         ),
                       ],
@@ -253,7 +253,7 @@ class TodoPage extends HookWidget {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
+                              color: Colors.black.withValues(alpha: 0.04),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -296,7 +296,7 @@ class TodoPage extends HookWidget {
                                         const SizedBox(height: PSpacing.xs),
                                         Text(
                                           item.content,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: PText.textSm,
                                             color: PColor.textNeutralColor,
                                             height: 1.4,

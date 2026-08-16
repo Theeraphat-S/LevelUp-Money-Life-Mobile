@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_standard/domain/http_client/websocket.dart';
 import 'package:mobile_app_standard/locator.dart';
@@ -14,7 +15,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<InitialEvent>(_onInitial);
     on<SendEvent>(_onSend);
 
-    add(InitialEvent());
+    add(const InitialEvent());
   }
 
   Future<void> _onInitial(
@@ -23,7 +24,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     wsClient.messages.listen((message) {
       _messages.add(message);
       emit(WebsocketLoadMessage(_messages));
-      print('Received: $message');
+      debugPrint('Received: $message');
     });
   }
 
