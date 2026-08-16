@@ -1,6 +1,9 @@
+import 'package:drift/drift.dart';
+import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
+import 'package:mobile_app_standard/domain/models/budget/allocation_item.dart';
 import 'package:mobile_app_standard/domain/models/gamification/quest.dart';
+import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
 import 'package:mobile_app_standard/domain/services/gamification_engine.dart';
-import 'package:mobile_app_standard/domain/services/storage_service.dart';
 
 abstract class GamificationRepositoryInterface {
   Future<List<QuestItem>> getDailyQuests();
@@ -10,64 +13,158 @@ abstract class GamificationRepositoryInterface {
 }
 
 class GamificationRepository implements GamificationRepositoryInterface {
-  final StorageService storageService;
+  final AppDatabase db;
 
-  GamificationRepository(this.storageService);
+  GamificationRepository(this.db);
 
   @override
   Future<List<QuestItem>> getDailyQuests() async {
-    return storageService.getQuests();
+    final rows = await db.select(db.quests).get();
+    if (rows.isEmpty) {
+      return QuestItem.defaultQuests;
+    }
+    return rows
+        .map((r) => QuestItem(
+              id: r.id,
+              title: r.title,
+              date: r.date,
+              xp: r.xp,
+              done: r.done,
+              category: r.category,
+            ))
+        .toList();
   }
 
   @override
   Future<QuestItem> toggleQuest(String questId) async {
-    final quests = storageService.getQuests();
-    final idx = quests.indexWhere((q) => q.id == questId);
-    if (idx != -1) {
-      final old = quests[idx];
-      final newDone = !old.done;
-      final updated = old.copyWith(done: newDone);
-      quests[idx] = updated;
-      await storageService.saveQuests(quests);
+    final questRow = await (db.select(db.quests)
+          ..where((q) => q.id.equals(questId)))
+        .getSingleOrNull();
 
-      // Add/remove XP
-      final currentXp = storageService.getTotalXp();
-      final adjustedXp =
-          newDone ? currentXp + old.xp : (currentXp - old.xp).clamp(0, 9999999);
-      await storageService.saveTotalXp(adjustedXp);
-
-      return updated;
+    if (questRow == null) {
+      throw Exception('Quest not found: $questId');
     }
-    throw Exception('Quest not found: $questId');
+
+    final newDone = !questRow.done;
+
+    await db.transaction(() async {
+      await (db.update(db.quests)..where((q) => q.id.equals(questId))).write(
+        QuestsCompanion(done: Value(newDone)),
+      );
+
+      final user = await (db.select(db.userProfiles)
+            ..where((u) => u.id.equals('user_main')))
+          .getSingleOrNull();
+
+      final currentXp = user?.totalXp ?? 180;
+      final adjustedXp = newDone
+          ? currentXp + questRow.xp
+          : (currentXp - questRow.xp).clamp(0, 9999999);
+
+      await (db.update(db.userProfiles)..where((u) => u.id.equals('user_main')))
+          .write(UserProfilesCompanion(totalXp: Value(adjustedXp)));
+    });
+
+    return QuestItem(
+      id: questRow.id,
+      title: questRow.title,
+      date: questRow.date,
+      xp: questRow.xp,
+      done: newDone,
+      category: questRow.category,
+    );
   }
 
   @override
   Future<QuestItem> claimQuestReward(String questId) async {
-    final quests = storageService.getQuests();
-    final idx = quests.indexWhere((q) => q.id == questId);
-    if (idx != -1) {
-      final old = quests[idx];
-      if (!old.done) {
-        final updated = old.copyWith(done: true);
-        quests[idx] = updated;
-        await storageService.saveQuests(quests);
+    final questRow = await (db.select(db.quests)
+          ..where((q) => q.id.equals(questId)))
+        .getSingleOrNull();
 
-        final currentXp = storageService.getTotalXp();
-        await storageService.saveTotalXp(currentXp + old.xp);
-        return updated;
-      }
-      return old;
+    if (questRow == null) {
+      throw Exception('Quest not found: $questId');
     }
-    throw Exception('Quest not found: $questId');
+
+    if (!questRow.done) {
+      await db.transaction(() async {
+        await (db.update(db.quests)..where((q) => q.id.equals(questId))).write(
+          const QuestsCompanion(done: Value(true)),
+        );
+
+        final user = await (db.select(db.userProfiles)
+              ..where((u) => u.id.equals('user_main')))
+            .getSingleOrNull();
+
+        final currentXp = user?.totalXp ?? 180;
+        await (db.update(db.userProfiles)..where((u) => u.id.equals('user_main')))
+            .write(UserProfilesCompanion(totalXp: Value(currentXp + questRow.xp)));
+      });
+
+      return QuestItem(
+        id: questRow.id,
+        title: questRow.title,
+        date: questRow.date,
+        xp: questRow.xp,
+        done: true,
+        category: questRow.category,
+      );
+    }
+
+    return QuestItem(
+      id: questRow.id,
+      title: questRow.title,
+      date: questRow.date,
+      xp: questRow.xp,
+      done: questRow.done,
+      category: questRow.category,
+    );
   }
 
   @override
   Future<AchievementEvaluationResult> evaluateAchievements() async {
-    final transactions = storageService.getTransactions();
-    final quests = storageService.getQuests();
-    final allocations = storageService.getAllocations();
-    final streakDays = storageService.getStreakDays();
-    final unlockedIds = storageService.getUnlockedAchievementIds();
+    final txRows = await db.select(db.transactions).get();
+    final questRows = await db.select(db.quests).get();
+    final allocRows = await db.select(db.allocations).get();
+    final user = await (db.select(db.userProfiles)
+          ..where((u) => u.id.equals('user_main')))
+        .getSingleOrNull();
+    final unlockedRows = await db.select(db.unlockedAchievements).get();
+
+    final transactions = txRows
+        .map((r) => TransactionItem(
+              id: r.id,
+              name: r.name,
+              amount: r.amount,
+              date: r.date,
+              category: r.category,
+              cleared: r.cleared,
+              notes: r.notes,
+              expGained: r.expGained,
+            ))
+        .toList();
+
+    final quests = questRows
+        .map((r) => QuestItem(
+              id: r.id,
+              title: r.title,
+              date: r.date,
+              xp: r.xp,
+              done: r.done,
+              category: r.category,
+            ))
+        .toList();
+
+    final allocations = allocRows
+        .map((r) => AllocationItem(
+              id: r.id,
+              label: r.label,
+              percent: r.percent,
+              color: r.color,
+            ))
+        .toList();
+
+    final streakDays = user?.streakDays ?? 1;
+    final unlockedIds = unlockedRows.map((r) => r.id).toList();
 
     final result = GamificationEngine.evaluateAchievements(
       transactions: transactions,
@@ -78,18 +175,26 @@ class GamificationRepository implements GamificationRepositoryInterface {
     );
 
     if (result.newlyUnlocked.isNotEmpty) {
-      final updatedIds = List<String>.from(unlockedIds);
-      for (final ach in result.newlyUnlocked) {
-        if (!updatedIds.contains(ach.id)) {
-          updatedIds.add(ach.id);
+      await db.transaction(() async {
+        final nowStr = user?.lastActiveDate ?? '';
+        for (final ach in result.newlyUnlocked) {
+          await db.into(db.unlockedAchievements).insert(
+                UnlockedAchievementsCompanion.insert(
+                  id: ach.id,
+                  unlockedAt: nowStr,
+                ),
+                mode: InsertMode.insertOrReplace,
+              );
         }
-      }
-      await storageService.saveUnlockedAchievementIds(updatedIds);
 
-      if (result.bonusXp > 0) {
-        final currentXp = storageService.getTotalXp();
-        await storageService.saveTotalXp(currentXp + result.bonusXp);
-      }
+        if (result.bonusXp > 0) {
+          final currentXp = user?.totalXp ?? 180;
+          await (db.update(db.userProfiles)
+                ..where((u) => u.id.equals('user_main')))
+              .write(UserProfilesCompanion(
+                  totalXp: Value(currentXp + result.bonusXp)));
+        }
+      });
     }
 
     return result;

@@ -29,7 +29,7 @@ class BentoCard extends StatelessWidget {
     final highlightColor =
         isDark ? const Color(0x1AFFFFFF) : const Color(0x66FFFFFF);
 
-    Widget content = Container(
+    final Widget content = Container(
       decoration: BoxDecoration(
         color: surfaceBg,
         borderRadius: BorderRadius.circular(borderRadius),

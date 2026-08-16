@@ -34,7 +34,7 @@ class _QuestPageView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: PColor.base(context),
         appBar: const HeaderCommandDeck(),
-        bottomNavigationBar: BottomBarCustom(
+        bottomNavigationBar: const BottomBarCustom(
           currentRouteName: QuestRoute.name,
         ),
         body: Column(
@@ -243,7 +243,7 @@ class _QuestPageView extends StatelessWidget {
                                         border: Border.all(
                                           color: isUnlocked
                                               ? PColor.jade(context)
-                                                  .withOpacity(0.4)
+                                                  .withValues(alpha: 0.4)
                                               : PColor.line(context),
                                         ),
                                       ),

@@ -24,7 +24,7 @@ class AppBarCustom extends StatelessWidget
 
     if (Platform.isIOS) {
       return CupertinoNavigationBar(
-        backgroundColor: Colors.white.withOpacity(0.8),
+        backgroundColor: Colors.white.withValues(alpha: 0.8),
         automaticallyImplyLeading: automaticallyImplyLeading,
         border: const Border(
           bottom: BorderSide(color: Color(0x33000000), width: 0.0),
@@ -53,7 +53,7 @@ class AppBarCustom extends StatelessWidget
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),

@@ -1,7 +1,8 @@
+import 'package:drift/drift.dart';
+import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
 import 'package:mobile_app_standard/domain/models/budget/allocation_item.dart';
 import 'package:mobile_app_standard/domain/models/transaction/category_item.dart';
 import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
-import 'package:mobile_app_standard/domain/services/storage_service.dart';
 
 class BucketSpendingSummary {
   final String id;
@@ -38,28 +39,61 @@ abstract class BudgetRepositoryInterface {
 }
 
 class BudgetRepository implements BudgetRepositoryInterface {
-  final StorageService storageService;
+  final AppDatabase db;
 
-  BudgetRepository(this.storageService);
+  BudgetRepository(this.db);
 
   @override
   Future<List<AllocationItem>> getAllocations() async {
-    return storageService.getAllocations();
+    final rows = await db.select(db.allocations).get();
+    if (rows.isEmpty) {
+      return AllocationItem.defaultAllocations;
+    }
+    return rows
+        .map((r) => AllocationItem(
+              id: r.id,
+              label: r.label,
+              percent: r.percent,
+              color: r.color,
+            ))
+        .toList();
   }
 
   @override
   Future<void> saveAllocations(List<AllocationItem> allocations) async {
-    await storageService.saveAllocations(allocations);
+    await db.transaction(() async {
+      for (final a in allocations) {
+        await db.into(db.allocations).insert(
+              AllocationsCompanion.insert(
+                id: a.id,
+                label: a.label,
+                percent: a.percent,
+                color: a.color,
+              ),
+              mode: InsertMode.insertOrReplace,
+            );
+      }
+    });
   }
 
   @override
   Future<double> getMonthlyIncome() async {
-    return storageService.getMonthlyIncome();
+    final row = await (db.select(db.appSettings)
+          ..where((s) => s.key.equals('monthlyIncome')))
+        .getSingleOrNull();
+    if (row == null) return 48000.0;
+    return double.tryParse(row.value) ?? 48000.0;
   }
 
   @override
   Future<void> saveMonthlyIncome(double income) async {
-    await storageService.saveMonthlyIncome(income);
+    await db.into(db.appSettings).insert(
+          AppSettingsCompanion.insert(
+            key: 'monthlyIncome',
+            value: income.toString(),
+          ),
+          mode: InsertMode.insertOrReplace,
+        );
   }
 
   @override

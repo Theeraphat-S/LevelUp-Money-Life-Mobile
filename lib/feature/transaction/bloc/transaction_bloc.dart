@@ -131,8 +131,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     Emitter<TransactionState> emit,
   ) async {
     try {
-      await transactionRepository.bulkToggleCleared(event.cleared,
-          monthFilter: state.monthFilter);
+      await transactionRepository.bulkToggleCleared(
+          cleared: event.cleared, monthFilter: state.monthFilter);
       await gamificationRepository.evaluateAchievements();
       add(LoadTransactionsEvent(monthFilter: state.monthFilter));
     } catch (e) {

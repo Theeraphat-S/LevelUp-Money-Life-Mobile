@@ -18,7 +18,7 @@ class ChangeLanguageEvent extends LanguageEvent {
 
 class ToggleDropdownEvent extends LanguageEvent {
   final bool isOpen;
-  const ToggleDropdownEvent(this.isOpen);
+  const ToggleDropdownEvent({required this.isOpen});
 
   @override
   List<Object> get props => [isOpen];

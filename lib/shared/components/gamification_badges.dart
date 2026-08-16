@@ -20,11 +20,11 @@ class LevelRankBadge extends StatelessWidget {
     final jadeInk = PColor.jadeInk(context);
 
     final badge = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: jadeSoft,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: jadeColor.withOpacity(0.35), width: 1),
+        border: Border.all(color: jadeColor.withValues(alpha: 0.35), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -34,14 +34,18 @@ class LevelRankBadge extends StatelessWidget {
             color: jadeColor,
             size: 14,
           ),
-          const SizedBox(width: 5),
-          Text(
-            'Lv.$level · $rankTitle',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: jadeInk,
-              letterSpacing: -0.2,
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              'Lv.$level · $rankTitle',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: jadeInk,
+                letterSpacing: -0.2,
+              ),
             ),
           ),
         ],
@@ -76,11 +80,11 @@ class StreakBadge extends StatelessWidget {
     final amberInk = PColor.amberInk(context);
 
     final badge = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: amberSoft,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: amberColor.withOpacity(0.35), width: 1),
+        border: Border.all(color: amberColor.withValues(alpha: 0.35), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -92,7 +96,9 @@ class StreakBadge extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            '$streakDays-Day Streak',
+            '$streakDays d streak',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,

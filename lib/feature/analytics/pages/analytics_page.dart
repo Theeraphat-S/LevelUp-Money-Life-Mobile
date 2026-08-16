@@ -25,7 +25,7 @@ class AnalyticsPage extends StatelessWidget {
       appBar: HeaderCommandDeck(
         onOpenQuests: () => context.router.push(const QuestRoute()),
       ),
-      bottomNavigationBar: BottomBarCustom(
+      bottomNavigationBar: const BottomBarCustom(
         currentRouteName: AnalyticsRoute.name,
       ),
       body: BlocBuilder<TransactionBloc, TransactionState>(
@@ -68,12 +68,15 @@ class AnalyticsPage extends StatelessWidget {
                         Icon(Icons.compare_arrows_rounded,
                             size: 16, color: PColor.primary(context)),
                         const SizedBox(width: 6),
-                        Text(
-                          'เปรียบเทียบกระแสเงินสด (Cash Flow)',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: PColor.ink(context),
+                        Expanded(
+                          child: Text(
+                            'เปรียบเทียบกระแสเงินสด (Cash Flow)',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: PColor.ink(context),
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -157,21 +160,27 @@ class AnalyticsPage extends StatelessWidget {
                     header: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Icon(Icons.donut_large_rounded,
-                                size: 16, color: PColor.primary(context)),
-                            const SizedBox(width: 6),
-                            Text(
-                              'สัดส่วนการใช้จ่ายตามหมวดหมู่',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: PColor.ink(context),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Icon(Icons.donut_large_rounded,
+                                  size: 16, color: PColor.primary(context)),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  'สัดส่วนการใช้จ่ายตามหมวดหมู่',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: PColor.ink(context),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         Text(
                           'รวม ฿${currencyFormat.format(totalExpense)}',
                           style: TextStyle(

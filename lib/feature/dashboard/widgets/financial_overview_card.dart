@@ -30,7 +30,7 @@ class _FinancialOverviewCardState extends State<FinancialOverviewCard> {
         borderRadius: BorderRadius.circular(PRadius.large),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -92,8 +92,8 @@ class _FinancialOverviewCardState extends State<FinancialOverviewCard> {
                     children: [
                       Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFDCFCE7),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFDCFCE7),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
@@ -146,8 +146,8 @@ class _FinancialOverviewCardState extends State<FinancialOverviewCard> {
                     children: [
                       Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFEE2E2),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFFEE2E2),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(

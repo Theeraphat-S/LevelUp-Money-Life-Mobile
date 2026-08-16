@@ -1,8 +1,9 @@
+import 'package:drift/drift.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_app_standard/domain/services/storage_service.dart';
+import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
 
 // State
 class AppGlobalState extends Equatable {
@@ -83,9 +84,9 @@ class DismissLevelUpAlertEvent extends AppGlobalEvent {
 
 // Bloc
 class AppGlobalBloc extends Bloc<AppGlobalEvent, AppGlobalState> {
-  final StorageService storageService;
+  final AppDatabase db;
 
-  AppGlobalBloc(this.storageService)
+  AppGlobalBloc(this.db)
       : super(AppGlobalState(
           activeMonth: DateFormat('yyyy-MM').format(DateTime.now()),
         )) {
@@ -100,8 +101,16 @@ class AppGlobalBloc extends Bloc<AppGlobalEvent, AppGlobalState> {
     InitializeAppEvent event,
     Emitter<AppGlobalState> emit,
   ) async {
-    final activeMonth = storageService.getActiveMonth();
-    final themeStr = storageService.getThemeMode();
+    final monthRow = await (db.select(db.appSettings)
+          ..where((s) => s.key.equals('activeMonth')))
+        .getSingleOrNull();
+    final themeRow = await (db.select(db.appSettings)
+          ..where((s) => s.key.equals('themeMode')))
+        .getSingleOrNull();
+
+    final activeMonth = monthRow?.value ??
+        DateFormat('yyyy-MM').format(DateTime.now());
+    final themeStr = themeRow?.value ?? 'system';
 
     ThemeMode mode = ThemeMode.system;
     if (themeStr == 'light') mode = ThemeMode.light;
@@ -117,7 +126,13 @@ class AppGlobalBloc extends Bloc<AppGlobalEvent, AppGlobalState> {
     ChangeActiveMonthEvent event,
     Emitter<AppGlobalState> emit,
   ) async {
-    await storageService.saveActiveMonth(event.month);
+    await db.into(db.appSettings).insert(
+          AppSettingsCompanion.insert(
+            key: 'activeMonth',
+            value: event.month,
+          ),
+          mode: InsertMode.insertOrReplace,
+        );
     emit(state.copyWith(activeMonth: event.month));
   }
 
@@ -129,7 +144,13 @@ class AppGlobalBloc extends Bloc<AppGlobalEvent, AppGlobalState> {
     if (event.themeMode == ThemeMode.light) themeStr = 'light';
     if (event.themeMode == ThemeMode.dark) themeStr = 'dark';
 
-    await storageService.saveThemeMode(themeStr);
+    await db.into(db.appSettings).insert(
+          AppSettingsCompanion.insert(
+            key: 'themeMode',
+            value: themeStr,
+          ),
+          mode: InsertMode.insertOrReplace,
+        );
     emit(state.copyWith(themeMode: event.themeMode));
   }
 

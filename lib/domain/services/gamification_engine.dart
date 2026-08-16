@@ -62,30 +62,30 @@ class GamificationEngine {
     final progressPercent =
         ((remainingXp / xpForNextLevel) * 100.0).clamp(0.0, 100.0);
 
-    String titleRankKey = "rank.novice";
-    String titleRankTh = "Novice";
-    String titleRankEn = "Novice";
+    String titleRankKey = 'rank.novice';
+    String titleRankTh = 'Novice';
+    String titleRankEn = 'Novice';
 
     if (level >= 20) {
-      titleRankKey = "rank.maestro";
-      titleRankTh = "Maestro";
-      titleRankEn = "Maestro";
+      titleRankKey = 'rank.maestro';
+      titleRankTh = 'Maestro';
+      titleRankEn = 'Maestro';
     } else if (level >= 15) {
-      titleRankKey = "rank.sovereign";
-      titleRankTh = "Sovereign";
-      titleRankEn = "Sovereign";
+      titleRankKey = 'rank.sovereign';
+      titleRankTh = 'Sovereign';
+      titleRankEn = 'Sovereign';
     } else if (level >= 10) {
-      titleRankKey = "rank.guardian";
-      titleRankTh = "Guardian";
-      titleRankEn = "Guardian";
+      titleRankKey = 'rank.guardian';
+      titleRankTh = 'Guardian';
+      titleRankEn = 'Guardian';
     } else if (level >= 6) {
-      titleRankKey = "rank.strategist";
-      titleRankTh = "Strategist";
-      titleRankEn = "Strategist";
+      titleRankKey = 'rank.strategist';
+      titleRankTh = 'Strategist';
+      titleRankEn = 'Strategist';
     } else if (level >= 3) {
-      titleRankKey = "rank.tactician";
-      titleRankTh = "Tactician";
-      titleRankEn = "Tactician";
+      titleRankKey = 'rank.tactician';
+      titleRankTh = 'Tactician';
+      titleRankEn = 'Tactician';
     }
 
     return LevelProgression(

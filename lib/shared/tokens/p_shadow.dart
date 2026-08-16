@@ -12,7 +12,7 @@ class PShadow {
 
   static List<BoxShadow> get sm => [
         BoxShadow(
-          color: Colors.black.withOpacity(0.08),
+          color: Colors.black.withValues(alpha: 0.08),
           blurRadius: 6,
           offset: const Offset(0, 2),
         ),
@@ -20,7 +20,7 @@ class PShadow {
 
   static List<BoxShadow> get md => [
         BoxShadow(
-          color: Colors.black.withOpacity(0.12),
+          color: Colors.black.withValues(alpha: 0.12),
           blurRadius: 10,
           offset: const Offset(0, 4),
         ),

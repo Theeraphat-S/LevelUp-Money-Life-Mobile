@@ -46,7 +46,7 @@ class ToggleTransactionClearedEvent extends TransactionEvent {
 
 class BulkToggleTransactionClearedEvent extends TransactionEvent {
   final bool cleared;
-  const BulkToggleTransactionClearedEvent(this.cleared);
+  const BulkToggleTransactionClearedEvent({required this.cleared});
   @override
   List<Object?> get props => [cleared];
 }

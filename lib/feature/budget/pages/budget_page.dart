@@ -59,8 +59,8 @@ class _BudgetPageState extends State<BudgetPage> {
     context.read<BudgetBloc>().add(UpdateAllocationsEvent(updatedAllocs));
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('บันทึกแผนการจัดสรรงบประมาณ 50/30/20 สำเร็จ!'),
+      const SnackBar(
+        content: Text('บันทึกแผนการจัดสรรงบประมาณ 50/30/20 สำเร็จ!'),
         backgroundColor: PColor.jadeLight,
       ),
     );
@@ -78,7 +78,7 @@ class _BudgetPageState extends State<BudgetPage> {
       appBar: HeaderCommandDeck(
         onOpenQuests: () => context.router.push(const QuestRoute()),
       ),
-      bottomNavigationBar: BottomBarCustom(
+      bottomNavigationBar: const BottomBarCustom(
         currentRouteName: BudgetRoute.name,
       ),
       body: BlocConsumer<BudgetBloc, BudgetState>(
@@ -107,12 +107,15 @@ class _BudgetPageState extends State<BudgetPage> {
                         Icon(Icons.monetization_on_outlined,
                             size: 16, color: PColor.jade(context)),
                         const SizedBox(width: 6),
-                        Text(
-                          'รายได้ต่อเดือน (Monthly Income)',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: PColor.ink(context),
+                        Expanded(
+                          child: Text(
+                            'รายได้ต่อเดือน (Monthly Income)',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: PColor.ink(context),
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -177,23 +180,29 @@ class _BudgetPageState extends State<BudgetPage> {
                   // 2. 50/30/20 Allocation Sliders Bento Card
                   BentoCard(
                     header: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Icon(Icons.pie_chart_outline_rounded,
-                                size: 16, color: PColor.primary(context)),
-                            const SizedBox(width: 6),
-                            Text(
-                              'สัดส่วนงบประมาณ (50/30/20 Rule)',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: PColor.ink(context),
+                        Expanded(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.pie_chart_outline_rounded,
+                                  size: 16, color: PColor.primary(context)),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  'สัดส่วนงบประมาณ (50/30/20)',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: PColor.ink(context),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
@@ -276,29 +285,35 @@ class _BudgetPageState extends State<BudgetPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 10,
-                                      height: 10,
-                                      decoration: BoxDecoration(
-                                        color: bucketColor,
-                                        shape: BoxShape.circle,
+                                Expanded(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          color: bucketColor,
+                                          shape: BoxShape.circle,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      '${summary.label} (${summary.percent}%)',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                        color: PColor.ink(context),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          '${summary.label} (${summary.percent}%)',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700,
+                                            color: PColor.ink(context),
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
+                                const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                   decoration: BoxDecoration(
@@ -338,16 +353,19 @@ class _BudgetPageState extends State<BudgetPage> {
 
                             // Numbers Row
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  'ใช้ไป: ฿${currencyFormat.format(summary.spentAmount)} / ฿${currencyFormat.format(summary.budgetAmount)}',
-                                  style: TextStyle(
-                                    fontFamily: 'monospace',
-                                    fontSize: 11,
-                                    color: PColor.inkSoft(context),
+                                Expanded(
+                                  child: Text(
+                                    'ใช้ไป: ฿${currencyFormat.format(summary.spentAmount)} / ฿${currencyFormat.format(summary.budgetAmount)}',
+                                    style: TextStyle(
+                                      fontFamily: 'monospace',
+                                      fontSize: 11,
+                                      color: PColor.inkSoft(context),
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
+                                const SizedBox(width: 8),
                                 Text(
                                   'คงเหลือ: ฿${currencyFormat.format(summary.remainingAmount)}',
                                   style: TextStyle(
@@ -387,17 +405,32 @@ class _BudgetPageState extends State<BudgetPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: PColor.ink(context))),
-                Text(subtitle,
-                    style: TextStyle(fontSize: 10, color: PColor.inkFaint(context))),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: PColor.ink(context),
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: PColor.inkFaint(context),
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
+            const SizedBox(width: 8),
             Text(
               '$value%',
               style: TextStyle(
@@ -414,7 +447,7 @@ class _BudgetPageState extends State<BudgetPage> {
             activeTrackColor: color,
             inactiveTrackColor: PColor.line(context),
             thumbColor: color,
-            overlayColor: color.withOpacity(0.15),
+            overlayColor: color.withValues(alpha: 0.15),
             trackHeight: 6,
           ),
           child: Slider(

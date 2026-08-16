@@ -11,33 +11,17 @@
 part of 'router.dart';
 
 /// generated route for
-/// [DashboardPage]
-class DashboardRoute extends PageRouteInfo<void> {
-  const DashboardRoute({List<PageRouteInfo>? children})
-    : super(DashboardRoute.name, initialChildren: children);
+/// [AnalyticsPage]
+class AnalyticsRoute extends PageRouteInfo<void> {
+  const AnalyticsRoute({List<PageRouteInfo>? children})
+    : super(AnalyticsRoute.name, initialChildren: children);
 
-  static const String name = 'DashboardRoute';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      return const DashboardPage();
-    },
-  );
-}
-
-/// generated route for
-/// [TransactionPage]
-class TransactionRoute extends PageRouteInfo<void> {
-  const TransactionRoute({List<PageRouteInfo>? children})
-    : super(TransactionRoute.name, initialChildren: children);
-
-  static const String name = 'TransactionRoute';
+  static const String name = 'AnalyticsRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const TransactionPage();
+      return const AnalyticsPage();
     },
   );
 }
@@ -59,33 +43,17 @@ class BudgetRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [AnalyticsPage]
-class AnalyticsRoute extends PageRouteInfo<void> {
-  const AnalyticsRoute({List<PageRouteInfo>? children})
-    : super(AnalyticsRoute.name, initialChildren: children);
+/// [DashboardPage]
+class DashboardRoute extends PageRouteInfo<void> {
+  const DashboardRoute({List<PageRouteInfo>? children})
+    : super(DashboardRoute.name, initialChildren: children);
 
-  static const String name = 'AnalyticsRoute';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      return const AnalyticsPage();
-    },
-  );
-}
-
-/// generated route for
-/// [QuestPage]
-class QuestRoute extends PageRouteInfo<void> {
-  const QuestRoute({List<PageRouteInfo>? children})
-    : super(QuestRoute.name, initialChildren: children);
-
-  static const String name = 'QuestRoute';
+  static const String name = 'DashboardRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const QuestPage();
+      return const DashboardPage();
     },
   );
 }
@@ -107,6 +75,22 @@ class HomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [QuestPage]
+class QuestRoute extends PageRouteInfo<void> {
+  const QuestRoute({List<PageRouteInfo>? children})
+    : super(QuestRoute.name, initialChildren: children);
+
+  static const String name = 'QuestRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const QuestPage();
+    },
+  );
+}
+
+/// generated route for
 /// [TodoPage]
 class TodoRoute extends PageRouteInfo<void> {
   const TodoRoute({List<PageRouteInfo>? children})
@@ -118,6 +102,22 @@ class TodoRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const TodoPage();
+    },
+  );
+}
+
+/// generated route for
+/// [TransactionPage]
+class TransactionRoute extends PageRouteInfo<void> {
+  const TransactionRoute({List<PageRouteInfo>? children})
+    : super(TransactionRoute.name, initialChildren: children);
+
+  static const String name = 'TransactionRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const TransactionPage();
     },
   );
 }

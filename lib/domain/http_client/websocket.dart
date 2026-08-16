@@ -1,4 +1,5 @@
 // lib/domain/http_client/websocket_client.dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -11,16 +12,16 @@ class WebSocketClient {
   // ฟังก์ชันเริ่มต้นการเชื่อมต่อ WebSocket
   void connect() {
     _channel = WebSocketChannel.connect(Uri.parse(url!));
-    print('Connected to WebSocket at: $url');
+    debugPrint('Connected to WebSocket at: $url');
   }
 
   // ฟังก์ชันส่งข้อความไปยัง WebSocket
   void sendMessage(String message) {
     if (_channel != null) {
       _channel!.sink.add(message);
-      print('Sent: $message');
+      debugPrint('Sent: $message');
     } else {
-      print('WebSocket not connected!');
+      debugPrint('WebSocket not connected!');
     }
   }
 
@@ -36,6 +37,6 @@ class WebSocketClient {
   // ฟังก์ชันปิดการเชื่อมต่อ WebSocket
   void close() {
     _channel?.sink.close();
-    print('WebSocket connection closed');
+    debugPrint('WebSocket connection closed');
   }
 }

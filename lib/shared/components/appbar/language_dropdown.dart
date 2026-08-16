@@ -37,22 +37,22 @@ class LanguageDropdown extends StatelessWidget {
             ),
             items: [
               DropdownMenuItem(
-                value: Locale('th'),
+                value: const Locale('th'),
                 child: Text(
                   'ไทย',
                   style: TextStyle(
-                    color: state.locale == Locale('th')
+                    color: state.locale == const Locale('th')
                         ? PColor.primaryColor
                         : null,
                   ),
                 ),
               ),
               DropdownMenuItem(
-                value: Locale('en'),
+                value: const Locale('en'),
                 child: Text(
                   'English',
                   style: TextStyle(
-                    color: state.locale == Locale('en')
+                    color: state.locale == const Locale('en')
                         ? PColor.primaryColor
                         : PColor.contentColor,
                   ),
@@ -68,11 +68,11 @@ class LanguageDropdown extends StatelessWidget {
               }
             },
             onMenuStateChange: (isOpen) {
-              context.read<LanguageBloc>().add(ToggleDropdownEvent(isOpen));
+              context.read<LanguageBloc>().add(ToggleDropdownEvent(isOpen: isOpen));
             },
             dropdownStyleData: DropdownStyleData(
               width: 100,
-              padding: EdgeInsets.symmetric(vertical: PSpacing.xs),
+              padding: const EdgeInsets.symmetric(vertical: PSpacing.xs),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(PRadius.xs),
                   color: Colors.white,

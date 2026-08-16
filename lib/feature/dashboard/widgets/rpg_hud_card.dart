@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_standard/domain/models/gamification/user_profile.dart';
-import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
 import 'package:mobile_app_standard/shared/tokens/p_radius.dart';
-import 'package:mobile_app_standard/shared/tokens/p_shadow.dart';
 
 class RpgHudCard extends StatelessWidget {
   final UserProfile user;
@@ -26,7 +24,7 @@ class RpgHudCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(PRadius.large),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6366F1).withOpacity(0.25),
+            color: const Color(0xFF6366F1).withValues(alpha: 0.25),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -140,7 +138,7 @@ class RpgHudCard extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEF4444).withOpacity(0.2),
+                        color: const Color(0xFFEF4444).withValues(alpha: 0.2),
                         border: Border.all(color: const Color(0xFFEF4444), width: 0.8),
                         borderRadius: BorderRadius.circular(10),
                       ),

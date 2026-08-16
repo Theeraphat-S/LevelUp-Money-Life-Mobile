@@ -80,16 +80,20 @@ class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    'LevelUp Money Life',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: -0.3,
-                      color: PColor.ink(context),
+                  Expanded(
+                    child: Text(
+                      'LevelUp Money Life',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.3,
+                        color: PColor.ink(context),
+                      ),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 4),
 
                   // Quick Action: Scan Slip
                   _buildHeaderIconButton(
@@ -190,32 +194,36 @@ class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
                           ],
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 8),
 
                       // Gamification State Badges
-                      BlocBuilder<GamificationBloc, GamificationState>(
-                        builder: (context, gState) {
-                          final user = gState.userProfile;
-                          if (user == null) {
-                            return const SizedBox.shrink();
-                          }
+                      Expanded(
+                        child: BlocBuilder<GamificationBloc, GamificationState>(
+                          builder: (context, gState) {
+                            final user = gState.userProfile;
+                            if (user == null) {
+                              return const SizedBox.shrink();
+                            }
 
-                          return Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              LevelRankBadge(
-                                level: user.level,
-                                rankTitle: user.rankTitle,
-                                onTap: onOpenQuests,
-                              ),
-                              const SizedBox(width: 6),
-                              StreakBadge(
-                                streakDays: user.streakDays,
-                                onTap: onOpenQuests,
-                              ),
-                            ],
-                          );
-                        },
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Flexible(
+                                  child: LevelRankBadge(
+                                    level: user.level,
+                                    rankTitle: user.rankTitle,
+                                    onTap: onOpenQuests,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                StreakBadge(
+                                  streakDays: user.streakDays,
+                                  onTap: onOpenQuests,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ],
                   );

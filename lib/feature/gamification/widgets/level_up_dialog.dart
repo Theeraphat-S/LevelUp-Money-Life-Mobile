@@ -49,7 +49,7 @@ class LevelUpDialog extends StatelessWidget {
                 color: PColor.jadeSoft(context),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: PColor.jade(context).withOpacity(0.4),
+                  color: PColor.jade(context).withValues(alpha: 0.4),
                   width: 2,
                 ),
               ),
@@ -90,7 +90,7 @@ class LevelUpDialog extends StatelessWidget {
               decoration: BoxDecoration(
                 color: PColor.primarySoft(context),
                 borderRadius: BorderRadius.circular(999),
-                border: Border.all(color: PColor.primary(context).withOpacity(0.3)),
+                border: Border.all(color: PColor.primary(context).withValues(alpha: 0.3)),
               ),
               child: Text(
                 'ฉายาใหม่: $rankTitle',

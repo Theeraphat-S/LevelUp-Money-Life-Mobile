@@ -112,7 +112,7 @@ class AddTodoDialog extends StatelessWidget {
         children: [
           Icon(Icons.add, color: PColor.primaryColor, size: PText.text2xl),
           const SizedBox(width: 8),
-          Text(msg.title_add_todo, style: TextStyle(fontSize: PText.textXl)),
+          Text(msg.title_add_todo, style: const TextStyle(fontSize: PText.textXl)),
         ],
       ),
       backgroundColor: Colors.white,
