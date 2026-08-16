@@ -6,6 +6,7 @@ import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_event.dart'
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_state.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/router/router.dart';
 import 'package:mobile_app_standard/shared/components/appbar/bottombar_custom.dart';
 import 'package:mobile_app_standard/shared/components/bento_card.dart';
@@ -29,6 +30,9 @@ class _QuestPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations(context).gamification;
+    final currentLang = Localizations.localeOf(context).languageCode;
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -47,9 +51,9 @@ class _QuestPageView extends StatelessWidget {
                 labelColor: PColor.primary(context),
                 unselectedLabelColor: PColor.inkSoft(context),
                 labelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
-                tabs: const [
-                  Tab(icon: Icon(Icons.checklist_rounded), text: 'ภารกิจ (Quests)'),
-                  Tab(icon: Icon(Icons.military_tech_rounded), text: 'ความสำเร็จ (Achievements)'),
+                tabs: [
+                  Tab(icon: const Icon(Icons.checklist_rounded), text: i18n.tab_daily_quests),
+                  Tab(icon: const Icon(Icons.military_tech_rounded), text: i18n.tab_achievements),
                 ],
               ),
             ),
@@ -99,7 +103,7 @@ class _QuestPageView extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'สถานะวินัยการเงิน',
+                                        i18n.hero_profile,
                                         style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w700,
@@ -107,7 +111,7 @@ class _QuestPageView extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        '${user.streakDays}-Day Streak 🔥',
+                                        i18n.streak_label(user.streakDays),
                                         style: TextStyle(
                                           fontSize: 11,
                                           fontWeight: FontWeight.w700,
@@ -130,7 +134,7 @@ class _QuestPageView extends StatelessWidget {
                               ],
 
                               Text(
-                                'ภารกิจประจำวัน (Daily Checklist):',
+                                i18n.tab_daily_quests,
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w700,
@@ -159,7 +163,7 @@ class _QuestPageView extends StatelessWidget {
                                         },
                                       ),
                                       title: Text(
-                                        quest.title,
+                                        quest.getLocalizedTitle(context),
                                         style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w600,
@@ -173,8 +177,8 @@ class _QuestPageView extends StatelessWidget {
                                       ),
                                       subtitle: Text(
                                         quest.done
-                                            ? 'ทำสำเร็จแล้ว ✓'
-                                            : 'ยังไม่เสร็จสิ้น',
+                                            ? (currentLang == 'th' ? 'ทำสำเร็จแล้ว ✓' : 'Completed ✓')
+                                            : (currentLang == 'th' ? 'ยังไม่เสร็จสิ้น' : 'Pending'),
                                         style: TextStyle(
                                           fontSize: 11,
                                           color: quest.done
@@ -267,7 +271,7 @@ class _QuestPageView extends StatelessWidget {
                                             children: [
                                               Expanded(
                                                 child: Text(
-                                                  ach.title,
+                                                  ach.getLocalizedTitle(currentLang),
                                                   style: TextStyle(
                                                     fontSize: 13,
                                                     fontWeight: FontWeight.w700,
@@ -292,7 +296,7 @@ class _QuestPageView extends StatelessWidget {
                                                             6),
                                                   ),
                                                   child: Text(
-                                                    'ปลดล็อกแล้ว ✓',
+                                                    i18n.unlocked_badge,
                                                     style: TextStyle(
                                                       fontSize: 10,
                                                       fontWeight:
@@ -306,7 +310,7 @@ class _QuestPageView extends StatelessWidget {
                                           ),
                                           const SizedBox(height: 2),
                                           Text(
-                                            ach.description,
+                                            ach.getLocalizedDescription(currentLang),
                                             style: TextStyle(
                                               fontSize: 11,
                                               color: PColor.inkSoft(context),

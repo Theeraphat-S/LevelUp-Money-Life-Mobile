@@ -11,7 +11,9 @@ import 'package:mobile_app_standard/feature/budget/bloc/budget_bloc.dart';
 import 'package:mobile_app_standard/feature/budget/pages/budget_page.dart';
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
+import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
 
 void main() {
   late AppDatabase db;
@@ -22,6 +24,7 @@ void main() {
   late AppGlobalBloc appGlobalBloc;
   late GamificationBloc gamificationBloc;
   late BudgetBloc budgetBloc;
+  late LanguageBloc languageBloc;
 
   setUp(() async {
     db = AppDatabase.forTesting(NativeDatabase.memory());
@@ -43,9 +46,11 @@ void main() {
       transactionRepository: transactionRepo,
       gamificationRepository: gamificationRepo,
     );
+    languageBloc = LanguageBloc(db);
   });
 
   tearDown(() async {
+    await languageBloc.close();
     await budgetBloc.close();
     await gamificationBloc.close();
     await appGlobalBloc.close();
@@ -54,6 +59,9 @@ void main() {
 
   Widget buildTestableBudgetPage({required double width, double height = 800}) {
     return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('th'),
       home: MediaQuery(
         data: MediaQueryData(
           size: Size(width, height),
@@ -64,6 +72,7 @@ void main() {
             BlocProvider<AppGlobalBloc>.value(value: appGlobalBloc),
             BlocProvider<GamificationBloc>.value(value: gamificationBloc),
             BlocProvider<BudgetBloc>.value(value: budgetBloc),
+            BlocProvider<LanguageBloc>.value(value: languageBloc),
           ],
           child: const BudgetPage(),
         ),
@@ -83,7 +92,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(BudgetPage), findsOneWidget);
-      expect(find.text('สัดส่วนงบประมาณ (50/30/20)'), findsOneWidget);
+      expect(find.text('แผนงบประมาณ 50/30/20'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 

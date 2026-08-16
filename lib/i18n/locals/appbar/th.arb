@@ -1,7 +1,35 @@
 {
-    "@@locale": "th",
-    "home_route_name": "หน้าแรก",
-    "@home_route_name": {},
-    "todo_route_name": "รายการที่ต้องทํา",
-    "@todo_route_name": {}
+  "@@locale": "th",
+  "home_route_name": "หน้าหลัก",
+  "@home_route_name": {
+    "description": "Home"
+  },
+  "todo_route_name": "สิ่งที่ต้องทำ",
+  "@todo_route_name": {
+    "description": "Todo"
+  },
+  "nav_overview": "ภาพรวม",
+  "@nav_overview": {
+    "description": "Navigation Overview"
+  },
+  "nav_transactions": "ธุรกรรม",
+  "@nav_transactions": {
+    "description": "Navigation Transactions"
+  },
+  "nav_budget": "งบ 50/30/20",
+  "@nav_budget": {
+    "description": "Navigation Budget"
+  },
+  "nav_analytics": "วิเคราะห์",
+  "@nav_analytics": {
+    "description": "Navigation Analytics"
+  },
+  "nav_quests": "เควส & XP",
+  "@nav_quests": {
+    "description": "Navigation Quests & XP"
+  },
+  "app_title": "LevelUp Money Life",
+  "@app_title": {
+    "description": "App Title"
+  }
 }

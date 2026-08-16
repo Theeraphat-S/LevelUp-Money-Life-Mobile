@@ -1,0 +1,98 @@
+{
+  "@@locale": "th",
+  "quests_title": "เควสและความสำเร็จ",
+  "@quests_title": {
+    "description": "Quests Page Title"
+  },
+  "hero_profile": "โปรไฟล์ฮีโร่การเงิน",
+  "@hero_profile": {
+    "description": "Hero profile card title"
+  },
+  "level_display": "Lv.{level} · {rank}",
+  "@level_display": {
+    "description": "Level and rank title",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "exp_progress": "EXP: {current} / {max}",
+  "@exp_progress": {
+    "description": "EXP progress text",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "tab_daily_quests": "เควสประจำวัน",
+  "@tab_daily_quests": {
+    "description": "Daily quests tab"
+  },
+  "tab_achievements": "เหรียญตราและฉายา",
+  "@tab_achievements": {
+    "description": "Achievements tab"
+  },
+  "level_up_title": "LEVEL UP!",
+  "@level_up_title": {
+    "description": "Level up title"
+  },
+  "level_up_congrats": "ยินดีด้วย! คุณเลเวลอัปเป็น เลเวล {level}!",
+  "@level_up_congrats": {
+    "description": "Level up congratulation message",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "new_rank_unlocked": "ปลดล็อกฉายาใหม่: {rank}",
+  "@new_rank_unlocked": {
+    "description": "New rank announcement",
+    "placeholders": {
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "awesome_btn": "ยอดเยี่ยมมาก!",
+  "@awesome_btn": {
+    "description": "Awesome button"
+  },
+  "streak_label": "ทำกิจกรรมต่อเนื่อง {days} วัน 🔥",
+  "@streak_label": {
+    "description": "Streak label",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "unlocked_badge": "ปลดล็อกแล้ว",
+  "@unlocked_badge": {
+    "description": "Unlocked status"
+  },
+  "locked_badge": "ยังไม่ปลดล็อก",
+  "@locked_badge": {
+    "description": "Locked status"
+  },
+  "quest_q1": "บันทึกรายจ่ายประจำวันทุกรายการวันนี้",
+  "@quest_q1": {
+    "description": "Default quest 1"
+  },
+  "quest_q2": "ตรวจสอบสัดส่วนการจัดสรรงบประมาณ 50/30/20",
+  "@quest_q2": {
+    "description": "Default quest 2"
+  },
+  "quest_q3": "โอนเงินเก็บเข้าบัญชีเงินออมสำรองฉุกเฉิน",
+  "@quest_q3": {
+    "description": "Default quest 3"
+  }
+}

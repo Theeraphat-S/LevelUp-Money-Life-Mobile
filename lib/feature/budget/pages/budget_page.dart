@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_standard/domain/models/budget/allocation_item.dart';
 import 'package:mobile_app_standard/feature/budget/bloc/budget_bloc.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/router/router.dart';
 import 'package:mobile_app_standard/shared/components/appbar/bottombar_custom.dart';
 import 'package:mobile_app_standard/shared/components/bento_card.dart';
@@ -72,6 +73,9 @@ class _BudgetPageState extends State<BudgetPage> {
     final currencyFormat = NumberFormat('#,##0.00', 'en_US');
     final totalPercent = _needsPercent + _wantsPercent + _savingsPercent;
     final isBalanced = totalPercent == 100;
+    final i18n = AppLocalizations(context).budget;
+    final generalI18n = AppLocalizations(context).general;
+    final currentLang = Localizations.localeOf(context).languageCode;
 
     return Scaffold(
       backgroundColor: PColor.base(context),
@@ -109,7 +113,7 @@ class _BudgetPageState extends State<BudgetPage> {
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            'รายได้ต่อเดือน (Monthly Income)',
+                            i18n.monthly_income_base,
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -123,11 +127,6 @@ class _BudgetPageState extends State<BudgetPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'กำหนดฐานรายรับต่อเดือนเพื่อคำนวณสัดส่วนงบประมาณ 50/30/20:',
-                          style: TextStyle(fontSize: 11, color: PColor.inkSoft(context)),
-                        ),
-                        const SizedBox(height: 10),
                         Row(
                           children: [
                             Expanded(
@@ -168,7 +167,7 @@ class _BudgetPageState extends State<BudgetPage> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              child: const Text('บันทึก', style: TextStyle(fontWeight: FontWeight.bold)),
+                              child: Text(generalI18n.save, style: const TextStyle(fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),
@@ -190,7 +189,7 @@ class _BudgetPageState extends State<BudgetPage> {
                               const SizedBox(width: 6),
                               Expanded(
                                 child: Text(
-                                  'สัดส่วนงบประมาณ (50/30/20)',
+                                  i18n.budget_title,
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w700,
@@ -210,7 +209,7 @@ class _BudgetPageState extends State<BudgetPage> {
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            '$totalPercent% ${isBalanced ? '✓ สมดุล' : '⚠️ ไม่ครบ 100%'}',
+                            '$totalPercent% ${isBalanced ? '✓' : '⚠️'}',
                             style: TextStyle(
                               fontFamily: 'monospace',
                               fontSize: 11,
@@ -225,8 +224,8 @@ class _BudgetPageState extends State<BudgetPage> {
                       children: [
                         // Needs Slider
                         _buildSliderRow(
-                          title: 'Needs (จำเป็น 50%)',
-                          subtitle: 'อาหาร, เดินทาง, บ้าน, สุขภาพ',
+                          title: i18n.needs_bucket,
+                          subtitle: i18n.needs_desc,
                           value: _needsPercent,
                           color: PColor.primary(context),
                           onChanged: (val) => setState(() => _needsPercent = val.round()),
@@ -235,8 +234,8 @@ class _BudgetPageState extends State<BudgetPage> {
 
                         // Wants Slider
                         _buildSliderRow(
-                          title: 'Wants (ความสุข 30%)',
-                          subtitle: 'พัฒนาตนเอง, บันเทิง & ช้อปปิ้ง',
+                          title: i18n.wants_bucket,
+                          subtitle: i18n.wants_desc,
                           value: _wantsPercent,
                           color: PColor.moss(context),
                           onChanged: (val) => setState(() => _wantsPercent = val.round()),
@@ -245,8 +244,8 @@ class _BudgetPageState extends State<BudgetPage> {
 
                         // Savings Slider
                         _buildSliderRow(
-                          title: 'Savings (เงินออม & หนี้ 20%)',
-                          subtitle: 'เงินออมฉุกเฉิน, ลงทุน, ปลดหนี้',
+                          title: i18n.savings_bucket,
+                          subtitle: i18n.savings_desc,
                           value: _savingsPercent,
                           color: PColor.jade(context),
                           onChanged: (val) => setState(() => _savingsPercent = val.round()),
@@ -258,7 +257,7 @@ class _BudgetPageState extends State<BudgetPage> {
 
                   // 3. Bucket Spending Breakdown
                   Text(
-                    'ติดตามการใช้จ่ายจริงเทียบกับงบประมาณ (Bucket Progress):',
+                    currentLang == 'th' ? 'ติดตามการใช้จ่ายจริงเทียบกับงบประมาณ (Bucket Progress):' : 'Bucket Budget Progress:',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -270,12 +269,16 @@ class _BudgetPageState extends State<BudgetPage> {
                   ...state.summaries.map((summary) {
                     final isOverBudget = summary.spentAmount > summary.budgetAmount;
                     Color bucketColor;
+                    String bucketLabel = summary.label;
                     if (summary.id == 'needs') {
                       bucketColor = PColor.primary(context);
+                      bucketLabel = currentLang == 'th' ? 'จำเป็น (Needs)' : 'Needs';
                     } else if (summary.id == 'wants') {
                       bucketColor = PColor.moss(context);
+                      bucketLabel = currentLang == 'th' ? 'ต้องการ (Wants)' : 'Wants';
                     } else {
                       bucketColor = PColor.jade(context);
+                      bucketLabel = currentLang == 'th' ? 'เงินออม (Savings)' : 'Savings';
                     }
 
                     return Container(
@@ -301,7 +304,7 @@ class _BudgetPageState extends State<BudgetPage> {
                                       const SizedBox(width: 8),
                                       Expanded(
                                         child: Text(
-                                          '${summary.label} (${summary.percent}%)',
+                                          '$bucketLabel (${summary.percent}%)',
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w700,
@@ -323,7 +326,7 @@ class _BudgetPageState extends State<BudgetPage> {
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
-                                    isOverBudget ? 'เกินงบประมาณ!' : 'อยู่ในงบ',
+                                    isOverBudget ? i18n.over_budget : (currentLang == 'th' ? 'อยู่ในงบ' : 'On Track'),
                                     style: TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w700,
@@ -356,7 +359,7 @@ class _BudgetPageState extends State<BudgetPage> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    'ใช้ไป: ฿${currencyFormat.format(summary.spentAmount)} / ฿${currencyFormat.format(summary.budgetAmount)}',
+                                    '${i18n.spent}: ฿${currencyFormat.format(summary.spentAmount)} / ฿${currencyFormat.format(summary.budgetAmount)}',
                                     style: TextStyle(
                                       fontFamily: 'monospace',
                                       fontSize: 11,
@@ -367,7 +370,7 @@ class _BudgetPageState extends State<BudgetPage> {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'คงเหลือ: ฿${currencyFormat.format(summary.remainingAmount)}',
+                                  '${i18n.remaining}: ฿${currencyFormat.format(summary.remainingAmount)}',
                                   style: TextStyle(
                                     fontFamily: 'monospace',
                                     fontSize: 12,

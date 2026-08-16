@@ -9,6 +9,7 @@ import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
 
 class QuickAddSheet extends StatefulWidget {
@@ -146,6 +147,8 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
     final surfaceColor = PColor.surface(context);
     final borderColor = PColor.line(context);
     final isEditing = widget.initialTransaction != null;
+    final i18n = AppLocalizations(context).transaction;
+    final currentLang = Localizations.localeOf(context).languageCode;
 
     final categories = CategoryItem.defaultCategories
         .where((c) => _isIncome ? c.isIncome : !c.isIncome)
@@ -193,7 +196,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                 children: [
                   Expanded(
                     child: Text(
-                      isEditing ? 'แก้ไขรายการ' : 'บันทึกรายการ',
+                      isEditing ? i18n.edit_transaction_title : i18n.quick_add_title,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
@@ -214,7 +217,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                     child: Row(
                       children: [
                         _buildTypeButton(
-                          label: 'รายจ่าย',
+                          label: i18n.filter_expense,
                           isSelected: !_isIncome,
                           activeColor: PColor.rose(context),
                           onTap: () => setState(() {
@@ -225,7 +228,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                           }),
                         ),
                         _buildTypeButton(
-                          label: 'รายรับ',
+                          label: i18n.filter_income,
                           isSelected: _isIncome,
                           activeColor: PColor.jade(context),
                           onTap: () => setState(() {
@@ -242,7 +245,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
 
               // Amount Input
               Text(
-                'จำนวนเงิน (THB)',
+                i18n.amount_thb,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -288,7 +291,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
 
               // Transaction Name Input
               Text(
-                'ชื่อรายการ',
+                i18n.transaction_name,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -300,7 +303,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                 controller: _nameController,
                 style: TextStyle(color: PColor.ink(context)),
                 decoration: InputDecoration(
-                  hintText: 'เช่น ค่าอาหารกลางวัน, เงินเดือน',
+                  hintText: i18n.transaction_name_hint,
                   filled: true,
                   fillColor: PColor.surfaceSubtle(context),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -329,7 +332,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'หมวดหมู่',
+                          i18n.category,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -365,7 +368,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                                       const SizedBox(width: 8),
                                       Expanded(
                                         child: Text(
-                                          CategoryItem.getCategoryThaiName(cat.id),
+                                          CategoryItem.getLocalizedCategoryName(cat.id, currentLang),
                                           style: TextStyle(
                                             fontSize: 13,
                                             color: PColor.ink(context),
@@ -396,7 +399,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'วันที่',
+                          i18n.date,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -456,7 +459,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
 
               // Notes Input & Cleared Checkbox
               Text(
-                'บันทึกเพิ่มเติม (Note)',
+                i18n.notes,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -470,7 +473,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                 style: TextStyle(color: PColor.ink(context), fontSize: 13),
                 onChanged: (_) => setState(() {}),
                 decoration: InputDecoration(
-                  hintText: 'รายละเอียดเพิ่มเติม เช่น ซื้อที่ร้านไหน, โอนเข้าบัญชีใด (+5 XP)',
+                  hintText: i18n.notes_hint,
                   filled: true,
                   fillColor: PColor.surfaceSubtle(context),
                   contentPadding: const EdgeInsets.all(12),
@@ -504,7 +507,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                     child: GestureDetector(
                       onTap: () => setState(() => _isCleared = !_isCleared),
                       child: Text(
-                        'ทำเครื่องหมายตรวจสอบแล้ว (Cleared)',
+                        currentLang == 'th' ? 'ทำเครื่องหมายตรวจสอบแล้ว (Cleared)' : 'Mark as Cleared',
                         style: TextStyle(
                           fontSize: 13,
                           color: PColor.ink(context),
@@ -540,7 +543,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                       const SizedBox(width: 6),
                       Flexible(
                         child: Text(
-                          isEditing ? 'บันทึกการแก้ไข' : 'บันทึกรายการ',
+                          isEditing ? i18n.edit_transaction_title : i18n.save_transaction,
                           style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
                           overflow: TextOverflow.ellipsis,
                         ),

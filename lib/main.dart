@@ -15,6 +15,7 @@ import 'package:mobile_app_standard/locator.dart';
 import 'package:mobile_app_standard/router/router.dart';
 import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
 import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
+import 'package:mobile_app_standard/shared/bloc/language/language_event.dart';
 import 'package:mobile_app_standard/shared/bloc/language/language_state.dart';
 import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
 
@@ -51,7 +52,8 @@ Future<void> main() async {
           create: (context) => locator<WebsocketBloc>(),
         ),
         BlocProvider<LanguageBloc>(
-          create: (context) => locator<LanguageBloc>(),
+          create: (context) =>
+              locator<LanguageBloc>()..add(const InitializeLanguageEvent()),
         ),
       ],
       child: MyApp(),

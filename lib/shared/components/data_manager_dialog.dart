@@ -10,6 +10,7 @@ import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/locator.dart';
 import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
 import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
@@ -64,7 +65,9 @@ class _DataManagerDialogState extends State<DataManagerDialog>
     if (_isLoadingExport) return;
     Clipboard.setData(ClipboardData(text: _exportedJson));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('คัดลอกข้อมูล Backup JSON เรียบร้อยแล้ว')),
+      SnackBar(
+          content:
+              Text(AppLocalizations(context).general.copied_to_clipboard)),
     );
   }
 
@@ -72,7 +75,9 @@ class _DataManagerDialogState extends State<DataManagerDialog>
     final text = _importController.text.trim();
     if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('กรุณาวางข้อมูล JSON สำหรับการกู้คืน')),
+        SnackBar(
+            content: Text(
+                AppLocalizations(context).general.data_restore_failed)),
       );
       return;
     }
@@ -95,13 +100,18 @@ class _DataManagerDialogState extends State<DataManagerDialog>
 
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('นำเข้าข้อมูลสำเร็จเรียบร้อย!')),
+          SnackBar(
+              content: Text(AppLocalizations(context)
+                  .general
+                  .data_restored_success)),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('รูปแบบ JSON ไม่ถูกต้อง: $e')),
+          SnackBar(
+              content: Text(
+                  '${AppLocalizations(context).general.data_restore_failed}: $e')),
         );
       }
     }
@@ -120,7 +130,9 @@ class _DataManagerDialogState extends State<DataManagerDialog>
 
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('รีเซ็ตข้อมูลเริ่มต้นเรียบร้อยแล้ว')),
+        SnackBar(
+            content: Text(
+                AppLocalizations(context).general.data_restored_success)),
       );
     }
   }

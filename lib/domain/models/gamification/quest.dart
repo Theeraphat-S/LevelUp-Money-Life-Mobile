@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 class QuestItem {
@@ -21,6 +22,16 @@ class QuestItem {
   bool get isClaimed => done;
   int get expReward => xp;
   int get coinReward => xp ~/ 2;
+  String getLocalizedTitle(BuildContext context) {
+    final lang = Localizations.localeOf(context).languageCode;
+    if (lang == 'en') {
+      if (id == 'q1') return 'Record all daily expenses for today';
+      if (id == 'q2') return 'Review your 50/30/20 budget allocation';
+      if (id == 'q3') return 'Transfer savings to emergency reserve fund';
+    }
+    return title;
+  }
+
   String get description => category == 'daily'
       ? 'Daily Quest'
       : category == 'habit'

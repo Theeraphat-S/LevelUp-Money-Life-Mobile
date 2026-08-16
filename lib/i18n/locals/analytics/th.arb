@@ -1,0 +1,43 @@
+{
+  "@@locale": "th",
+  "analytics_title": "วิเคราะห์การเงิน",
+  "@analytics_title": {
+    "description": "Analytics Page Title"
+  },
+  "expense_by_category": "สัดส่วนรายจ่ายตามหมวดหมู่",
+  "@expense_by_category": {
+    "description": "Expense by Category"
+  },
+  "income_vs_expense": "เปรียบเทียบรายรับ - รายจ่าย",
+  "@income_vs_expense": {
+    "description": "Income vs Expense"
+  },
+  "savings_rate": "อัตราการออมสุทธิ",
+  "@savings_rate": {
+    "description": "Savings Rate"
+  },
+  "financial_health": "คะแนนสุขภาพทางการเงิน",
+  "@financial_health": {
+    "description": "Financial Health Score"
+  },
+  "no_data_month": "ยังไม่มีข้อมูลการใช้จ่ายในเดือนนี้",
+  "@no_data_month": {
+    "description": "Empty analytics data message"
+  },
+  "top_spending": "หมวดหมู่ที่ใช้จ่ายสูงสุด",
+  "@top_spending": {
+    "description": "Top spending header"
+  },
+  "health_grade_excellent": "วินัยการเงินยอดเยี่ยมมาก 🌟",
+  "@health_grade_excellent": {
+    "description": "Health grade"
+  },
+  "health_grade_good": "รักษาสมดุลการเงินได้ดี 👍",
+  "@health_grade_good": {
+    "description": "Health grade"
+  },
+  "health_grade_warning": "ระวังรายจ่ายเริ่มตึงตัว ⚠️",
+  "@health_grade_warning": {
+    "description": "Health grade"
+  }
+}

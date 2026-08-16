@@ -130,6 +130,120 @@ abstract class GeneralLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get close;
+
+  /// Save
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// Edit
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// Delete
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// Confirm
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// Status
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// Language
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// Thai
+  ///
+  /// In en, this message translates to:
+  /// **'Thai'**
+  String get thai;
+
+  /// English
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// Light Mode
+  ///
+  /// In en, this message translates to:
+  /// **'Light Mode'**
+  String get theme_light;
+
+  /// Dark Mode
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get theme_dark;
+
+  /// System Theme
+  ///
+  /// In en, this message translates to:
+  /// **'System Theme'**
+  String get theme_system;
+
+  /// Data Manager
+  ///
+  /// In en, this message translates to:
+  /// **'Data Manager'**
+  String get data_manager;
+
+  /// Backup Data
+  ///
+  /// In en, this message translates to:
+  /// **'Backup Data (JSON)'**
+  String get backup_data;
+
+  /// Restore Data
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Data (JSON)'**
+  String get restore_data;
+
+  /// Reset All Data
+  ///
+  /// In en, this message translates to:
+  /// **'Reset All Data'**
+  String get reset_data;
+
+  /// Reset confirmation
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to reset all data to default?'**
+  String get reset_confirm;
+
+  /// Data restored successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Data restored successfully!'**
+  String get data_restored_success;
+
+  /// Failed to restore data
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to restore data. Invalid JSON.'**
+  String get data_restore_failed;
+
+  /// Copied to clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get copied_to_clipboard;
 }
 
 class _GeneralLocalizationsDelegate extends LocalizationsDelegate<GeneralLocalizations> {

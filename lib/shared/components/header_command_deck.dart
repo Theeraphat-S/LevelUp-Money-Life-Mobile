@@ -8,7 +8,11 @@ import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.da
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
 import 'package:mobile_app_standard/feature/transaction/widgets/quick_add_sheet.dart';
 import 'package:mobile_app_standard/feature/transaction/widgets/slip_scan_sheet.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
+import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
+import 'package:mobile_app_standard/shared/bloc/language/language_event.dart';
+import 'package:mobile_app_standard/shared/bloc/language/language_state.dart';
 import 'package:mobile_app_standard/shared/components/data_manager_dialog.dart';
 import 'package:mobile_app_standard/shared/components/gamification_badges.dart';
 import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
@@ -99,7 +103,7 @@ class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
                   _buildHeaderIconButton(
                     context: context,
                     icon: Icons.document_scanner_outlined,
-                    tooltip: 'สแกนสลิปโอนเงิน (+25 XP)',
+                    tooltip: AppLocalizations(context).dashboard.slip_scan_tooltip,
                     onTap: () => SlipScanSheet.show(context),
                   ),
                   const SizedBox(width: 4),
@@ -108,9 +112,64 @@ class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
                   _buildHeaderIconButton(
                     context: context,
                     icon: Icons.add_circle_outline_rounded,
-                    tooltip: 'เพิ่มรายการด่วน',
+                    tooltip: AppLocalizations(context).dashboard.quick_add_tooltip,
                     isPrimary: true,
                     onTap: () => QuickAddSheet.show(context),
+                  ),
+                  const SizedBox(width: 4),
+
+                  // Language Switcher Toggle
+                  BlocBuilder<LanguageBloc, LanguageState>(
+                    builder: (context, langState) {
+                      final isThai = langState.locale.languageCode == 'th';
+                      return Tooltip(
+                        message: AppLocalizations(context).dashboard.language_toggle_tooltip,
+                        child: Material(
+                          color: PColor.surfaceSubtle(context),
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            onTap: () {
+                              final nextLocale =
+                                  isThai ? const Locale('en') : const Locale('th');
+                              context
+                                  .read<LanguageBloc>()
+                                  .add(ChangeLanguageEvent(nextLocale));
+                            },
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 6),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: PColor.line(context),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.translate_rounded,
+                                    size: 14,
+                                    color: PColor.primary(context),
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    isThai ? 'TH' : 'EN',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w800,
+                                      color: PColor.ink(context),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(width: 4),
 
@@ -118,7 +177,7 @@ class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
                   _buildHeaderIconButton(
                     context: context,
                     icon: isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                    tooltip: 'สลับ Light/Dark Mode',
+                    tooltip: AppLocalizations(context).dashboard.theme_toggle_tooltip,
                     onTap: () {
                       final newMode = isDark ? ThemeMode.light : ThemeMode.dark;
                       context.read<AppGlobalBloc>().add(ChangeThemeModeEvent(newMode));
@@ -130,7 +189,7 @@ class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
                   _buildHeaderIconButton(
                     context: context,
                     icon: Icons.folder_open_outlined,
-                    tooltip: 'สำรอง/กู้คืนข้อมูล (JSON)',
+                    tooltip: AppLocalizations(context).dashboard.data_manager_tooltip,
                     onTap: () => DataManagerDialog.show(context),
                   ),
                 ],

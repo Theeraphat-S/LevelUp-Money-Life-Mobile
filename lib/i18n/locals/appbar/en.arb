@@ -1,11 +1,35 @@
 {
-    "@@locale": "en",
-    "home_route_name": "Home",
-    "@home_route_name": {
-        "description": "Home"
-    },
-    "todo_route_name": "Todo",
-    "@todo_route_name": {
-        "description": "Todo"
-    }
+  "@@locale": "en",
+  "home_route_name": "Home",
+  "@home_route_name": {
+    "description": "Home"
+  },
+  "todo_route_name": "Todo",
+  "@todo_route_name": {
+    "description": "Todo"
+  },
+  "nav_overview": "Overview",
+  "@nav_overview": {
+    "description": "Navigation Overview"
+  },
+  "nav_transactions": "Transactions",
+  "@nav_transactions": {
+    "description": "Navigation Transactions"
+  },
+  "nav_budget": "Budget 50/30/20",
+  "@nav_budget": {
+    "description": "Navigation Budget"
+  },
+  "nav_analytics": "Analytics",
+  "@nav_analytics": {
+    "description": "Navigation Analytics"
+  },
+  "nav_quests": "Quests & XP",
+  "@nav_quests": {
+    "description": "Navigation Quests & XP"
+  },
+  "app_title": "LevelUp Money Life",
+  "@app_title": {
+    "description": "App Title"
+  }
 }

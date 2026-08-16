@@ -35,6 +35,8 @@ class ExpRewardDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentLang = Localizations.localeOf(context).languageCode;
+
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(PRadius.large),
@@ -65,7 +67,9 @@ class ExpRewardDialog extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              isLevelUp ? '🎉 LEVEL UP! เลเวล $newLevel' : title,
+              isLevelUp
+                  ? (currentLang == 'th' ? '🎉 LEVEL UP! เลเวล $newLevel' : '🎉 LEVEL UP! Level $newLevel')
+                  : (title == 'บันทึกสำเร็จ!' && currentLang == 'en' ? 'Saved Successfully!' : title),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -78,8 +82,12 @@ class ExpRewardDialog extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               isLevelUp
-                  ? 'คุณพัฒนาทักษะการเงินขึ้นอีกขั้น ปลดล็อกความสามารถใหม่!'
-                  : 'วินัยทางการเงินของคุณเพิ่มขึ้นอีกขั้น!',
+                  ? (currentLang == 'th'
+                      ? 'คุณพัฒนาทักษะการเงินขึ้นอีกขั้น ปลดล็อกความสามารถใหม่!'
+                      : 'Your financial mastery leveled up! New power unlocked.')
+                  : (currentLang == 'th'
+                      ? 'วินัยทางการเงินของคุณเพิ่มขึ้นอีกขั้น!'
+                      : 'Your financial discipline is growing stronger!'),
               style: const TextStyle(
                 fontSize: 13,
                 color: Color(0xFF64748B),
@@ -122,9 +130,9 @@ class ExpRewardDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(PRadius.medium),
                   ),
                 ),
-                child: const Text(
-                  'ยอดเยี่ยม! ลุยต่อ',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                child: Text(
+                  currentLang == 'th' ? 'ยอดเยี่ยม! ลุยต่อ' : 'Awesome! Continue',
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
               ),
             ),

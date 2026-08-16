@@ -32,6 +32,8 @@ class AchievementItem {
   bool get isUnlocked => unlocked;
   String get title => titleTh;
   String get description => descTh;
+  String getLocalizedTitle(String langCode) => langCode == 'en' ? titleEn : titleTh;
+  String getLocalizedDescription(String langCode) => langCode == 'en' ? descEn : descTh;
   String get badgeName => id;
 
   AchievementItem copyWith({

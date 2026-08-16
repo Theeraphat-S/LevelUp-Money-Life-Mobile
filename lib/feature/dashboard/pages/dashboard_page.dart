@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_app_standard/domain/models/transaction/category_item.dart';
 import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
 import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_bloc.dart';
 import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_event.dart';
@@ -12,6 +13,7 @@ import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.da
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
 import 'package:mobile_app_standard/feature/transaction/widgets/quick_add_sheet.dart';
 import 'package:mobile_app_standard/feature/transaction/widgets/slip_scan_sheet.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/router/router.dart';
 import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
 import 'package:mobile_app_standard/shared/components/appbar/bottombar_custom.dart';
@@ -59,6 +61,8 @@ class DashboardPage extends StatelessWidget {
           final netSavings = summary['netSavings'] ?? 0.0;
           final user = state.userProfile;
           final currencyFormat = NumberFormat('#,##0.00', 'en_US');
+          final i18n = AppLocalizations(context).dashboard;
+          final currentLang = Localizations.localeOf(context).languageCode;
 
           return RefreshIndicator(
             onRefresh: () async {
@@ -85,7 +89,7 @@ class DashboardPage extends StatelessWidget {
                       Expanded(
                         child: MetricTile(
                           icon: const Icon(Icons.arrow_upward_rounded),
-                          label: 'รายรับเดือนนี้',
+                          label: i18n.monthly_income,
                           value: '฿${currencyFormat.format(totalIncome)}',
                           tone: MetricTone.jade,
                         ),
@@ -94,7 +98,7 @@ class DashboardPage extends StatelessWidget {
                       Expanded(
                         child: MetricTile(
                           icon: const Icon(Icons.arrow_downward_rounded),
-                          label: 'รายจ่ายเดือนนี้',
+                          label: i18n.monthly_expense,
                           value: '฿${currencyFormat.format(totalExpense)}',
                           tone: MetricTone.rose,
                         ),
@@ -112,7 +116,7 @@ class DashboardPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'กระแสเงินสดสุทธิ (NET SAVINGS)',
+                              i18n.net_savings,
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
@@ -144,7 +148,7 @@ class DashboardPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
-                            netSavings >= 0 ? 'สถานะปกติ' : 'ใช้เกินรายรับ',
+                            netSavings >= 0 ? i18n.status_healthy : i18n.status_overspent,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
@@ -171,7 +175,7 @@ class DashboardPage extends StatelessWidget {
                                   size: 16, color: PColor.jade(context)),
                               const SizedBox(width: 6),
                               Text(
-                                'Lv.${user.level} · ${user.rankTitle}',
+                                'Lv.${user.level} · ${currentLang == 'en' ? user.rankTitleEn : user.rankTitle}',
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w700,
@@ -181,7 +185,7 @@ class DashboardPage extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            '${user.streakDays}-Day Streak 🔥',
+                            i18n.day_streak(user.streakDays),
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
@@ -203,7 +207,7 @@ class DashboardPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'คะแนนสะสมรวม: ${user.totalXp} XP',
+                                i18n.total_xp_score(user.totalXp),
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontFamily: 'monospace',
@@ -214,7 +218,7 @@ class DashboardPage extends StatelessWidget {
                                 onTap: () =>
                                     context.router.push(const QuestRoute()),
                                 child: Text(
-                                  'ดูเควส & ความสำเร็จ →',
+                                  i18n.view_quests_achievements,
                                   style: TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
@@ -236,7 +240,7 @@ class DashboardPage extends StatelessWidget {
                         child: _buildActionButton(
                           context: context,
                           icon: Icons.add_rounded,
-                          label: 'เพิ่มรายจ่าย',
+                          label: i18n.add_expense,
                           toneColor: PColor.rose(context),
                           onTap: () => QuickAddSheet.show(context,
                               initialType: TransactionType.expense),
@@ -247,7 +251,7 @@ class DashboardPage extends StatelessWidget {
                         child: _buildActionButton(
                           context: context,
                           icon: Icons.add_rounded,
-                          label: 'เพิ่มรายรับ',
+                          label: i18n.add_income,
                           toneColor: PColor.jade(context),
                           onTap: () => QuickAddSheet.show(context,
                               initialType: TransactionType.income),
@@ -258,7 +262,7 @@ class DashboardPage extends StatelessWidget {
                         child: _buildActionButton(
                           context: context,
                           icon: Icons.document_scanner_outlined,
-                          label: 'สแกนสลิป',
+                          label: i18n.scan_slip,
                           toneColor: PColor.primary(context),
                           onTap: () => SlipScanSheet.show(context),
                         ),
@@ -278,7 +282,7 @@ class DashboardPage extends StatelessWidget {
                                 size: 16, color: PColor.primary(context)),
                             const SizedBox(width: 6),
                             Text(
-                              'เควสประจำวัน (Daily Quests)',
+                              i18n.daily_quests,
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
@@ -291,7 +295,7 @@ class DashboardPage extends StatelessWidget {
                           onTap: () =>
                               context.router.push(const QuestRoute()),
                           child: Text(
-                            'ดูทั้งหมด',
+                            i18n.view_all,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
@@ -327,7 +331,7 @@ class DashboardPage extends StatelessWidget {
                               },
                             ),
                             title: Text(
-                              quest.title,
+                              quest.getLocalizedTitle(context),
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
@@ -374,7 +378,7 @@ class DashboardPage extends StatelessWidget {
                                 size: 16, color: PColor.primary(context)),
                             const SizedBox(width: 6),
                             Text(
-                              'รายการล่าสุด (Recent Transactions)',
+                              i18n.recent_transactions,
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
@@ -387,7 +391,7 @@ class DashboardPage extends StatelessWidget {
                           onTap: () =>
                               context.router.push(const TransactionRoute()),
                           child: Text(
-                            'ดูทั้งหมด',
+                            i18n.view_all,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
@@ -403,7 +407,7 @@ class DashboardPage extends StatelessWidget {
                             padding: const EdgeInsets.all(24.0),
                             child: Center(
                               child: Text(
-                                'ยังไม่มีรายการในเดือนนี้',
+                                i18n.no_transactions_month,
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: PColor.inkFaint(context),
@@ -413,6 +417,9 @@ class DashboardPage extends StatelessWidget {
                           )
                         : Column(
                             children: state.recentTransactions.map((tx) {
+                              final localizedCategory =
+                                  CategoryItem.getLocalizedCategoryName(
+                                      tx.category, currentLang);
                               return Container(
                                 decoration: BoxDecoration(
                                   border: Border(
@@ -454,7 +461,7 @@ class DashboardPage extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   subtitle: Text(
-                                    '${tx.category} • ${tx.date}',
+                                    '$localizedCategory • ${tx.date}',
                                     style: TextStyle(
                                       fontSize: 11,
                                       color: PColor.inkSoft(context),

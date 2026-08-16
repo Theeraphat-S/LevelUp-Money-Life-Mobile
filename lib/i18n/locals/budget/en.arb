@@ -1,0 +1,63 @@
+{
+  "@@locale": "en",
+  "budget_title": "Budget 50/30/20 Plan",
+  "@budget_title": {
+    "description": "Budget Plan Title"
+  },
+  "monthly_income_base": "Base Monthly Income",
+  "@monthly_income_base": {
+    "description": "Base Monthly Income Label"
+  },
+  "needs_bucket": "Needs (50%)",
+  "@needs_bucket": {
+    "description": "Needs bucket"
+  },
+  "needs_desc": "Rent, food, utilities, health, transport",
+  "@needs_desc": {
+    "description": "Needs description"
+  },
+  "wants_bucket": "Wants (30%)",
+  "@wants_bucket": {
+    "description": "Wants bucket"
+  },
+  "wants_desc": "Dining out, entertainment, shopping, leisure",
+  "@wants_desc": {
+    "description": "Wants description"
+  },
+  "savings_bucket": "Savings & Debt (20%)",
+  "@savings_bucket": {
+    "description": "Savings bucket"
+  },
+  "savings_desc": "Emergency fund, investments, debt repayment",
+  "@savings_desc": {
+    "description": "Savings description"
+  },
+  "allocated": "Allocated",
+  "@allocated": {
+    "description": "Allocated"
+  },
+  "remaining": "Remaining",
+  "@remaining": {
+    "description": "Remaining"
+  },
+  "spent": "Spent",
+  "@spent": {
+    "description": "Spent"
+  },
+  "over_budget": "Over Budget!",
+  "@over_budget": {
+    "description": "Over budget alert"
+  },
+  "adjust_budget": "Adjust Budget Allocation",
+  "@adjust_budget": {
+    "description": "Adjust budget button"
+  },
+  "save_budget_plan": "Save Budget Plan",
+  "@save_budget_plan": {
+    "description": "Save budget button"
+  },
+  "total_must_be_100": "Total allocation must equal 100%",
+  "@total_must_be_100": {
+    "description": "Validation error message"
+  }
+}

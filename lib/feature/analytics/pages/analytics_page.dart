@@ -6,6 +6,7 @@ import 'package:mobile_app_standard/domain/models/transaction/category_item.dart
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_state.dart';
+import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/router/router.dart';
 import 'package:mobile_app_standard/shared/components/appbar/bottombar_custom.dart';
 import 'package:mobile_app_standard/shared/components/bento_card.dart';
@@ -19,6 +20,9 @@ class AnalyticsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currencyFormat = NumberFormat('#,##0.00', 'en_US');
+    final i18n = AppLocalizations(context).analytics;
+    final txI18n = AppLocalizations(context).transaction;
+    final currentLang = Localizations.localeOf(context).languageCode;
 
     return Scaffold(
       backgroundColor: PColor.base(context),
@@ -70,7 +74,7 @@ class AnalyticsPage extends StatelessWidget {
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            'เปรียบเทียบกระแสเงินสด (Cash Flow)',
+                            i18n.income_vs_expense,
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -89,7 +93,7 @@ class AnalyticsPage extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('รายรับรวม',
+                                Text(txI18n.total_income,
                                     style: TextStyle(
                                         fontSize: 11,
                                         color: PColor.inkSoft(context))),
@@ -108,7 +112,7 @@ class AnalyticsPage extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text('รายจ่ายรวม',
+                                Text(txI18n.total_expense,
                                     style: TextStyle(
                                         fontSize: 11,
                                         color: PColor.inkSoft(context))),
@@ -168,7 +172,7 @@ class AnalyticsPage extends StatelessWidget {
                               const SizedBox(width: 6),
                               Expanded(
                                 child: Text(
-                                  'สัดส่วนการใช้จ่ายตามหมวดหมู่',
+                                  i18n.expense_by_category,
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w700,
@@ -182,7 +186,7 @@ class AnalyticsPage extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'รวม ฿${currencyFormat.format(totalExpense)}',
+                          '฿${currencyFormat.format(totalExpense)}',
                           style: TextStyle(
                             fontFamily: 'monospace',
                             fontSize: 11,
@@ -198,7 +202,7 @@ class AnalyticsPage extends StatelessWidget {
                             padding: const EdgeInsets.all(24.0),
                             child: Center(
                               child: Text(
-                                'ยังไม่มีข้อมูลรายจ่ายในเดือนนี้',
+                                i18n.no_data_month,
                                 style: TextStyle(
                                     fontSize: 12,
                                     color: PColor.inkFaint(context)),
@@ -230,7 +234,7 @@ class AnalyticsPage extends StatelessWidget {
                                         const SizedBox(width: 8),
                                         Expanded(
                                           child: Text(
-                                            CategoryItem.getCategoryThaiName(cat.id),
+                                            CategoryItem.getLocalizedCategoryName(cat.id, currentLang),
                                             style: TextStyle(
                                               fontSize: 13,
                                               fontWeight: FontWeight.w600,

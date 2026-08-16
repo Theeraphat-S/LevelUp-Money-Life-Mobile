@@ -1,0 +1,63 @@
+{
+  "@@locale": "th",
+  "budget_title": "แผนงบประมาณ 50/30/20",
+  "@budget_title": {
+    "description": "Budget Plan Title"
+  },
+  "monthly_income_base": "ฐานรายได้ต่อเดือน",
+  "@monthly_income_base": {
+    "description": "Base Monthly Income Label"
+  },
+  "needs_bucket": "สิ่งจำเป็น Needs (50%)",
+  "@needs_bucket": {
+    "description": "Needs bucket"
+  },
+  "needs_desc": "ค่าเช่าบ้าน, อาหาร, ค่าน้ำไฟ, สุขภาพ, เดินทาง",
+  "@needs_desc": {
+    "description": "Needs description"
+  },
+  "wants_bucket": "สิ่งที่ต้องการ Wants (30%)",
+  "@wants_bucket": {
+    "description": "Wants bucket"
+  },
+  "wants_desc": "กินข้าวนอกบ้าน, ความบันเทิง, ช้อปปิ้ง, พักผ่อน",
+  "@wants_desc": {
+    "description": "Wants description"
+  },
+  "savings_bucket": "เงินออมและหนี้สิน Savings (20%)",
+  "@savings_bucket": {
+    "description": "Savings bucket"
+  },
+  "savings_desc": "เงินสำรองฉุกเฉิน, เงินลงทุน, ผ่อนชำระหนี้",
+  "@savings_desc": {
+    "description": "Savings description"
+  },
+  "allocated": "จัดสรรแล้ว",
+  "@allocated": {
+    "description": "Allocated"
+  },
+  "remaining": "คงเหลือ",
+  "@remaining": {
+    "description": "Remaining"
+  },
+  "spent": "ใช้ไปแล้ว",
+  "@spent": {
+    "description": "Spent"
+  },
+  "over_budget": "เกินงบประมาณ!",
+  "@over_budget": {
+    "description": "Over budget alert"
+  },
+  "adjust_budget": "ปรับสัดส่วนงบประมาณ",
+  "@adjust_budget": {
+    "description": "Adjust budget button"
+  },
+  "save_budget_plan": "บันทึกแผนงบประมาณ",
+  "@save_budget_plan": {
+    "description": "Save budget button"
+  },
+  "total_must_be_100": "สัดส่วนรวมต้องเท่ากับ 100%",
+  "@total_must_be_100": {
+    "description": "Validation error message"
+  }
+}

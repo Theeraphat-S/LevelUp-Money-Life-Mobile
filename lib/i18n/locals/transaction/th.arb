@@ -1,0 +1,128 @@
+{
+  "@@locale": "th",
+  "transactions_title": "รายการธุรกรรม",
+  "@transactions_title": {
+    "description": "Transactions Page Title"
+  },
+  "total_income": "รายรับรวม",
+  "@total_income": {
+    "description": "Total Income"
+  },
+  "total_expense": "รายจ่ายรวม",
+  "@total_expense": {
+    "description": "Total Expense"
+  },
+  "net_flow": "สุทธิ",
+  "@net_flow": {
+    "description": "Net Flow"
+  },
+  "filter_all": "ทั้งหมด",
+  "@filter_all": {
+    "description": "Filter All"
+  },
+  "filter_income": "รายรับ",
+  "@filter_income": {
+    "description": "Filter Income"
+  },
+  "filter_expense": "รายจ่าย",
+  "@filter_expense": {
+    "description": "Filter Expense"
+  },
+  "search_placeholder": "ค้นหาชื่อรายการ...",
+  "@search_placeholder": {
+    "description": "Search field placeholder"
+  },
+  "no_transactions_found": "ไม่พบรายการธุรกรรม",
+  "@no_transactions_found": {
+    "description": "Empty list search message"
+  },
+  "quick_add_title": "บันทึกรายการด่วน",
+  "@quick_add_title": {
+    "description": "Quick add sheet title"
+  },
+  "edit_transaction_title": "แก้ไขรายการธุรกรรม",
+  "@edit_transaction_title": {
+    "description": "Edit transaction sheet title"
+  },
+  "transaction_name": "ชื่อรายการ",
+  "@transaction_name": {
+    "description": "Transaction item name label"
+  },
+  "transaction_name_hint": "เช่น ข้าวกลางวัน, กาแฟ, เงินเดือน",
+  "@transaction_name_hint": {
+    "description": "Transaction name placeholder"
+  },
+  "amount_thb": "จำนวนเงิน (บาท)",
+  "@amount_thb": {
+    "description": "Amount label"
+  },
+  "category": "หมวดหมู่",
+  "@category": {
+    "description": "Category label"
+  },
+  "date": "วันที่",
+  "@date": {
+    "description": "Date label"
+  },
+  "notes": "บันทึกช่วยจำ (ไม่บังคับ)",
+  "@notes": {
+    "description": "Notes label"
+  },
+  "notes_hint": "เพิ่มรายละเอียดเพิ่มเติม...",
+  "@notes_hint": {
+    "description": "Notes placeholder"
+  },
+  "save_transaction": "บันทึกรายการ (+15 XP)",
+  "@save_transaction": {
+    "description": "Save transaction button"
+  },
+  "saving": "กำลังบันทึก...",
+  "@saving": {
+    "description": "Saving state text"
+  },
+  "delete_transaction": "ลบรายการนี้",
+  "@delete_transaction": {
+    "description": "Delete button"
+  },
+  "delete_confirm_title": "ยืนยันการลบรายการ?",
+  "@delete_confirm_title": {
+    "description": "Delete dialog title"
+  },
+  "delete_confirm_msg": "คุณแน่ใจหรือไม่ว่าต้องการลบรายการธุรกรรมนี้?",
+  "@delete_confirm_msg": {
+    "description": "Delete dialog message"
+  },
+  "scan_slip_title": "สแกนสลิปโอนเงิน",
+  "@scan_slip_title": {
+    "description": "Scan slip dialog title"
+  },
+  "scan_slip_subtitle": "ตรวจจับยอดเงินและหมวดหมู่อัตโนมัติ พร้อมรับ +25 XP!",
+  "@scan_slip_subtitle": {
+    "description": "Scan slip description"
+  },
+  "select_slip_image": "เลือกรูปภาพสลิป",
+  "@select_slip_image": {
+    "description": "Select slip button"
+  },
+  "use_demo_slip": "ทดลองใช้สลิปตัวอย่าง",
+  "@use_demo_slip": {
+    "description": "Demo slip button"
+  },
+  "slip_analyzed_success": "สแกนสลิปสำเร็จเรียบร้อย!",
+  "@slip_analyzed_success": {
+    "description": "Slip success message"
+  },
+  "exp_reward_title": "ภารกิจสำเร็จ!",
+  "@exp_reward_title": {
+    "description": "EXP reward dialog title"
+  },
+  "exp_reward_msg": "คุณได้รับ +{xp} XP!",
+  "@exp_reward_msg": {
+    "description": "EXP earned message",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  }
+}
