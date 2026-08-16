@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app_standard/domain/services/storage_service.dart';
+import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
 import 'package:mobile_app_standard/feature/budget/bloc/budget_bloc.dart';
 import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_bloc.dart';
 import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_event.dart';
@@ -32,15 +32,25 @@ class _DataManagerDialogState extends State<DataManagerDialog>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _importController = TextEditingController();
-  String _exportedJson = '';
+  String _exportedJson = 'กำลังโหลดข้อมูล...';
+  bool _isLoadingExport = true;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    final storage = locator<StorageService>();
-    final jsonMap = storage.exportBackupJson();
-    _exportedJson = const JsonEncoder.withIndent('  ').convert(jsonMap);
+    _loadExportData();
+  }
+
+  Future<void> _loadExportData() async {
+    final db = locator<AppDatabase>();
+    final jsonMap = await db.exportBackupJson();
+    if (mounted) {
+      setState(() {
+        _exportedJson = const JsonEncoder.withIndent('  ').convert(jsonMap);
+        _isLoadingExport = false;
+      });
+    }
   }
 
   @override
@@ -51,6 +61,7 @@ class _DataManagerDialogState extends State<DataManagerDialog>
   }
 
   void _copyExportedJson() {
+    if (_isLoadingExport) return;
     Clipboard.setData(ClipboardData(text: _exportedJson));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('คัดลอกข้อมูล Backup JSON เรียบร้อยแล้ว')),
@@ -72,8 +83,8 @@ class _DataManagerDialogState extends State<DataManagerDialog>
         throw const FormatException('Invalid JSON map structure');
       }
 
-      final storage = locator<StorageService>();
-      final success = await storage.importBackupJson(map);
+      final db = locator<AppDatabase>();
+      final success = await db.importBackupJson(map);
 
       if (success && mounted) {
         context.read<AppGlobalBloc>().add(const InitializeAppEvent());
@@ -97,8 +108,8 @@ class _DataManagerDialogState extends State<DataManagerDialog>
   }
 
   void _resetData() async {
-    final storage = locator<StorageService>();
-    await storage.resetAllData();
+    final db = locator<AppDatabase>();
+    await db.resetAllData();
 
     if (mounted) {
       context.read<AppGlobalBloc>().add(const InitializeAppEvent());
@@ -209,27 +220,31 @@ class _DataManagerDialogState extends State<DataManagerDialog>
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(color: borderColor),
                             ),
-                            child: SingleChildScrollView(
-                              child: Text(
-                                _exportedJson,
-                                style: const TextStyle(
-                                  fontFamily: 'monospace',
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ),
+                            child: _isLoadingExport
+                                ? const Center(
+                                    child: CircularProgressIndicator())
+                                : SingleChildScrollView(
+                                    child: Text(
+                                      _exportedJson,
+                                      style: const TextStyle(
+                                        fontFamily: 'monospace',
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ),
                           ),
                         ),
                         const SizedBox(height: 12),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton.icon(
-                            onPressed: _copyExportedJson,
+                            onPressed: _isLoadingExport ? null : _copyExportedJson,
                             icon: const Icon(Icons.copy_rounded, size: 16),
                             label: const Text('คัดลอก JSON Backup'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: PColor.primary(context),
-                              foregroundColor: isDark ? PColor.darkBase : Colors.white,
+                              foregroundColor:
+                                  isDark ? PColor.darkBase : Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -265,7 +280,8 @@ class _DataManagerDialogState extends State<DataManagerDialog>
                               fontSize: 10,
                             ),
                             decoration: InputDecoration(
-                              hintText: '{\n  "version": 1,\n  "transactions": [...]\n}',
+                              hintText:
+                                  '{\n  "version": 1,\n  "transactions": [...]\n}',
                               filled: true,
                               fillColor: PColor.surfaceSubtle(context),
                               border: OutlineInputBorder(
@@ -284,7 +300,8 @@ class _DataManagerDialogState extends State<DataManagerDialog>
                             label: const Text('นำเข้าและกู้คืนข้อมูล'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: PColor.primary(context),
-                              foregroundColor: isDark ? PColor.darkBase : Colors.white,
+                              foregroundColor:
+                                  isDark ? PColor.darkBase : Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),

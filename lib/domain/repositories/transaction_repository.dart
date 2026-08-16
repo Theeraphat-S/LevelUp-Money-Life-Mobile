@@ -1,6 +1,7 @@
+import 'package:drift/drift.dart';
+import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
 import 'package:mobile_app_standard/domain/models/transaction/category_item.dart';
 import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
-import 'package:mobile_app_standard/domain/services/storage_service.dart';
 
 abstract class TransactionRepositoryInterface {
   Future<List<TransactionItem>> getTransactions({String? monthFilter});
@@ -14,17 +15,32 @@ abstract class TransactionRepositoryInterface {
 }
 
 class TransactionRepository implements TransactionRepositoryInterface {
-  final StorageService storageService;
+  final AppDatabase db;
 
-  TransactionRepository(this.storageService);
+  TransactionRepository(this.db);
 
   @override
   Future<List<TransactionItem>> getTransactions({String? monthFilter}) async {
-    final all = storageService.getTransactions();
-    if (monthFilter == null || monthFilter.isEmpty) {
-      return all;
+    final query = db.select(db.transactions)
+      ..orderBy([(t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)]);
+
+    if (monthFilter != null && monthFilter.isNotEmpty) {
+      query.where((t) => t.date.like('$monthFilter%'));
     }
-    return all.where((t) => t.formattedMonth == monthFilter).toList();
+
+    final rows = await query.get();
+    return rows
+        .map((r) => TransactionItem(
+              id: r.id,
+              name: r.name,
+              amount: r.amount,
+              date: r.date,
+              category: r.category,
+              cleared: r.cleared,
+              notes: r.notes,
+              expGained: r.expGained,
+            ))
+        .toList();
   }
 
   @override
@@ -34,50 +50,62 @@ class TransactionRepository implements TransactionRepositoryInterface {
 
   @override
   Future<TransactionItem> createTransaction(TransactionItem tx) async {
-    final all = storageService.getTransactions();
-    all.insert(0, tx);
-    await storageService.saveTransactions(all);
+    await db.into(db.transactions).insert(
+          TransactionsCompanion.insert(
+            id: tx.id,
+            name: tx.name,
+            amount: tx.amount,
+            date: tx.date,
+            category: tx.category,
+            cleared: Value(tx.cleared),
+            notes: Value(tx.notes),
+            expGained: Value(tx.expGained),
+          ),
+          mode: InsertMode.insertOrReplace,
+        );
     return tx;
   }
 
   @override
   Future<TransactionItem> updateTransaction(TransactionItem tx) async {
-    final all = storageService.getTransactions();
-    final idx = all.indexWhere((t) => t.id == tx.id);
-    if (idx != -1) {
-      all[idx] = tx;
-      await storageService.saveTransactions(all);
-    }
+    await (db.update(db.transactions)..where((t) => t.id.equals(tx.id))).write(
+      TransactionsCompanion(
+        name: Value(tx.name),
+        amount: Value(tx.amount),
+        date: Value(tx.date),
+        category: Value(tx.category),
+        cleared: Value(tx.cleared),
+        notes: Value(tx.notes),
+        expGained: Value(tx.expGained),
+      ),
+    );
     return tx;
   }
 
   @override
   Future<void> deleteTransaction(String id) async {
-    final all = storageService.getTransactions();
-    all.removeWhere((t) => t.id == id);
-    await storageService.saveTransactions(all);
+    await (db.delete(db.transactions)..where((t) => t.id.equals(id))).go();
   }
 
   @override
   Future<void> toggleCleared(String id) async {
-    final all = storageService.getTransactions();
-    final idx = all.indexWhere((t) => t.id == id);
-    if (idx != -1) {
-      all[idx] = all[idx].copyWith(cleared: !all[idx].cleared);
-      await storageService.saveTransactions(all);
+    final tx = await (db.select(db.transactions)
+          ..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+    if (tx != null) {
+      await (db.update(db.transactions)..where((t) => t.id.equals(id))).write(
+        TransactionsCompanion(cleared: Value(!tx.cleared)),
+      );
     }
   }
 
   @override
   Future<void> bulkToggleCleared(bool cleared, {String? monthFilter}) async {
-    final all = storageService.getTransactions();
-    final updated = all.map((t) {
-      if (monthFilter == null || t.formattedMonth == monthFilter) {
-        return t.copyWith(cleared: cleared);
-      }
-      return t;
-    }).toList();
-    await storageService.saveTransactions(updated);
+    final updateQuery = db.update(db.transactions);
+    if (monthFilter != null && monthFilter.isNotEmpty) {
+      updateQuery.where((t) => t.date.like('$monthFilter%'));
+    }
+    await updateQuery.write(TransactionsCompanion(cleared: Value(cleared)));
   }
 
   @override

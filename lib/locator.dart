@@ -8,7 +8,6 @@ import 'package:mobile_app_standard/domain/repositories/gamification_repository.
 import 'package:mobile_app_standard/domain/repositories/todo_repo.dart';
 import 'package:mobile_app_standard/domain/repositories/transaction_repository.dart';
 import 'package:mobile_app_standard/domain/repositories/user_repository.dart';
-import 'package:mobile_app_standard/domain/services/storage_service.dart';
 import 'package:mobile_app_standard/feature/budget/bloc/budget_bloc.dart';
 import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_bloc.dart';
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
@@ -21,34 +20,31 @@ import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
 final locator = GetIt.instance;
 
 Future<void> initLocator() async {
-  // 1. Register and Initialize Storage Service
-  final storageService = StorageService();
-  await storageService.init();
-  locator.registerSingleton<StorageService>(storageService);
+  // 1. Initialize and Register Core Local Database (Drift SQLite)
+  final db = AppDatabase();
+  await db.initDatabase();
+  locator.registerSingleton<AppDatabase>(db);
 
-  // 2. Register Core Database
-  locator.registerLazySingleton<AppDatabase>(() => AppDatabase());
-
-  // 3. Register Http / API Clients
+  // 2. Register Http / API Clients (for external or websocket utilities)
   locator.registerLazySingleton<ApiClient>(() => ApiClient());
   locator.registerLazySingleton<IpClient>(() => IpClient());
   locator.registerLazySingleton<WebSocketClient>(() => WebSocketClient());
 
-  // 4. Register Repositories (Backed by StorageService)
+  // 3. Register Repositories (Backed by Drift SQLite)
   locator.registerLazySingleton<UserRepositoryInterface>(
-      () => UserRepository(locator<StorageService>()));
+      () => UserRepository(locator<AppDatabase>()));
   locator.registerLazySingleton<TransactionRepositoryInterface>(
-      () => TransactionRepository(locator<StorageService>()));
+      () => TransactionRepository(locator<AppDatabase>()));
   locator.registerLazySingleton<GamificationRepositoryInterface>(
-      () => GamificationRepository(locator<StorageService>()));
+      () => GamificationRepository(locator<AppDatabase>()));
   locator.registerLazySingleton<BudgetRepositoryInterface>(
-      () => BudgetRepository(locator<StorageService>()));
+      () => BudgetRepository(locator<AppDatabase>()));
   locator.registerLazySingleton<TodoRepositoryInterface>(
       () => TodoRepository(locator<AppDatabase>()));
 
-  // 5. Register Blocs
+  // 4. Register Blocs
   locator.registerFactory<AppGlobalBloc>(
-      () => AppGlobalBloc(locator<StorageService>()));
+      () => AppGlobalBloc(locator<AppDatabase>()));
 
   locator.registerFactory<DashboardBloc>(() => DashboardBloc(
         userRepository: locator<UserRepositoryInterface>(),
