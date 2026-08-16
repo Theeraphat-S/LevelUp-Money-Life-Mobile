@@ -13,6 +13,7 @@ class GamificationBloc extends Bloc<GamificationEvent, GamificationState> {
     required this.userRepository,
   }) : super(const GamificationState()) {
     on<LoadGamificationDataEvent>(_onLoadData);
+    on<ToggleQuestEvent>(_onToggleQuest);
     on<ClaimQuestEvent>(_onClaimQuest);
   }
 
@@ -22,21 +23,44 @@ class GamificationBloc extends Bloc<GamificationEvent, GamificationState> {
   ) async {
     emit(state.copyWith(status: GamificationStatus.loading));
     try {
+      final evalResult = await gamificationRepository.evaluateAchievements();
       final user = await userRepository.getUserProfile();
       final quests = await gamificationRepository.getDailyQuests();
-      final achievements = await gamificationRepository.getAchievements();
 
       emit(state.copyWith(
         status: GamificationStatus.success,
         userProfile: user,
         dailyQuests: quests,
-        achievements: achievements,
+        achievements: evalResult.allAchievements,
       ));
     } catch (e) {
       emit(state.copyWith(
         status: GamificationStatus.failure,
         errorMessage: 'ไม่สามารถโหลดข้อมูลเควสได้: $e',
       ));
+    }
+  }
+
+  Future<void> _onToggleQuest(
+    ToggleQuestEvent event,
+    Emitter<GamificationState> emit,
+  ) async {
+    try {
+      final updated = await gamificationRepository.toggleQuest(event.questId);
+      final evalResult = await gamificationRepository.evaluateAchievements();
+      final user = await userRepository.getUserProfile();
+      final quests = await gamificationRepository.getDailyQuests();
+
+      emit(state.copyWith(
+        userProfile: user,
+        dailyQuests: quests,
+        achievements: evalResult.allAchievements,
+        message: updated.done
+            ? 'ทำเควสสำเร็จ! +${updated.xp} XP'
+            : 'ยกเลิกสถานะเควสเรียบร้อย',
+      ));
+    } catch (e) {
+      emit(state.copyWith(errorMessage: 'เกิดข้อผิดพลาด: $e'));
     }
   }
 
@@ -47,20 +71,15 @@ class GamificationBloc extends Bloc<GamificationEvent, GamificationState> {
     try {
       final claimed =
           await gamificationRepository.claimQuestReward(event.questId);
-      final updatedUser = await userRepository.addExp(
-        claimed.expReward,
-        coinsToAdd: claimed.coinReward,
-      );
-
-      final updatedQuests = state.dailyQuests.map((q) {
-        return q.id == event.questId ? claimed : q;
-      }).toList();
+      final evalResult = await gamificationRepository.evaluateAchievements();
+      final user = await userRepository.getUserProfile();
+      final quests = await gamificationRepository.getDailyQuests();
 
       emit(state.copyWith(
-        userProfile: updatedUser,
-        dailyQuests: updatedQuests,
-        message:
-            '✨ ปลดล็อกสำเร็จ! ได้รับ +${claimed.expReward} EXP และ +${claimed.coinReward} Coins',
+        userProfile: user,
+        dailyQuests: quests,
+        achievements: evalResult.allAchievements,
+        message: 'ปลดล็อกสำเร็จ! ได้รับ +${claimed.xp} XP',
       ));
     } catch (e) {
       emit(state.copyWith(errorMessage: 'เกิดข้อผิดพลาดในการรับรางวัล: $e'));

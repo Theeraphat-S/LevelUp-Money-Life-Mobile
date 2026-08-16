@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app_standard/domain/dto/transaction_dto.dart';
 import 'package:mobile_app_standard/domain/models/transaction/category_item.dart';
 import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
 import 'package:mobile_app_standard/domain/models/transaction/wallet_item.dart';
@@ -61,8 +60,8 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
     final availableCats = widget.categories
         .where((c) =>
             _selectedType == TransactionType.income
-                ? c.type == CategoryType.income
-                : c.type == CategoryType.expense)
+                ? c.isIncome
+                : !c.isIncome)
         .toList();
 
     _selectedCategory = availableCats.isNotEmpty
@@ -116,23 +115,23 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
       return;
     }
 
-    final title = _titleController.text.trim().isNotEmpty
+    final txName = _titleController.text.trim().isNotEmpty
         ? _titleController.text.trim()
         : _selectedCategory.name;
 
-    final request = CreateTransactionRequest(
-      title: title,
-      amount: amount,
-      type: _selectedType,
-      categoryId: _selectedCategory.id,
-      walletId: _selectedWallet.id,
-      date: _selectedDate,
-      note: _noteController.text.trim().isNotEmpty
+    final tx = TransactionItem(
+      id: 'tx_${DateTime.now().millisecondsSinceEpoch}',
+      name: txName,
+      amount: _selectedType == TransactionType.income ? amount : -amount,
+      category: _selectedCategory.id,
+      date: '${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}',
+      cleared: true,
+      notes: _noteController.text.trim().isNotEmpty
           ? _noteController.text.trim()
           : null,
     );
 
-    context.read<TransactionBloc>().add(CreateTransactionEvent(request));
+    context.read<TransactionBloc>().add(AddTransactionItemEvent(tx));
     context.read<DashboardBloc>().add(const LoadDashboardData());
 
     Navigator.of(context).pop();
@@ -151,8 +150,8 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
     final filteredCategories = widget.categories
         .where((c) =>
             _selectedType == TransactionType.income
-                ? c.type == CategoryType.income
-                : c.type == CategoryType.expense)
+                ? c.isIncome
+                : !c.isIncome)
         .toList();
 
     return Container(
@@ -193,7 +192,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                       setState(() {
                         _selectedType = TransactionType.expense;
                         final expenseCats = widget.categories
-                            .where((c) => c.type == CategoryType.expense)
+                            .where((c) => !c.isIncome)
                             .toList();
                         if (expenseCats.isNotEmpty) {
                           _selectedCategory = expenseCats.first;
@@ -230,7 +229,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                       setState(() {
                         _selectedType = TransactionType.income;
                         final incomeCats = widget.categories
-                            .where((c) => c.type == CategoryType.income)
+                            .where((c) => c.isIncome)
                             .toList();
                         if (incomeCats.isNotEmpty) {
                           _selectedCategory = incomeCats.first;

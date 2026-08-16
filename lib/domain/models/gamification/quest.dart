@@ -1,84 +1,59 @@
-enum QuestType { daily, weekly, achievement }
-enum QuestCategory { expense, income, saving, streak, budget }
+import 'package:intl/intl.dart';
 
 class QuestItem {
   final String id;
   final String title;
-  final String description;
-  final int expReward;
-  final int coinReward;
-  final QuestType type;
-  final QuestCategory category;
-  final int currentProgress;
-  final int targetProgress;
-  final bool isCompleted;
-  final bool isClaimed;
+  final String date; // "YYYY-MM-DD"
+  final int xp;
+  final bool done;
+  final String category; // "daily" | "habit" | "milestone"
 
   QuestItem({
     required this.id,
     required this.title,
-    required this.description,
-    required this.expReward,
-    required this.coinReward,
-    this.type = QuestType.daily,
-    this.category = QuestCategory.expense,
-    required this.currentProgress,
-    required this.targetProgress,
-    this.isCompleted = false,
-    this.isClaimed = false,
+    required this.date,
+    required this.xp,
+    this.done = false,
+    this.category = 'daily',
   });
 
-  double get progressRatio => targetProgress > 0
-      ? (currentProgress / targetProgress).clamp(0.0, 1.0)
-      : 0.0;
+  bool get isCompleted => done;
+  bool get isClaimed => done;
+  int get expReward => xp;
+  int get coinReward => xp ~/ 2;
+  String get description => category == 'daily'
+      ? 'Daily Quest'
+      : category == 'habit'
+          ? 'Habit Quest'
+          : 'Milestone';
 
   QuestItem copyWith({
     String? id,
     String? title,
-    String? description,
-    int? expReward,
-    int? coinReward,
-    QuestType? type,
-    QuestCategory? category,
-    int? currentProgress,
-    int? targetProgress,
-    bool? isCompleted,
-    bool? isClaimed,
+    String? date,
+    int? xp,
+    bool? done,
+    String? category,
   }) {
     return QuestItem(
       id: id ?? this.id,
       title: title ?? this.title,
-      description: description ?? this.description,
-      expReward: expReward ?? this.expReward,
-      coinReward: coinReward ?? this.coinReward,
-      type: type ?? this.type,
+      date: date ?? this.date,
+      xp: xp ?? this.xp,
+      done: done ?? this.done,
       category: category ?? this.category,
-      currentProgress: currentProgress ?? this.currentProgress,
-      targetProgress: targetProgress ?? this.targetProgress,
-      isCompleted: isCompleted ?? this.isCompleted,
-      isClaimed: isClaimed ?? this.isClaimed,
     );
   }
 
   factory QuestItem.fromJson(Map<String, dynamic> json) {
     return QuestItem(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String? ?? '',
-      expReward: json['expReward'] as int? ?? 25,
-      coinReward: json['coinReward'] as int? ?? 10,
-      type: QuestType.values.firstWhere(
-        (e) => e.name == json['type'],
-        orElse: () => QuestType.daily,
-      ),
-      category: QuestCategory.values.firstWhere(
-        (e) => e.name == json['category'],
-        orElse: () => QuestCategory.expense,
-      ),
-      currentProgress: json['currentProgress'] as int? ?? 0,
-      targetProgress: json['targetProgress'] as int? ?? 1,
-      isCompleted: json['isCompleted'] as bool? ?? false,
-      isClaimed: json['isClaimed'] as bool? ?? false,
+      id: json['id'] as String? ?? 'q_${DateTime.now().millisecondsSinceEpoch}',
+      title: json['title'] as String? ?? 'Daily Quest',
+      date: json['date'] as String? ??
+          DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      xp: json['xp'] as int? ?? json['expReward'] as int? ?? 15,
+      done: json['done'] as bool? ?? json['isCompleted'] as bool? ?? false,
+      category: json['category'] as String? ?? 'daily',
     );
   }
 
@@ -86,15 +61,40 @@ class QuestItem {
     return {
       'id': id,
       'title': title,
-      'description': description,
-      'expReward': expReward,
-      'coinReward': coinReward,
-      'type': type.name,
-      'category': category.name,
-      'currentProgress': currentProgress,
-      'targetProgress': targetProgress,
-      'isCompleted': isCompleted,
-      'isClaimed': isClaimed,
+      'date': date,
+      'xp': xp,
+      'done': done,
+      'category': category,
     };
+  }
+
+  static List<QuestItem> get defaultQuests {
+    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    return [
+      QuestItem(
+        id: 'q1',
+        title: 'บันทึกรายจ่ายประจำวันทุกรายการวันนี้',
+        date: today,
+        xp: 15,
+        done: false,
+        category: 'daily',
+      ),
+      QuestItem(
+        id: 'q2',
+        title: 'ตรวจสอบสัดส่วนการจัดสรรงบประมาณ 50/30/20',
+        date: today,
+        xp: 20,
+        done: true,
+        category: 'daily',
+      ),
+      QuestItem(
+        id: 'q3',
+        title: 'โอนเงินเก็บเข้าบัญชีเงินออมสำรองฉุกเฉิน',
+        date: today,
+        xp: 25,
+        done: false,
+        category: 'daily',
+      ),
+    ];
   }
 }

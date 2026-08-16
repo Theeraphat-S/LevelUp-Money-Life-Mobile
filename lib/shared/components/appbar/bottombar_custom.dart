@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -14,12 +12,15 @@ class BottomBarCustom extends HookWidget {
   int _getIndexFromRoute(String routeName) {
     if (routeName == DashboardRoute.name) return 0;
     if (routeName == TransactionRoute.name) return 1;
-    if (routeName == QuestRoute.name) return 2;
+    if (routeName == BudgetRoute.name) return 2;
+    if (routeName == AnalyticsRoute.name) return 3;
+    if (routeName == QuestRoute.name) return 4;
     return 0;
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final selectedIndex = useState(_getIndexFromRoute(currentRouteName));
 
     useEffect(() {
@@ -32,55 +33,148 @@ class BottomBarCustom extends HookWidget {
         context.router.push(const DashboardRoute());
       } else if (index == 1 && currentRouteName != TransactionRoute.name) {
         context.router.push(const TransactionRoute());
-      } else if (index == 2 && currentRouteName != QuestRoute.name) {
+      } else if (index == 2 && currentRouteName != BudgetRoute.name) {
+        context.router.push(const BudgetRoute());
+      } else if (index == 3 && currentRouteName != AnalyticsRoute.name) {
+        context.router.push(const AnalyticsRoute());
+      } else if (index == 4 && currentRouteName != QuestRoute.name) {
         context.router.push(const QuestRoute());
       }
       selectedIndex.value = index;
     }
 
-    if (Platform.isIOS) {
-      return CupertinoTabBar(
-        currentIndex: selectedIndex.value,
-        onTap: onItemTapped,
-        activeColor: PColor.primaryColor,
-        inactiveColor: Colors.grey.shade600,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.gamecontroller_fill),
-            label: 'หน้าหลัก',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.list_bullet),
-            label: 'ธุรกรรม',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.flag_fill),
-            label: 'เควส & EXP',
+    final surfaceColor = PColor.surface(context);
+    final activeColor = PColor.primary(context);
+    final inactiveColor = PColor.inkSoft(context);
+    final borderColor = PColor.line(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: surfaceColor,
+        border: Border(
+          top: BorderSide(color: borderColor, width: 1.0),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: isDark ? Colors.black38 : const Color(0x0A142D2B),
+            blurRadius: 12,
+            offset: const Offset(0, -2),
           ),
         ],
-      );
-    }
+      ),
+      child: SafeArea(
+        top: false,
+        child: Container(
+          height: 60,
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(
+                context: context,
+                index: 0,
+                selectedIndex: selectedIndex.value,
+                icon: Icons.dashboard_outlined,
+                activeIcon: Icons.dashboard_rounded,
+                label: 'ภาพรวม',
+                activeColor: activeColor,
+                inactiveColor: inactiveColor,
+                onTap: () => onItemTapped(0),
+              ),
+              _buildNavItem(
+                context: context,
+                index: 1,
+                selectedIndex: selectedIndex.value,
+                icon: Icons.receipt_long_outlined,
+                activeIcon: Icons.receipt_long_rounded,
+                label: 'ธุรกรรม',
+                activeColor: activeColor,
+                inactiveColor: inactiveColor,
+                onTap: () => onItemTapped(1),
+              ),
+              _buildNavItem(
+                context: context,
+                index: 2,
+                selectedIndex: selectedIndex.value,
+                icon: Icons.pie_chart_outline_rounded,
+                activeIcon: Icons.pie_chart_rounded,
+                label: 'งบ 50/30/20',
+                activeColor: activeColor,
+                inactiveColor: inactiveColor,
+                onTap: () => onItemTapped(2),
+              ),
+              _buildNavItem(
+                context: context,
+                index: 3,
+                selectedIndex: selectedIndex.value,
+                icon: Icons.analytics_outlined,
+                activeIcon: Icons.analytics_rounded,
+                label: 'วิเคราะห์',
+                activeColor: activeColor,
+                inactiveColor: inactiveColor,
+                onTap: () => onItemTapped(3),
+              ),
+              _buildNavItem(
+                context: context,
+                index: 4,
+                selectedIndex: selectedIndex.value,
+                icon: Icons.military_tech_outlined,
+                activeIcon: Icons.military_tech_rounded,
+                label: 'เควส & XP',
+                activeColor: activeColor,
+                inactiveColor: inactiveColor,
+                onTap: () => onItemTapped(4),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-    return BottomNavigationBar(
-      currentIndex: selectedIndex.value,
-      onTap: onItemTapped,
-      selectedItemColor: PColor.primaryColor,
-      unselectedItemColor: Colors.grey.shade600,
-      type: BottomNavigationBarType.fixed,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.dashboard_rounded),
-          label: 'หน้าหลัก',
+  Widget _buildNavItem({
+    required BuildContext context,
+    required int index,
+    required int selectedIndex,
+    required IconData icon,
+    required IconData activeIcon,
+    required String label,
+    required Color activeColor,
+    required Color inactiveColor,
+    required VoidCallback onTap,
+  }) {
+    final isSelected = index == selectedIndex;
+
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                isSelected ? activeIcon : icon,
+                size: 20,
+                color: isSelected ? activeColor : inactiveColor,
+              ),
+              const SizedBox(height: 3),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  color: isSelected ? activeColor : inactiveColor,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.receipt_long_rounded),
-          label: 'ธุรกรรม',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.military_tech_rounded),
-          label: 'เควส & EXP',
-        ),
-      ],
+      ),
     );
   }
 }

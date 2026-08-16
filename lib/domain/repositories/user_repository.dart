@@ -1,99 +1,66 @@
-import 'package:mobile_app_standard/domain/http_client/api_client.dart';
 import 'package:mobile_app_standard/domain/models/gamification/user_profile.dart';
+import 'package:mobile_app_standard/domain/services/gamification_engine.dart';
+import 'package:mobile_app_standard/domain/services/storage_service.dart';
 
 abstract class UserRepositoryInterface {
   Future<UserProfile> getUserProfile();
   Future<UserProfile> addExp(int expToAdd, {int coinsToAdd = 0});
   Future<UserProfile> checkInDaily();
+  Future<UserProfile> updateUnlockedAchievements(List<String> achievementIds);
 }
 
 class UserRepository implements UserRepositoryInterface {
-  final ApiClient apiClient;
+  final StorageService storageService;
 
-  // Local state cache for seamless offline / demo fallback
-  UserProfile _cachedUser = UserProfile(
-    id: 'user_hero_1',
-    name: 'นักผจญภัยการเงิน',
-    title: 'Novice Saver 🛡️',
-    avatarUrl: '',
-    level: 3,
-    currentExp: 140,
-    maxExp: 300,
-    goldCoins: 350,
-    streakDays: 4,
-    lastCheckIn: DateTime.now().subtract(const Duration(hours: 3)),
-    healthPoint: 92,
-    manaPoint: 80,
-  );
-
-  UserRepository(this.apiClient);
+  UserRepository(this.storageService);
 
   @override
   Future<UserProfile> getUserProfile() async {
-    try {
-      final response = await apiClient.dio.get('/user/profile');
-      if (response.statusCode == 200 && response.data != null) {
-        _cachedUser = UserProfile.fromJson(response.data);
-        return _cachedUser;
-      }
-    } catch (_) {
-      // Graceful fallback to cached state
-    }
-    return _cachedUser;
+    final totalXp = storageService.getTotalXp();
+    final streakDays = storageService.getStreakDays();
+    final lastActiveDate = storageService.getLastActiveDate();
+    final unlockedIds = storageService.getUnlockedAchievementIds();
+
+    return UserProfile(
+      totalXp: totalXp,
+      streakDays: streakDays,
+      lastActiveDate: lastActiveDate,
+      unlockedAchievementIds: unlockedIds,
+    );
   }
 
   @override
   Future<UserProfile> addExp(int expToAdd, {int coinsToAdd = 0}) async {
-    int newExp = _cachedUser.currentExp + expToAdd;
-    int newLevel = _cachedUser.level;
-    int maxExp = _cachedUser.maxExp;
+    final currentXp = storageService.getTotalXp();
+    final newXp = currentXp + expToAdd;
+    await storageService.saveTotalXp(newXp);
 
-    while (newExp >= maxExp) {
-      newExp -= maxExp;
-      newLevel += 1;
-      maxExp = (maxExp * 1.5).round();
-    }
+    // Also update activity streak date
+    final lastDate = storageService.getLastActiveDate();
+    final streak = storageService.getStreakDays();
+    final streakResult = GamificationEngine.updateStreak(lastDate, streak);
+    await storageService.saveStreakDays(streakResult.newStreak);
+    await storageService.saveLastActiveDate(streakResult.today);
 
-    String title = _cachedUser.title;
-    if (newLevel >= 10) {
-      title = 'Grand Finance Master 👑';
-    } else if (newLevel >= 5) {
-      title = 'Smart Investor ⚔️';
-    } else if (newLevel >= 3) {
-      title = 'Budget Explorer 🏹';
-    }
-
-    _cachedUser = _cachedUser.copyWith(
-      level: newLevel,
-      currentExp: newExp,
-      maxExp: maxExp,
-      goldCoins: _cachedUser.goldCoins + coinsToAdd,
-      title: title,
-    );
-
-    try {
-      await apiClient.dio.post('/user/exp', data: {
-        'exp': expToAdd,
-        'coins': coinsToAdd,
-      });
-    } catch (_) {}
-
-    return _cachedUser;
+    return getUserProfile();
   }
 
   @override
   Future<UserProfile> checkInDaily() async {
-    final now = DateTime.now();
-    final isNewDay = now.day != _cachedUser.lastCheckIn.day ||
-        now.month != _cachedUser.lastCheckIn.month;
+    final lastDate = storageService.getLastActiveDate();
+    final streak = storageService.getStreakDays();
+    final streakResult = GamificationEngine.updateStreak(lastDate, streak);
 
-    int newStreak = isNewDay ? _cachedUser.streakDays + 1 : _cachedUser.streakDays;
-    _cachedUser = _cachedUser.copyWith(
-      streakDays: newStreak,
-      lastCheckIn: now,
-    );
+    await storageService.saveStreakDays(streakResult.newStreak);
+    await storageService.saveLastActiveDate(streakResult.today);
 
-    await addExp(20, coinsToAdd: 15);
-    return _cachedUser;
+    return addExp(20);
+  }
+
+  @override
+  Future<UserProfile> updateUnlockedAchievements(
+      List<String> achievementIds) async {
+    await storageService.saveUnlockedAchievementIds(achievementIds);
+    return getUserProfile();
   }
 }

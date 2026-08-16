@@ -30,10 +30,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     emit(state.copyWith(status: DashboardStatus.loading));
     try {
       final user = await userRepository.getUserProfile();
-      final summary = await transactionRepository.getFinancialSummary();
-      final transactions = await transactionRepository.getTransactions();
+      final summary = await transactionRepository.getFinancialSummary(
+          monthFilter: event.monthFilter);
+      final transactions = await transactionRepository.getTransactions(
+          monthFilter: event.monthFilter);
       final quests = await gamificationRepository.getDailyQuests();
-      final budgets = await budgetRepository.getBudgets();
 
       emit(state.copyWith(
         status: DashboardStatus.success,
@@ -41,7 +42,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         summary: summary,
         recentTransactions: transactions.take(5).toList(),
         activeQuests: quests,
-        budgets: budgets,
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -59,7 +59,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       final updatedUser = await userRepository.checkInDaily();
       emit(state.copyWith(
         userProfile: updatedUser,
-        notificationMessage: '🔥 เช็คอินสำเร็จ! ได้รับ +20 EXP และ +15 Gold Coins',
+        notificationMessage: 'เช็คอินสำเร็จ! ได้รับ +20 EXP',
       ));
     } catch (e) {
       emit(state.copyWith(errorMessage: 'เกิดข้อผิดพลาดในการเช็คอิน: $e'));
@@ -73,20 +73,14 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     try {
       final claimedQuest =
           await gamificationRepository.claimQuestReward(event.questId);
-      final updatedUser = await userRepository.addExp(
-        claimedQuest.expReward,
-        coinsToAdd: claimedQuest.coinReward,
-      );
-
-      final updatedQuests = state.activeQuests.map((q) {
-        return q.id == event.questId ? claimedQuest : q;
-      }).toList();
+      final updatedUser = await userRepository.getUserProfile();
+      final quests = await gamificationRepository.getDailyQuests();
 
       emit(state.copyWith(
         userProfile: updatedUser,
-        activeQuests: updatedQuests,
+        activeQuests: quests,
         notificationMessage:
-            '🎉 รับรางวัลภารกิจสำเร็จ! +${claimedQuest.expReward} EXP, +${claimedQuest.coinReward} Coins',
+            'รับรางวัลภารกิจสำเร็จ! +${claimedQuest.xp} EXP',
       ));
     } catch (e) {
       emit(state.copyWith(errorMessage: 'ไม่สามารถรับรางวัลได้: $e'));

@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
 
-enum CategoryType { expense, income }
+enum BudgetBucket { needs, wants, savings }
 
 class CategoryItem {
   final String id;
   final String name;
   final String iconName;
   final int colorValue;
-  final CategoryType type;
+  final bool isIncome;
+  final BudgetBucket? bucket;
 
   const CategoryItem({
     required this.id,
     required this.name,
     required this.iconName,
     required this.colorValue,
-    this.type = CategoryType.expense,
+    this.isIncome = false,
+    this.bucket,
   });
 
   Color get color => Color(colorValue);
 
   factory CategoryItem.fromJson(Map<String, dynamic> json) {
-    return CategoryItem(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      iconName: json['iconName'] as String? ?? 'category',
-      colorValue: json['colorValue'] as int? ?? 0xFF3B82F6,
-      type: json['type'] == 'income' ? CategoryType.income : CategoryType.expense,
+    final id = json['id'] as String? ?? 'Food';
+    return defaultCategories.firstWhere(
+      (c) => c.id.toLowerCase() == id.toLowerCase() || c.name.toLowerCase() == id.toLowerCase(),
+      orElse: () => CategoryItem(
+        id: id,
+        name: json['name'] as String? ?? id,
+        iconName: json['iconName'] as String? ?? 'restaurant',
+        colorValue: json['colorValue'] as int? ?? 0xFFC99A4B,
+        isIncome: json['isIncome'] as bool? ?? false,
+      ),
     );
   }
 
@@ -35,73 +41,109 @@ class CategoryItem {
       'name': name,
       'iconName': iconName,
       'colorValue': colorValue,
-      'type': type.name,
+      'isIncome': isIncome,
+      'bucket': bucket?.name,
     };
   }
 
-  static List<CategoryItem> get defaultCategories => const [
-        CategoryItem(
-          id: 'cat_food',
-          name: 'อาหาร & เครื่องดื่ม',
-          iconName: 'restaurant',
-          colorValue: 0xFFEF4444, // Red
-          type: CategoryType.expense,
-        ),
-        CategoryItem(
-          id: 'cat_travel',
-          name: 'เดินทาง & คมนาคม',
-          iconName: 'directions_car',
-          colorValue: 0xFFF59E0B, // Amber
-          type: CategoryType.expense,
-        ),
-        CategoryItem(
-          id: 'cat_shopping',
-          name: 'ช้อปปิ้ง & ไลฟ์สไตล์',
-          iconName: 'shopping_bag',
-          colorValue: 0xFFEC4899, // Pink
-          type: CategoryType.expense,
-        ),
-        CategoryItem(
-          id: 'cat_bills',
-          name: 'บิล & ค่าน้ำค่าไฟ',
-          iconName: 'receipt_long',
-          colorValue: 0xFF8B5CF6, // Purple
-          type: CategoryType.expense,
-        ),
-        CategoryItem(
-          id: 'cat_entertainment',
-          name: 'ความบันเทิง & เกม',
-          iconName: 'sports_esports',
-          colorValue: 0xFF06B6D4, // Cyan
-          type: CategoryType.expense,
-        ),
-        CategoryItem(
-          id: 'cat_health',
-          name: 'สุขภาพ & ยารักษาโรค',
-          iconName: 'favorite',
-          colorValue: 0xFF10B981, // Emerald
-          type: CategoryType.expense,
-        ),
-        CategoryItem(
-          id: 'cat_salary',
-          name: 'เงินเดือน & โบนัส',
-          iconName: 'account_balance_wallet',
-          colorValue: 0xFF10B981, // Emerald
-          type: CategoryType.income,
-        ),
-        CategoryItem(
-          id: 'cat_freelance',
-          name: 'ฟรีแลนซ์ & ธุรกิจ',
-          iconName: 'work',
-          colorValue: 0xFF3B82F6, // Blue
-          type: CategoryType.income,
-        ),
-        CategoryItem(
-          id: 'cat_investment',
-          name: 'การลงทุน & ดอกเบี้ย',
-          iconName: 'trending_up',
-          colorValue: 0xFFF59E0B, // Amber
-          type: CategoryType.income,
-        ),
-      ];
+  static const List<CategoryItem> defaultCategories = [
+    CategoryItem(
+      id: 'Income',
+      name: 'Income',
+      iconName: 'trending_up',
+      colorValue: 0xFF4D8E75, // Soft Jade
+      isIncome: true,
+    ),
+    CategoryItem(
+      id: 'Food',
+      name: 'Food',
+      iconName: 'restaurant',
+      colorValue: 0xFFC99A4B, // Muted Amber
+      bucket: BudgetBucket.needs,
+    ),
+    CategoryItem(
+      id: 'Transport',
+      name: 'Transport',
+      iconName: 'directions_car',
+      colorValue: 0xFF1C5954, // Deep Teal
+      bucket: BudgetBucket.needs,
+    ),
+    CategoryItem(
+      id: 'Home',
+      name: 'Home',
+      iconName: 'home',
+      colorValue: 0xFF879B62, // Moss
+      bucket: BudgetBucket.needs,
+    ),
+    CategoryItem(
+      id: 'Health',
+      name: 'Health',
+      iconName: 'favorite',
+      colorValue: 0xFF879B62, // Moss
+      bucket: BudgetBucket.needs,
+    ),
+    CategoryItem(
+      id: 'Learning',
+      name: 'Learning',
+      iconName: 'school',
+      colorValue: 0xFF1C5954, // Deep Teal
+      bucket: BudgetBucket.wants,
+    ),
+    CategoryItem(
+      id: 'Fun',
+      name: 'Fun',
+      iconName: 'sports_esports',
+      colorValue: 0xFFC99A4B, // Muted Amber
+      bucket: BudgetBucket.wants,
+    ),
+    CategoryItem(
+      id: 'Debt',
+      name: 'Debt',
+      iconName: 'receipt_long',
+      colorValue: 0xFFB96D69, // Clay Rose
+      bucket: BudgetBucket.savings,
+    ),
+    CategoryItem(
+      id: 'Savings',
+      name: 'Savings',
+      iconName: 'account_balance_wallet',
+      colorValue: 0xFF4D8E75, // Soft Jade
+      bucket: BudgetBucket.savings,
+    ),
+  ];
+
+  static CategoryItem fromCategoryId(String categoryId) {
+    return defaultCategories.firstWhere(
+      (c) =>
+          c.id.toLowerCase() == categoryId.toLowerCase() ||
+          c.name.toLowerCase() == categoryId.toLowerCase(),
+      orElse: () => defaultCategories[1], // default Food
+    );
+  }
+
+  static String getCategoryThaiName(String categoryId) {
+    switch (categoryId) {
+      case 'Income':
+        return 'รายรับ';
+      case 'Food':
+        return 'อาหาร & เครื่องดื่ม';
+      case 'Transport':
+        return 'เดินทาง & คมนาคม';
+      case 'Home':
+        return 'ที่อยู่อาศัย & บิล';
+      case 'Health':
+        return 'สุขภาพ & ยา';
+      case 'Learning':
+        return 'การศึกษา & พัฒนาตนเอง';
+      case 'Fun':
+        return 'ความบันเทิง & ท่องเที่ยว';
+      case 'Debt':
+        return 'หนี้สิน & ผ่อนชำระ';
+      case 'Savings':
+        return 'เงินออม & ลงทุน';
+      default:
+        return categoryId;
+    }
+  }
 }
+

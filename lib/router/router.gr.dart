@@ -27,17 +27,49 @@ class DashboardRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [HomePage]
-class HomeRoute extends PageRouteInfo<void> {
-  const HomeRoute({List<PageRouteInfo>? children})
-    : super(HomeRoute.name, initialChildren: children);
+/// [TransactionPage]
+class TransactionRoute extends PageRouteInfo<void> {
+  const TransactionRoute({List<PageRouteInfo>? children})
+    : super(TransactionRoute.name, initialChildren: children);
 
-  static const String name = 'HomeRoute';
+  static const String name = 'TransactionRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const HomePage();
+      return const TransactionPage();
+    },
+  );
+}
+
+/// generated route for
+/// [BudgetPage]
+class BudgetRoute extends PageRouteInfo<void> {
+  const BudgetRoute({List<PageRouteInfo>? children})
+    : super(BudgetRoute.name, initialChildren: children);
+
+  static const String name = 'BudgetRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const BudgetPage();
+    },
+  );
+}
+
+/// generated route for
+/// [AnalyticsPage]
+class AnalyticsRoute extends PageRouteInfo<void> {
+  const AnalyticsRoute({List<PageRouteInfo>? children})
+    : super(AnalyticsRoute.name, initialChildren: children);
+
+  static const String name = 'AnalyticsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const AnalyticsPage();
     },
   );
 }
@@ -59,6 +91,22 @@ class QuestRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [HomePage]
+class HomeRoute extends PageRouteInfo<void> {
+  const HomeRoute({List<PageRouteInfo>? children})
+    : super(HomeRoute.name, initialChildren: children);
+
+  static const String name = 'HomeRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HomePage();
+    },
+  );
+}
+
+/// generated route for
 /// [TodoPage]
 class TodoRoute extends PageRouteInfo<void> {
   const TodoRoute({List<PageRouteInfo>? children})
@@ -70,22 +118,6 @@ class TodoRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const TodoPage();
-    },
-  );
-}
-
-/// generated route for
-/// [TransactionPage]
-class TransactionRoute extends PageRouteInfo<void> {
-  const TransactionRoute({List<PageRouteInfo>? children})
-    : super(TransactionRoute.name, initialChildren: children);
-
-  static const String name = 'TransactionRoute';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      return const TransactionPage();
     },
   );
 }
