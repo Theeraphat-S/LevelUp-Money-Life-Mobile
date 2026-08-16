@@ -191,14 +191,18 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    isEditing ? 'แก้ไขรายการ' : 'บันทึกรายการ',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: PColor.ink(context),
+                  Expanded(
+                    child: Text(
+                      isEditing ? 'แก้ไขรายการ' : 'บันทึกรายการ',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: PColor.ink(context),
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  const SizedBox(width: 8),
                   // Segmented Switcher (Expense / Income)
                   Container(
                     padding: const EdgeInsets.all(3),
@@ -359,11 +363,14 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                                         ),
                                       ),
                                       const SizedBox(width: 8),
-                                      Text(
-                                        CategoryItem.getCategoryThaiName(cat.id),
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: PColor.ink(context),
+                                      Expanded(
+                                        child: Text(
+                                          CategoryItem.getCategoryThaiName(cat.id),
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: PColor.ink(context),
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                     ],
@@ -493,14 +500,17 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                       setState(() => _isCleared = val ?? true);
                     },
                   ),
-                  GestureDetector(
-                    onTap: () => setState(() => _isCleared = !_isCleared),
-                    child: Text(
-                      'ทำเครื่องหมายตรวจสอบแล้ว (Cleared)',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: PColor.ink(context),
-                        fontWeight: FontWeight.w500,
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _isCleared = !_isCleared),
+                      child: Text(
+                        'ทำเครื่องหมายตรวจสอบแล้ว (Cleared)',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: PColor.ink(context),
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
@@ -524,12 +534,16 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(Icons.check_rounded, size: 18),
                       const SizedBox(width: 6),
-                      Text(
-                        isEditing ? 'บันทึกการแก้ไข' : 'บันทึกรายการ',
-                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                      Flexible(
+                        child: Text(
+                          isEditing ? 'บันทึกการแก้ไข' : 'บันทึกรายการ',
+                          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Container(

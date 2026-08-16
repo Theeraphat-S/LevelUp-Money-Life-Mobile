@@ -182,26 +182,28 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'สแกนสลิปโอนเงิน (OCR)',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: PColor.ink(context),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'สแกนสลิปโอนเงิน (OCR)',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: PColor.ink(context),
+                          ),
                         ),
-                      ),
-                      Text(
-                        'ดึงยอดเงิน วันที่ และหมวดหมู่อัตโนมัติ (+25 XP Bonus)',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: PColor.jadeInk(context),
-                          fontWeight: FontWeight.w600,
+                        Text(
+                          'ดึงยอดเงิน วันที่ และหมวดหมู่อัตโนมัติ (+25 XP Bonus)',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: PColor.jadeInk(context),
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),

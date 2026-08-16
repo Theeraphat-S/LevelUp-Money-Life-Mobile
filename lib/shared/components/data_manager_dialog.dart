@@ -160,15 +160,17 @@ class _DataManagerDialogState extends State<DataManagerDialog>
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Text(
-                    'จัดการข้อมูล (Data Manager)',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: PColor.ink(context),
+                  Expanded(
+                    child: Text(
+                      'จัดการข้อมูล (Data Manager)',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: PColor.ink(context),
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const Spacer(),
                   IconButton(
                     icon: const Icon(Icons.close_rounded, size: 20),
                     onPressed: () => Navigator.of(context).pop(),
