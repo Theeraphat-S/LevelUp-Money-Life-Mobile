@@ -5,6 +5,7 @@ import 'package:mobile_app_standard/domain/models/transaction/transaction_item.d
 
 abstract class TransactionRepositoryInterface {
   Future<List<TransactionItem>> getTransactions({String? monthFilter});
+  Stream<List<TransactionItem>> watchTransactions({String? monthFilter});
   Future<List<CategoryItem>> getCategories();
   Future<TransactionItem> createTransaction(TransactionItem tx);
   Future<TransactionItem> updateTransaction(TransactionItem tx);
@@ -18,6 +19,29 @@ class TransactionRepository implements TransactionRepositoryInterface {
   final AppDatabase db;
 
   TransactionRepository(this.db);
+
+  @override
+  Stream<List<TransactionItem>> watchTransactions({String? monthFilter}) {
+    final query = db.select(db.transactions)
+      ..orderBy([(t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)]);
+
+    if (monthFilter != null && monthFilter.isNotEmpty) {
+      query.where((t) => t.date.like('$monthFilter%'));
+    }
+
+    return query.watch().map((rows) => rows
+        .map((r) => TransactionItem(
+              id: r.id,
+              name: r.name,
+              amount: r.amount,
+              date: r.date,
+              category: r.category,
+              cleared: r.cleared,
+              notes: r.notes,
+              expGained: r.expGained,
+            ))
+        .toList());
+  }
 
   @override
   Future<List<TransactionItem>> getTransactions({String? monthFilter}) async {

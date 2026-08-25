@@ -3,6 +3,7 @@ import 'package:mobile_app_standard/domain/models/transaction/transaction_item.d
 import 'package:mobile_app_standard/domain/repositories/gamification_repository.dart';
 import 'package:mobile_app_standard/domain/repositories/transaction_repository.dart';
 import 'package:mobile_app_standard/domain/repositories/user_repository.dart';
+import 'package:mobile_app_standard/domain/services/gamification_engine.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_state.dart';
 
@@ -32,26 +33,33 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(state.copyWith(status: TransactionStatus.loading));
     try {
       final month = event.monthFilter ?? state.monthFilter;
-      final transactions =
-          await transactionRepository.getTransactions(monthFilter: month);
       final categories = await transactionRepository.getCategories();
 
-      final filtered = _applyFiltersAndSort(
-        transactions,
-        categoryFilter: state.categoryFilter,
-        clearedFilter: state.clearedFilter,
-        search: state.searchQuery,
-        sortField: state.sortField,
-        sortAscending: state.sortAscending,
-      );
+      await emit.forEach<List<TransactionItem>>(
+        transactionRepository.watchTransactions(monthFilter: month),
+        onData: (transactions) {
+          final filtered = _applyFiltersAndSort(
+            transactions,
+            categoryFilter: state.categoryFilter,
+            clearedFilter: state.clearedFilter,
+            search: state.searchQuery,
+            sortField: state.sortField,
+            sortAscending: state.sortAscending,
+          );
 
-      emit(state.copyWith(
-        status: TransactionStatus.success,
-        allTransactions: transactions,
-        filteredTransactions: filtered,
-        categories: categories,
-        monthFilter: month,
-      ));
+          return state.copyWith(
+            status: TransactionStatus.success,
+            allTransactions: transactions,
+            filteredTransactions: filtered,
+            categories: categories,
+            monthFilter: month,
+          );
+        },
+        onError: (e, stack) => state.copyWith(
+          status: TransactionStatus.failure,
+          errorMessage: 'เกิดข้อผิดพลาดในการโหลดรายการ: $e',
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(
         status: TransactionStatus.failure,
@@ -68,19 +76,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       final tx = event.transaction;
       await transactionRepository.createTransaction(tx);
 
-      // Calculate EXP to award
-      int expAwarded = tx.isIncome ? 30 : 15;
-      if (tx.notes != null && tx.notes!.isNotEmpty) {
-        expAwarded += 5; // writing note bonus
-      }
+      // Calculate EXP to award using central GamificationEngine
+      int expAwarded = GamificationEngine.calculateTransactionXp(
+        isIncome: tx.isIncome,
+        hasNotes: tx.notes != null && tx.notes!.trim().isNotEmpty,
+      );
       if (event.bonusExp > 0) {
         expAwarded += event.bonusExp; // slip scan bonus
       }
 
       await userRepository.addExp(expAwarded);
       await gamificationRepository.evaluateAchievements();
-
-      add(LoadTransactionsEvent(monthFilter: state.monthFilter));
     } catch (e) {
       emit(state.copyWith(
         errorMessage: 'ไม่สามารถบันทึกรายการได้: $e',
@@ -95,7 +101,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     try {
       await transactionRepository.updateTransaction(event.transaction);
       await gamificationRepository.evaluateAchievements();
-      add(LoadTransactionsEvent(monthFilter: state.monthFilter));
     } catch (e) {
       emit(state.copyWith(errorMessage: 'ไม่สามารถแก้ไขรายการได้: $e'));
     }
@@ -107,7 +112,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) async {
     try {
       await transactionRepository.deleteTransaction(event.id);
-      add(LoadTransactionsEvent(monthFilter: state.monthFilter));
     } catch (e) {
       emit(state.copyWith(errorMessage: 'ไม่สามารถลบรายการได้: $e'));
     }
@@ -120,7 +124,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     try {
       await transactionRepository.toggleCleared(event.id);
       await gamificationRepository.evaluateAchievements();
-      add(LoadTransactionsEvent(monthFilter: state.monthFilter));
     } catch (e) {
       emit(state.copyWith(errorMessage: 'เกิดข้อผิดพลาด: $e'));
     }
@@ -134,7 +137,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       await transactionRepository.bulkToggleCleared(
           cleared: event.cleared, monthFilter: state.monthFilter);
       await gamificationRepository.evaluateAchievements();
-      add(LoadTransactionsEvent(monthFilter: state.monthFilter));
     } catch (e) {
       emit(state.copyWith(errorMessage: 'เกิดข้อผิดพลาด: $e'));
     }

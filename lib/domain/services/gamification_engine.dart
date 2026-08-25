@@ -37,6 +37,19 @@ class AchievementEvaluationResult {
 }
 
 class GamificationEngine {
+  /// Calculates XP awarded for logging a transaction:
+  /// +30 XP for Income, +15 XP for Expense, +5 XP bonus if notes are provided.
+  static int calculateTransactionXp({
+    required bool isIncome,
+    bool hasNotes = false,
+  }) {
+    int xp = isIncome ? 30 : 15;
+    if (hasNotes) {
+      xp += 5;
+    }
+    return xp;
+  }
+
   /// Calculates XP required to advance from Level L to Level L+1.
   /// Level 1: 100 XP, Level 2: 150 XP, Level 3: 200 XP...
   static int getXpRequiredForLevel(int level) {

@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app_standard/feature/budget/bloc/budget_bloc.dart';
 import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_bloc.dart';
 import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_event.dart';
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_state.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
-import 'package:mobile_app_standard/feature/transaction/widgets/quick_add_sheet.dart';
-import 'package:mobile_app_standard/feature/transaction/widgets/slip_scan_sheet.dart';
-import 'package:mobile_app_standard/i18n/i18n.dart';
 import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
-import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
-import 'package:mobile_app_standard/shared/bloc/language/language_event.dart';
-import 'package:mobile_app_standard/shared/bloc/language/language_state.dart';
-import 'package:mobile_app_standard/shared/components/data_manager_dialog.dart';
-import 'package:mobile_app_standard/shared/components/gamification_badges.dart';
+import 'package:mobile_app_standard/shared/components/settings_sheet.dart';
 import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
 
 class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
@@ -23,7 +17,7 @@ class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
   const HeaderCommandDeck({super.key, this.onOpenQuests});
 
   @override
-  Size get preferredSize => const Size.fromHeight(108.0);
+  Size get preferredSize => const Size.fromHeight(60.0);
 
   void _changeMonth(BuildContext context, String currentMonth, int offset) {
     try {
@@ -44,12 +38,12 @@ class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
       context.read<AppGlobalBloc>().add(ChangeActiveMonthEvent(newMonthStr));
       context.read<DashboardBloc>().add(LoadDashboardData(monthFilter: newMonthStr));
       context.read<TransactionBloc>().add(LoadTransactionsEvent(monthFilter: newMonthStr));
+      context.read<BudgetBloc>().add(LoadBudgetDataEvent(monthFilter: newMonthStr));
     } catch (_) {}
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final surfaceColor = PColor.surface(context);
     final borderColor = PColor.line(context);
 
@@ -63,228 +57,149 @@ class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+          child: Row(
             children: [
-              // Top Row: Logo/Title + Theme, Language & Modals
-              Row(
-                children: [
-                  // App Title with Brand icon
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: PColor.primarySoft(context),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      Icons.shield_outlined,
-                      color: PColor.primary(context),
-                      size: 16,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'LevelUp Money Life',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.3,
-                        color: PColor.ink(context),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-
-                  // Quick Action: Scan Slip
-                  _buildHeaderIconButton(
-                    context: context,
-                    icon: Icons.document_scanner_outlined,
-                    tooltip: AppLocalizations(context).dashboard.slip_scan_tooltip,
-                    onTap: () => SlipScanSheet.show(context),
-                  ),
-                  const SizedBox(width: 4),
-
-                  // Quick Action: Quick Add
-                  _buildHeaderIconButton(
-                    context: context,
-                    icon: Icons.add_circle_outline_rounded,
-                    tooltip: AppLocalizations(context).dashboard.quick_add_tooltip,
-                    isPrimary: true,
-                    onTap: () => QuickAddSheet.show(context),
-                  ),
-                  const SizedBox(width: 4),
-
-                  // Language Switcher Toggle
-                  BlocBuilder<LanguageBloc, LanguageState>(
-                    builder: (context, langState) {
-                      final isThai = langState.locale.languageCode == 'th';
-                      return Tooltip(
-                        message: AppLocalizations(context).dashboard.language_toggle_tooltip,
-                        child: Material(
-                          color: PColor.surfaceSubtle(context),
-                          borderRadius: BorderRadius.circular(8),
-                          child: InkWell(
-                            onTap: () {
-                              final nextLocale =
-                                  isThai ? const Locale('en') : const Locale('th');
-                              context
-                                  .read<LanguageBloc>()
-                                  .add(ChangeLanguageEvent(nextLocale));
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 6, vertical: 6),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: PColor.line(context),
-                                  width: 1,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.translate_rounded,
-                                    size: 14,
-                                    color: PColor.primary(context),
-                                  ),
-                                  const SizedBox(width: 3),
-                                  Text(
-                                    isThai ? 'TH' : 'EN',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w800,
-                                      color: PColor.ink(context),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 4),
-
-                  // Theme Toggle
-                  _buildHeaderIconButton(
-                    context: context,
-                    icon: isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                    tooltip: AppLocalizations(context).dashboard.theme_toggle_tooltip,
-                    onTap: () {
-                      final newMode = isDark ? ThemeMode.light : ThemeMode.dark;
-                      context.read<AppGlobalBloc>().add(ChangeThemeModeEvent(newMode));
-                    },
-                  ),
-                  const SizedBox(width: 4),
-
-                  // Data Manager (Backup / Export / Import)
-                  _buildHeaderIconButton(
-                    context: context,
-                    icon: Icons.folder_open_outlined,
-                    tooltip: AppLocalizations(context).dashboard.data_manager_tooltip,
-                    onTap: () => DataManagerDialog.show(context),
-                  ),
-                ],
+              // Brand Icon & Name
+              Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: PColor.primarySoft(context),
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                child: Icon(
+                  Icons.shield_outlined,
+                  color: PColor.primary(context),
+                  size: 15,
+                ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  'LevelUp Money Life',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
+                    color: PColor.ink(context),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 6),
 
-              // Bottom Row: Active Month Picker + Badges (Level / Streak)
+              // Center-Right: Compact Month Selector Pill
               BlocBuilder<AppGlobalBloc, AppGlobalState>(
                 builder: (context, appState) {
                   final activeMonth = appState.activeMonth;
 
-                  return Row(
-                    children: [
-                      // Month Selector Pill
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: PColor.surfaceSubtle(context),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: borderColor, width: 1),
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: PColor.surfaceSubtle(context),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: borderColor, width: 1),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          onTap: () => _changeMonth(context, activeMonth, -1),
+                          borderRadius: BorderRadius.circular(6),
+                          child: Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: Icon(
+                              Icons.chevron_left_rounded,
+                              size: 16,
+                              color: PColor.ink(context),
+                            ),
+                          ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Text(
+                            activeMonth,
+                            style: TextStyle(
+                              fontFamily: 'monospace',
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: PColor.ink(context),
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () => _changeMonth(context, activeMonth, 1),
+                          borderRadius: BorderRadius.circular(6),
+                          child: Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: Icon(
+                              Icons.chevron_right_rounded,
+                              size: 16,
+                              color: PColor.ink(context),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(width: 6),
+
+              // Top-Right: Profile Avatar Button with Level Badge (Opens SettingsSheet)
+              BlocBuilder<GamificationBloc, GamificationState>(
+                builder: (context, gState) {
+                  final user = gState.userProfile;
+                  final level = user?.level ?? 1;
+
+                  return Tooltip(
+                    message: 'การตั้งค่า & โปรไฟล์',
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => SettingsSheet.show(context),
+                        borderRadius: BorderRadius.circular(20),
+                        child: Stack(
+                          clipBehavior: Clip.none,
                           children: [
-                            InkWell(
-                              onTap: () => _changeMonth(context, activeMonth, -1),
-                              borderRadius: BorderRadius.circular(6),
-                              child: Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Icon(
-                                  Icons.chevron_left_rounded,
-                                  size: 18,
-                                  color: PColor.ink(context),
-                                ),
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: PColor.surfaceSubtle(context),
+                                border: Border.all(color: borderColor, width: 1.5),
+                              ),
+                              child: Icon(
+                                Icons.person_rounded,
+                                size: 18,
+                                color: PColor.primary(context),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                              child: Text(
-                                activeMonth,
-                                style: TextStyle(
-                                  fontFamily: 'monospace',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: PColor.ink(context),
+                            Positioned(
+                              right: -4,
+                              bottom: -2,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                                decoration: BoxDecoration(
+                                  color: PColor.primary(context),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: surfaceColor, width: 1),
                                 ),
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () => _changeMonth(context, activeMonth, 1),
-                              borderRadius: BorderRadius.circular(6),
-                              child: Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Icon(
-                                  Icons.chevron_right_rounded,
-                                  size: 18,
-                                  color: PColor.ink(context),
+                                child: Text(
+                                  'Lv.$level',
+                                  style: const TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 8),
-
-                      // Gamification State Badges
-                      Expanded(
-                        child: BlocBuilder<GamificationBloc, GamificationState>(
-                          builder: (context, gState) {
-                            final user = gState.userProfile;
-                            if (user == null) {
-                              return const SizedBox.shrink();
-                            }
-
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Flexible(
-                                  child: LevelRankBadge(
-                                    level: user.level,
-                                    rankTitle: user.rankTitle,
-                                    onTap: onOpenQuests,
-                                  ),
-                                ),
-                                const SizedBox(width: 6),
-                                StreakBadge(
-                                  streakDays: user.streakDays,
-                                  onTap: onOpenQuests,
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+                    ),
                   );
                 },
               ),
@@ -294,46 +209,5 @@ class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
   }
-
-  Widget _buildHeaderIconButton({
-    required BuildContext context,
-    required IconData icon,
-    required String tooltip,
-    required VoidCallback onTap,
-    bool isPrimary = false,
-  }) {
-    final primaryColor = PColor.primary(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: isPrimary
-            ? primaryColor
-            : PColor.surfaceSubtle(context),
-        borderRadius: BorderRadius.circular(8),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(8),
-          child: Container(
-            padding: const EdgeInsets.all(7),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: isPrimary ? primaryColor : PColor.line(context),
-                width: 1,
-              ),
-            ),
-            child: Icon(
-              icon,
-              size: 16,
-              color: isPrimary
-                  ? (isDark ? PColor.darkBase : Colors.white)
-                  : PColor.ink(context),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
+

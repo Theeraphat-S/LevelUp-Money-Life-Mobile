@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
 import 'package:mobile_app_standard/domain/repositories/budget_repository.dart';
 import 'package:mobile_app_standard/domain/repositories/gamification_repository.dart';
 import 'package:mobile_app_standard/domain/repositories/transaction_repository.dart';
@@ -30,19 +31,41 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     emit(state.copyWith(status: DashboardStatus.loading));
     try {
       final user = await userRepository.getUserProfile();
-      final summary = await transactionRepository.getFinancialSummary(
-          monthFilter: event.monthFilter);
-      final transactions = await transactionRepository.getTransactions(
-          monthFilter: event.monthFilter);
       final quests = await gamificationRepository.getDailyQuests();
 
-      emit(state.copyWith(
-        status: DashboardStatus.success,
-        userProfile: user,
-        summary: summary,
-        recentTransactions: transactions.take(5).toList(),
-        activeQuests: quests,
-      ));
+      await emit.forEach<List<TransactionItem>>(
+        transactionRepository.watchTransactions(monthFilter: event.monthFilter),
+        onData: (transactions) {
+          double totalIncome = 0.0;
+          double totalExpense = 0.0;
+          for (final tx in transactions) {
+            if (tx.isIncome) {
+              totalIncome += tx.absAmount;
+            } else {
+              totalExpense += tx.absAmount;
+            }
+          }
+          final netSavings = totalIncome - totalExpense;
+          final summary = {
+            'totalIncome': totalIncome,
+            'totalExpense': totalExpense,
+            'netSavings': netSavings,
+            'totalBalance': netSavings,
+          };
+
+          return state.copyWith(
+            status: DashboardStatus.success,
+            userProfile: user,
+            summary: summary,
+            recentTransactions: transactions.take(5).toList(),
+            activeQuests: quests,
+          );
+        },
+        onError: (e, stack) => state.copyWith(
+          status: DashboardStatus.failure,
+          errorMessage: 'ไม่สามารถโหลดข้อมูลได้: $e',
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(
         status: DashboardStatus.failure,

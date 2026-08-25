@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_standard/domain/models/budget/allocation_item.dart';
+import 'package:mobile_app_standard/domain/models/transaction/category_item.dart';
+import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
 import 'package:mobile_app_standard/domain/repositories/budget_repository.dart';
 import 'package:mobile_app_standard/domain/repositories/gamification_repository.dart';
 import 'package:mobile_app_standard/domain/repositories/transaction_repository.dart';
@@ -106,21 +108,70 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
     try {
       final income = await budgetRepository.getMonthlyIncome();
       final allocations = await budgetRepository.getAllocations();
-      final transactions = await transactionRepository.getTransactions(
-          monthFilter: event.monthFilter);
 
-      final summaries = await budgetRepository.calculateBucketSummaries(
-        transactions: transactions,
-        monthlyIncome: income,
-        allocations: allocations,
+      await emit.forEach<List<TransactionItem>>(
+        transactionRepository.watchTransactions(monthFilter: event.monthFilter),
+        onData: (transactions) {
+          double needsSpent = 0.0;
+          double wantsSpent = 0.0;
+          double savingsSpent = 0.0;
+
+          for (final tx in transactions) {
+            if (tx.isIncome) continue;
+            final cat = tx.categoryItem;
+            final absAmt = tx.absAmount;
+
+            if (cat.bucket == BudgetBucket.needs) {
+              needsSpent += absAmt;
+            } else if (cat.bucket == BudgetBucket.wants) {
+              wantsSpent += absAmt;
+            } else if (cat.bucket == BudgetBucket.savings) {
+              savingsSpent += absAmt;
+            } else {
+              needsSpent += absAmt;
+            }
+          }
+
+          final summaries = allocations.map((alloc) {
+            final budgetAmount = (income * alloc.percent) / 100.0;
+            double spent = 0.0;
+            if (alloc.id == 'needs') {
+              spent = needsSpent;
+            } else if (alloc.id == 'wants') {
+              spent = wantsSpent;
+            } else if (alloc.id == 'savings') {
+              spent = savingsSpent;
+            }
+
+            final remaining = budgetAmount - spent;
+            final progress = budgetAmount > 0
+                ? ((spent / budgetAmount) * 100.0).clamp(0.0, 100.0)
+                : 0.0;
+
+            return BucketSpendingSummary(
+              id: alloc.id,
+              label: alloc.label,
+              percent: alloc.percent,
+              budgetAmount: budgetAmount,
+              spentAmount: spent,
+              remainingAmount: remaining,
+              progressPercent: progress,
+              color: alloc.color,
+            );
+          }).toList();
+
+          return state.copyWith(
+            status: BudgetStatus.success,
+            monthlyIncome: income,
+            allocations: allocations,
+            summaries: summaries,
+          );
+        },
+        onError: (e, stack) => state.copyWith(
+          status: BudgetStatus.failure,
+          errorMessage: 'ไม่สามารถโหลดข้อมูลงบประมาณได้: $e',
+        ),
       );
-
-      emit(state.copyWith(
-        status: BudgetStatus.success,
-        monthlyIncome: income,
-        allocations: allocations,
-        summaries: summaries,
-      ));
     } catch (e) {
       emit(state.copyWith(
         status: BudgetStatus.failure,
