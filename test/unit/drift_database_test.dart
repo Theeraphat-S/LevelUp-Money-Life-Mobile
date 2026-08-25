@@ -136,5 +136,25 @@ void main() {
       final success = await db.importBackupJson(backup);
       expect(success, true);
     });
+
+    test('watchTransactions emits updated list reactively when new transaction is added', () async {
+      final stream = transactionRepo.watchTransactions();
+      
+      expect(
+        stream,
+        emitsThrough(predicate<List<TransactionItem>>(
+          (list) => list.any((t) => t.id == 'stream_test_tx'),
+        )),
+      );
+
+      await transactionRepo.createTransaction(TransactionItem(
+        id: 'stream_test_tx',
+        name: 'ชาไทยเย็น',
+        amount: -50.0,
+        date: '2026-08-25',
+        category: 'Food',
+      ));
+    });
   });
 }
+

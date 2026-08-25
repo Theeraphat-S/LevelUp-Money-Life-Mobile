@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toastification/toastification.dart';
 import 'package:mobile_app_standard/config/config.dart';
 import 'package:mobile_app_standard/feature/budget/bloc/budget_bloc.dart';
 import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_bloc.dart';
@@ -113,16 +114,18 @@ class MyApp extends StatelessWidget {
               ),
             );
 
-            return MaterialApp.router(
-              title: 'LevelUp Money Life',
-              debugShowCheckedModeBanner: false,
-              supportedLocales: I18n.all,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              locale: languageState.locale,
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              themeMode: appState.themeMode,
-              routerConfig: _appRouter.config(),
+            return ToastificationWrapper(
+              child: MaterialApp.router(
+                title: 'LevelUp Money Life',
+                debugShowCheckedModeBanner: false,
+                supportedLocales: I18n.all,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                locale: languageState.locale,
+                theme: lightTheme,
+                darkTheme: darkTheme,
+                themeMode: appState.themeMode,
+                routerConfig: _appRouter.config(),
+              ),
             );
           },
         );

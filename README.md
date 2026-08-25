@@ -1,66 +1,97 @@
-# LevelUp Money Life (Mobile App)
+# LevelUp Money Life (Mobile App) 🚀
 
-> **LevelUp Money Life** — แอปพลิเคชันบันทึกและบริหารจัดการการเงินส่วนบุคคล (Personal Finance) ที่ผสานระบบ **Gamification & RPG Elements** เพื่อเปลี่ยนการสร้างวินัยทางการเงินให้สนุกและท้าทายยิ่งขึ้น พัฒนาด้วย Flutter ตามสถาปัตยกรรม Clean / Feature-Driven Architecture และ BLoC Pattern
+<div align="center">
+
+![Flutter](https://img.shields.io/badge/Flutter-3.38.9-02569B?style=for-the-badge&logo=flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-3.10.8-0175C2?style=for-the-badge&logo=dart&logoColor=white)
+![SQLite Drift](https://img.shields.io/badge/Database-Drift_SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![Hive](https://img.shields.io/badge/Storage-Hive_Local-FFA000?style=for-the-badge&logo=hive&logoColor=white)
+![BLoC](https://img.shields.io/badge/State_Management-BLoC_Pattern-8A2BE2?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-31%2F31_Passed-22C55E?style=for-the-badge&logo=checkmarx&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
+
+<p align="center">
+  <b>แอปพลิเคชันบริหารจัดการการเงินส่วนบุคคลระดับมือโปร ผสานระบบ Gamification RPG และ Reactive Drift SQLite Architecture</b><br>
+  บันทึกรายรับ-รายจ่ายความเร็วสูงใน 3 วินาทีด้วย SmartNumpad & QuickTemplate พร้อมระบบวิเคราะห์งบประมาณ 50/30/20
+</p>
+
+</div>
 
 ---
 
 ## 📑 สารบัญ (Table of Contents)
 
-- [ฟีเจอร์หลัก (Key Features)](#-ฟีเจอร์หลัก-key-features)
-- [เทคโนโลยีและเครื่องมือ (Tech Stack)](#-เทคโนโลยีและเครื่องมือ-tech-stack)
-- [โครงสร้างโปรเจกต์ (Project Structure)](#-โครงสร้างโปรเจกต์-project-structure)
-- [เริ่มต้นพัฒนา (Getting Started)](#-เริ่มต้นพัฒนา-getting-started)
-  - [ความต้องการเบื้องต้น (Prerequisites)](#ความต้องการเบื้องต้น-prerequisites)
-  - [การติดตั้งและรันโปรเจกต์ (Installation & Run)](#การติดตั้งและรันโปรเจกต์-installation--run)
-  - [การจัดการ Environment (.env)](#การจัดการ-environment-env)
-- [การสร้างโค้ดอัตโนมัติ (Code Generation)](#-การสร้างโค้ดอัตโนมัติ-code-generation)
-  - [Build Runner (Database & Routing)](#1-build-runner-database--routing)
-  - [ระบบแปลภาษา (i18n / Localization)](#2-ระบบแปลภาษา-i18n--localization)
-- [คำสั่งและสคริปต์สำหรับการพัฒนา (Development Scripts)](#-คำสั่งและสคริปต์สำหรับการพัฒนา-development-scripts)
-  - [สร้าง Feature ใหม่ด้วย Script](#สร้าง-feature-ใหม่ด้วย-script)
-  - [Flavors & การ Build แอป](#flavors--การ-build-แอป)
-- [ฐานข้อมูลและการจัดเก็บข้อมูล (Storage & Database)](#-ฐานข้อมูลและการจัดเก็บข้อมูล-storage--database)
-  - [Drift (SQLite)](#drift-sqlite)
-  - [Hive (Local Cache / Key-Value)](#hive-local-cache--key-value)
-- [แนวทางการเขียนโค้ด (Best Practices & Conventions)](#-แนวทางการเขียนโค้ด-best-practices--conventions)
-- [การ Build และ Deploy สำหรับ iOS / Android](#-การ-build-และ-deploy-สำหรับ-ios--android)
+1. [ไฮไลต์และฟีเจอร์เด่น (Key Highlights)](#-ไฮไลต์และฟีเจอร์เด่น-key-highlights)
+2. [สถาปัตยกรรมระบบ (System Architecture)](#-สถาปัตยกรรมระบบ-system-architecture)
+3. [เทคโนโลยีและเครื่องมือ (Tech Stack)](#-เทคโนโลยีและเครื่องมือ-tech-stack)
+4. [โครงสร้างโปรเจกต์ (Project Structure)](#-โครงสร้างโปรเจกต์-project-structure)
+5. [คู่มือการเริ่มต้นพัฒนา (Getting Started)](#-คู่มือการเริ่มต้นพัฒนา-getting-started)
+6. [การสร้างโค้ดอัตโนมัติ (Code Generation)](#-การสร้างโค้ดอัตโนมัติ-code-generation)
+7. [การทดสอบคุณภาพ (Testing & Quality Assurance)](#-การทดสอบคุณภาพ-testing--quality-assurance)
+8. [การ Build และ Deployment](#-การ-build-และ-deployment)
+9. [ข้อตกลงและแนวทางการเขียนโค้ด (Coding Standards)](#-ข้อตกลงและแนวทางการเขียนโค้ด-coding-standards)
 
 ---
 
-## ✨ ฟีเจอร์หลัก (Key Features)
+## 🌟 ไฮไลต์และฟีเจอร์เด่น (Key Highlights)
 
-- 🎮 **Gamification & RPG System**
-  - แสดงสถานะตัวละคร (Level, EXP bar, Status HP)
-  - ระบบ Daily Quests และ Achievements ทางการเงิน
-  - มอบ EXP และ Level Up เมื่อมีวินัยในการบันทึกรายรับ-รายจ่าย
-- 📊 **Financial Dashboard**
-  - ภาพรวมยอดเงินคงเหลือ รายรับ และรายจ่ายประจำเดือน/วัน
-  - สรุปงบประมาณ (Budget Overview) และสถานะทางการเงิน
-  - รายการธุรกรรมล่าสุด (Recent Transactions)
-- 💸 **Transaction Management**
-  - บันทึกรายรับ-รายจ่าย ระบุหมวดหมู่ จำนวนเงิน และบันทึกข้อความ
-  - แสดงประวัติรายการย้อนหลังพร้อมตัวกรอง
-- 🌐 **Multi-Language (i18n)**
-  - รองรับทั้งภาษาไทยและภาษาอังกฤษ (Thai / English)
-  - สลับภาษาได้ทันทีแบบ Dynamic ภายในแอป
-- 🗄️ **Local-first Architecture**
-  - ใช้งานแบบ Offline ได้ด้วย SQLite (Drift) และ Local Caching (Hive)
+### 1. ⚡ High-Speed All-in-One QuickAdd Sheet & SmartNumpad
+- **แป้นตัวเลขอัจฉริยะ (SmartNumpad)**: คีย์บอร์ดสัมผัสเร็วในตัวพร้อมระบบคำนวณเลขบวกลบ (`+`, `-`) และ Haptic Feedback
+- **บันทึกจบใน 3 วินาที**: รวมการเลือกประเภท (รายรับ/รายจ่าย), หมวดหมู่, ยอดเงิน, โน้ต และปุ่มส่งข้อมูลไว้ในหน้าต่าง Bottom Sheet เดียว
+- **ระบบปักหมุด ⭐**: กดดาวเพื่อบันทึกรายการโปรดเป็น Template ส่วนตัวลง Hive Storage
+
+### 2. 🪄 QuickTemplate Engine & Frequency Detection
+- **1-Tap Shortcut Ribbon**: แถบชิปรายการด่วนด้านบนคีย์บอร์ด บันทึกยอดเงินและหมวดหมู่อัตโนมัติด้วยการแตะเพียงครั้งเดียว
+- **อัลกอริทึมเรียนรู้พฤติกรรม**: วิเคราะห์ประวัติธุรกรรมเพื่อแนะนำ **Top 5 Frequent Items** ที่ใช้บ่อยที่สุด
+
+### 3. 🔄 Reactive Drift SQLite Streams (Real-time Sync)
+- **Local-First Reactive Architecture**: ใช้ Drift SQLite `watchTransactions()` กระจาย Stream ไปยัง `DashboardBloc`, `BudgetBloc`, และ `TransactionBloc`
+- **Zero Manual Reloads**: ทุกการเพิ่ม ลบ หรือแก้ไขข้อมูล จะอัปเดตหน้า Dashboard, กราฟ Analytics, และงบประมาณทันทีแบบ Real-time ข้ามแท็บ
+
+### 4. 🎮 Gamification RPG Progression & Non-blocking Feedback
+- **Level & Rank Mastery**: คำนวณเลเวลและแรงค์จากค่าประสบการณ์รวม (Novice, Tactician, Strategist, Guardian, Sovereign, Maestro)
+- **Floating XP Toast**: แจ้งเตือนรับคะแนน `+XP` (พร้อมโบนัส +5 XP เมื่อกรอกโน้ต) แบบ Toast ด้านบน ไม่ขัดจังหวะการบันทึกรายการถัดไป
+- **Daily Quests & Streak System**: ภารกิจทางการเงินรายวันและตัวคูณความต่อเนื่องของการบันทึก (Streak Days)
+
+### 5. 📊 50/30/20 Budgeting & Visual Financial Analytics
+- **Budget Bucket Allocation**: แบ่งสัดส่วนค่าใช้จ่ายตามหลัก 50% Needs, 30% Wants, 20% Savings พร้อมแถบสีแจ้งเตือน Overbudget
+- **Cash Flow Visualization**: กราฟแสดงสัดส่วนรายรับ-รายจ่ายและยอดเงินออมสุทธิประจำเดือน
+
+### 6. 🎛️ Compact CommandDeck & SettingsSheet Hub
+- **Slim Navigation Bar (~60px)**: ดีไซน์มินิมอล พร้อมตัวสลับเดือน (Month Switcher) ที่ซิงค์ทุก BLoC พร้อมกัน
+- **Settings & Data Management**: สลับธีม 3 รูปแบบ (`System` / `Light` / `Dark`), สลับภาษา (`TH` / `EN`), และระบบ **Export/Import ข้อมูลสำรอง JSON แบบ Offline 100%**
+
+---
+
+## 🏗️ สถาปัตยกรรมระบบ (System Architecture)
+
+โปรเจกต์ได้รับการออกแบบตามหลัก **Clean Architecture** และ **Feature-Driven Pattern**:
+
+```mermaid
+graph TD
+    UI[Presentation Layer: Pages & Widgets] -->|Dispatch Events| BLOC[BLoC Layer: Business Logic]
+    BLOC -->|Subscribe Reactive Streams| REPO[Domain Repositories]
+    REPO -->|Query / Mutate| DRIFT[(Drift SQLite DB)]
+    REPO -->|Read / Write Fast Cache| HIVE[(Hive Local Storage)]
+    DRIFT -.->|Emit Stream Updates| REPO
+    REPO -.->|emit.forEach Updates| BLOC
+    BLOC -.->|Rebuild State| UI
+```
 
 ---
 
 ## 🛠️ เทคโนโลยีและเครื่องมือ (Tech Stack)
 
-| ส่วนประกอบ | เทคโนโลยี / ไลบรารี | รายละเอียด |
+| หมวดหมู่ | เทคโนโลยี / ไลบรารี | วัตถุประสงค์การใช้งาน |
 | :--- | :--- | :--- |
-| **Framework** | Flutter (Dart SDK `^3.10.8`, FVM `3.38.9`) | Multi-platform Mobile Development |
-| **State Management** | `flutter_bloc` & `equatable` | BLoC Pattern สำหรับการจัดการ State |
-| **Dependency Injection** | `get_it` | Service Locator & Dependency Injection |
-| **Routing / Navigation** | `auto_route` & `auto_route_generator` | Strongly-typed Routing & Deep Linking |
-| **Local Database** | `drift` & `drift_flutter` | SQLite ORM สำหรับตารางข้อมูลหลัก |
-| **Key-Value Storage** | `hive` & `hive_flutter` | Local Storage ความเร็วสูงสำหรับ Cache |
-| **Networking & HTTP** | `dio` & `web_socket_channel` | REST API Client และ WebSocket Integration |
-| **Localization** | `flutter_localizations` & `intl` | จัดการภาษา i18n ด้วย `.arb` Files |
-| **Design System / UI** | `flutter_tailwind_colors`, `skeletonizer`, `toastification` | Design Tokens, Skeleton Loaders, Toast Notifications |
+| **Core Framework** | `Flutter 3.38.9` / `Dart ^3.10.8` | Cross-Platform Mobile Engine |
+| **State Management** | `flutter_bloc` & `equatable` | จัดการ State แบบ Event-Driven ปลอด Side-effects |
+| **Dependency Injection** | `get_it` | Service Locator & Dependency Inversion |
+| **Routing** | `auto_route` & `auto_route_generator` | Deep-linking & Strongly-typed Route Navigation |
+| **Local Relational DB** | `drift` & `drift_flutter` | SQLite ORM รองรับ Reactive Query Streams และ Schema Migrations |
+| **Key-Value Storage** | `hive` & `hive_flutter` | NoSQL Local Storage ความเร็วสูงสำหรับ QuickTemplates & Preferences |
+| **UI Design System** | `flutter_tailwind_colors`, `toastification` | Design Tokens, Spacing Scale, Non-blocking Toasts |
+| **Internationalization** | `flutter_localizations` & `intl` | จัดการภาษา TH/EN แบบ Type-safe ผ่าน `.arb` |
 
 ---
 
@@ -68,142 +99,141 @@
 
 ```bash
 lib/
-├── config/                        # การตั้งค่าแอป เช่น โหลด Environment Variables
-│   └── config.dart
-├── domain/                        # Data Layer / Business Logic Core
-│   ├── datasource/
-│   │   ├── app_datebase.dart      # Drift Database Configuration (SQLite)
-│   │   ├── app_datebase.g.dart    # Generated Database Code
-│   │   └── hive_config.dart       # Hive Local Storage Setup
-│   ├── dto/                       # Data Transfer Objects
-│   ├── http_client/
-│   │   ├── api_client.dart        # Dio HTTP Client
-│   │   ├── ip.dart                # IP Service Client
-│   │   └── websocket.dart         # WebSocket Connection Handler
-│   ├── models/                    # Data Entities & Database Tables
-│   │   ├── budget/                # โมเดลงบประมาณ
-│   │   ├── gamification/          # โมเดลระบบ Quest, Level, EXP
-│   │   ├── todo_table.dart        # ตัวอย่างโมเดล Todo Table
-│   │   └── transaction/           # โมเดลธุรกรรม รายรับ-รายจ่าย
-│   └── repositories/              # Repository Interfaces & Implementations
-│       ├── budget_repository.dart
-│       ├── gamification_repository.dart
-│       ├── todo_repo.dart
-│       ├── transaction_repository.dart
-│       └── user_repository.dart
-├── feature/                       # Presentation Layer (แยกตาม Feature)
-│   ├── dashboard/                 # หน้าหลักแสดงภาพรวมการเงินและ RPG HUD
-│   │   ├── bloc/                  # DashboardBloc, Event, State
-│   │   ├── pages/                 # DashboardPage
-│   │   └── widgets/               # FinancialOverview, RPGHudCard, DailyQuests, RecentTransactions
-│   ├── gamification/              # ระบบเควส เลเวล และความสำเร็จ
-│   │   ├── bloc/                  # GamificationBloc
-│   │   └── pages/                 # QuestPage
-│   ├── transaction/               # ระบบบันทึกและจัดการธุรกรรม
-│   │   ├── bloc/                  # TransactionBloc
-│   │   ├── pages/                 # TransactionPage
-│   │   └── widgets/               # AddTransactionSheet, ExpRewardDialog
-│   ├── home/                      # หน้า Home & WebSocket Demo
-│   │   ├── bloc/
-│   │   └── pages/
-│   └── todo/                      # ตัวอย่างระบบ Todo CRUD
-│       ├── bloc/
-│       ├── pages/
-│       └── widgets/
-├── i18n/                          # การจัดการภาษาและคำแปล
-│   ├── i18n.dart                  # Generated Localization Aggregator
-│   └── locals/                    # ไฟล์ .arb แยกตามหน้าและโมดูล
-│       ├── appbar/
-│       ├── general/
-│       ├── home_page/
-│       └── todo_page/
-├── router/                        # AutoRoute Configuration
-│   ├── router.dart
-│   └── router.gr.dart             # Generated Route Configuration
-├── shared/                        # สิ่งที่ใช้ร่วมกันทั่วทั้งแอป
-│   ├── bloc/                      # Shared BLoCs (เช่น LanguageBloc)
-│   ├── components/                # Reusable UI Widgets (AppBar, Dropdowns, Cards)
-│   ├── styles/                    # Typography & TextStyles
-│   ├── tokens/                    # Design Tokens (Colors, Spacing, Radius, Shadow, Size)
-│   └── utils/                     # Utility Functions (Debouncer, Formatters)
-├── locator.dart                   # GetIt Dependency Injection Registration
-└── main.dart                      # App Entry Point & Provider Setup
+├── config/                        # Environment & Global App Configuration
+├── domain/                        # Core Business Logic & Data Contracts
+│   ├── datasource/                # SQLite (Drift) & NoSQL (Hive) Data Sources
+│   ├── models/                    # Domain Entities (Transaction, Budget, Gamification, QuickTemplate)
+│   ├── repositories/              # Repository Contracts & Implementations
+│   └── services/                  # Core Engines (GamificationEngine, QuickTemplateService)
+├── feature/                       # Presentation Features (Feature-Driven Structure)
+│   ├── dashboard/                 # Overview Dashboard, BentoCards, RPG HUD
+│   ├── budget/                    # 50/30/20 Budgeting & Allocation Sliders
+│   ├── gamification/              # Quest Hub, Achievement Badges, Progression
+│   ├── transaction/               # Transaction Ledger, Filters, Slip Scanner, QuickAddSheet
+│   └── home/                      # Shell Scaffolding & Navigation Hub
+├── i18n/                          # Multi-language Localizations (TH / EN)
+├── router/                        # AutoRoute Configuration & Guards
+├── shared/                        # Shared Design System & Reusable Components
+│   ├── bloc/                      # AppGlobalBloc, LanguageBloc
+│   ├── components/                # HeaderCommandDeck, SmartNumpad, SettingsSheet, FloatingXpToast
+│   └── tokens/                    # PColor Tokens, Spacing, Typography
+├── locator.dart                   # Dependency Injection Service Locator
+└── main.dart                      # Application Entry Point
 ```
 
 ---
 
-## 🚀 เริ่มต้นพัฒนา (Getting Started)
+## 🚀 คู่มือการเริ่มต้นพัฒนา (Getting Started)
 
-### ความต้องการเบื้องต้น (Prerequisites)
-
-- [Flutter Version Management (FVM)](https://fvm.app/) หรือ Flutter SDK (เวอร์ชันแนะนำ: `3.38.9`)
+### ข้อกำหนดเบื้องต้น (Prerequisites)
+- [FVM (Flutter Version Management)](https://fvm.app/) หรือ Flutter SDK `3.38.9`
 - Dart SDK `^3.10.8`
-- Android Studio / Xcode สำหรับการรัน Emulator / Simulator
+- Android Studio / Xcode
 
-### การติดตั้งและรันโปรเจกต์ (Installation & Run)
+### ขั้นตอนการติดตั้งและรันโปรเจกต์
 
-1. **Clone repository และเข้าสู่โฟลเดอร์โปรเจกต์:**
+1. **Clone repository:**
    ```bash
    git clone https://github.com/Theeraphat-S/LevelUp-Money-Life-Mobile.git
    cd LevelUp-Money-Life-Mobile
    ```
 
-2. **เลือกใช้เวอร์ชัน Flutter ผ่าน FVM:**
+2. **เลือกใช้ Flutter SDK ผ่าน FVM:**
    ```bash
    fvm use 3.38.9
    ```
 
-3. **ติดตั้ง Dependencies:**
+3. **ติดตั้ง Package Dependencies:**
    ```bash
    fvm flutter pub get
    ```
 
-4. **สร้างไฟล์ Code Generation (Drift, AutoRoute):**
+4. **สร้าง Generated Code (Drift Database, AutoRoute):**
    ```bash
    dart run build_runner build --delete-conflicting-outputs
    ```
 
-5. **สร้างไฟล์ระบบภาษา (i18n):**
-   ```bash
-   ./generate_i18n.sh
-   # หรือสำหรับ Windows PowerShell / Git Bash:
-   # bash generate_i18n.sh
-   ```
-
-6. **เปิด Emulator / ต่ออุปกรณ์จริง แล้วเริ่มรันแอป:**
+5. **รัน Application:**
    ```bash
    fvm flutter run
    ```
 
 ---
 
-### การจัดการ Environment (.env)
-
-คัดลอกไฟล์ตัวอย่าง `.env.example` ไปเป็น `.env`:
-
-```bash
-cp .env.example .env
-```
-
-กำหนดค่าตัวแปรใน `.env`:
-```env
-API_CHECK_IP=https://api.ipify.org?format=json
-WS_URL=wss://echo.websocket.org
-```
-
----
-
 ## ⚙️ การสร้างโค้ดอัตโนมัติ (Code Generation)
 
-### 1. Build Runner (Database & Routing)
-
-เมื่อมีการแก้ไขตารางใน Drift Database (`app_datebase.dart`, `*_table.dart`) หรือเพิ่ม Route ใหม่ใน `router.dart`:
-
+### 1. Drift Database & AutoRoute
+เมื่อมีการแก้ไขตาราง SQLite หรือสร้างหน้า Route ใหม่:
 ```bash
 # Build รอบเดียว
 dart run build_runner build --delete-conflicting-outputs
 
-# หรือ Watch mode เพื่อ build อัตโนมัติเมื่อไฟล์เปลี่ยน
+# หรือรันในโหมด Watch
+dart run build_runner watch --delete-conflicting-outputs
+```
+
+### 2. ระบบแปลภาษา (i18n Localization)
+โปรเจกต์มีสคริปต์รวมคำแปลอัตโนมัติ:
+```bash
+./generate_i18n.sh
+```
+
+---
+
+## 🧪 การทดสอบคุณภาพ (Testing & Quality Assurance)
+
+โปรเจกต์ให้ความสำคัญกับความถูกต้องของระบบการเงินและ UX ด้วย Automated Test Suites:
+
+```bash
+# รันการวิเคราะห์ Static Analysis
+flutter analyze
+
+# รันชุดแบบทดสอบทั้งหมด
+flutter test
+```
+
+### รายการ Test Coverage หลัก (31/31 Tests Passed):
+- **Drift SQLite Reactive Streams**: ตรวจสอบการปล่อย Stream ข้อมูลอัตโนมัติเมื่อเกิด Transaction CRUD
+- **Gamification Engine**: ตรวจสอบสูตรคำนวณเลเวล, Streak Multiplier, รางวัล +XP, และการปลดล็อก Achievements
+- **SmartNumpad Math Parser**: ตรวจสอบการคำนวณนิพจน์คณิตศาสตร์ (`+`, `-`, ทศนิยม)
+- **QuickTemplate Engine**: ตรวจสอบการบันทึก, กรองหมวดหมู่, และ Serializer
+- **Responsive Layout & Overflow Tests**: ทดสอบการแสดงผลบนหน้าจอขนาดมาตรฐาน (360dp) และหน้าจอขนาดเล็กพิเศษ (320dp) ปราศจาก RenderFlex Overflow 100%
+
+---
+
+## 📦 การ Build และ Deployment
+
+### Android APK:
+```bash
+# Development Build
+./build_apk_dev.sh
+
+# Production Release Build
+./build_apk_prod.sh
+```
+
+### iOS IPA (Fastlane & Archive):
+```bash
+cd ios && pod install
+fvm flutter build ipa --release
+```
+
+---
+
+## 📐 ข้อตกลงและแนวทางการเขียนโค้ด (Coding Standards)
+
+- **Domain Terminology**: ยึดตาม [`CONTEXT.md`](file:///CONTEXT.md) อย่างเคร่งครัด
+  - ใช้ `Transaction`, `SmartNumpad`, `QuickTemplate`, `GamificationEngine`, `FloatingXpToast`, `CommandDeck`
+- **Immutability & State**: ใช้ `Equatable` สำหรับ State และ Events ทุกตัวใน BLoC
+- **Reactive Stream Handling**: รับฟังการเปลี่ยนแปลงข้อมูลจาก Database ผ่าน `emit.forEach` เพื่อหลีกเลี่ยง Side-effects
+- **Localization**: รองรับ 2 ภาษา (`TH` และ `EN`) ผ่าน `CategoryItem.getLocalizedCategoryName` และ `AppLocalizations`
+
+---
+
+## 👥 ผู้พัฒนาและการติดต่อ (Authors & License)
+
+- **Repository:** [Theeraphat-S/LevelUp-Money-Life-Mobile](https://github.com/Theeraphat-S/LevelUp-Money-Life-Mobile)
+- **License:** MIT Licensebuild อัตโนมัติเมื่อไฟล์เปลี่ยน
 dart run build_runner watch --delete-conflicting-outputs
 ```
 

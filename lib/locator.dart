@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
+import 'package:mobile_app_standard/domain/datasource/hive_config.dart';
 import 'package:mobile_app_standard/domain/http_client/api_client.dart';
 import 'package:mobile_app_standard/domain/http_client/ip.dart';
 import 'package:mobile_app_standard/domain/http_client/websocket.dart';
@@ -8,6 +9,7 @@ import 'package:mobile_app_standard/domain/repositories/gamification_repository.
 import 'package:mobile_app_standard/domain/repositories/todo_repo.dart';
 import 'package:mobile_app_standard/domain/repositories/transaction_repository.dart';
 import 'package:mobile_app_standard/domain/repositories/user_repository.dart';
+import 'package:mobile_app_standard/domain/services/quick_template_service.dart';
 import 'package:mobile_app_standard/feature/budget/bloc/budget_bloc.dart';
 import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_bloc.dart';
 import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
@@ -20,7 +22,10 @@ import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
 final locator = GetIt.instance;
 
 Future<void> initLocator() async {
-  // 1. Initialize and Register Core Local Database (Drift SQLite)
+  // 1. Initialize and Register Core Local Database (Drift SQLite) and Hive Storage
+  await HiveConfig.init();
+  await QuickTemplateService.init();
+
   final db = AppDatabase();
   await db.initDatabase();
   locator.registerSingleton<AppDatabase>(db);

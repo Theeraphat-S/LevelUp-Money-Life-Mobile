@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_standard/domain/models/transaction/category_item.dart';
+import 'package:mobile_app_standard/domain/models/transaction/quick_template.dart';
 import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
-import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_bloc.dart';
-import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_event.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
+import 'package:mobile_app_standard/domain/services/gamification_engine.dart';
+import 'package:mobile_app_standard/domain/services/quick_template_service.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
 import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
-import 'package:mobile_app_standard/i18n/i18n.dart';
+import 'package:mobile_app_standard/shared/components/smart_numpad.dart';
+import 'package:mobile_app_standard/shared/components/toasts/floating_xp_toast.dart';
 import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
 
 class QuickAddSheet extends StatefulWidget {
@@ -44,12 +45,17 @@ class QuickAddSheet extends StatefulWidget {
 
 class _QuickAddSheetState extends State<QuickAddSheet> {
   late bool _isIncome;
-  late TextEditingController _nameController;
-  late TextEditingController _amountController;
-  late TextEditingController _notesController;
+  late String _amountInput;
+  late String _name;
+  late String _notes;
   late String _selectedCategory;
   late String _selectedDate;
   late bool _isCleared;
+  bool _isEditingName = false;
+  bool _showNoteInput = false;
+  late TextEditingController _nameController;
+  late TextEditingController _notesController;
+  List<QuickTemplate> _templates = [];
 
   @override
   void initState() {
@@ -57,88 +63,166 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
     final tx = widget.initialTransaction;
     if (tx != null) {
       _isIncome = tx.isIncome;
-      _nameController = TextEditingController(text: tx.name);
-      _amountController = TextEditingController(text: tx.absAmount.toStringAsFixed(0));
-      _notesController = TextEditingController(text: tx.notes ?? '');
+      _amountInput = tx.absAmount == tx.absAmount.roundToDouble()
+          ? tx.absAmount.toInt().toString()
+          : tx.absAmount.toStringAsFixed(2);
+      _name = tx.name;
+      _notes = tx.notes ?? '';
       _selectedCategory = tx.category;
       _selectedDate = tx.date;
       _isCleared = tx.cleared;
+      _showNoteInput = _notes.isNotEmpty;
     } else {
       _isIncome = widget.initialType == TransactionType.income;
-      _nameController = TextEditingController();
-      _amountController = TextEditingController();
-      _notesController = TextEditingController();
+      _amountInput = '';
+      _name = '';
+      _notes = '';
       _selectedCategory = _isIncome ? 'Income' : 'Food';
       _selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       _isCleared = true;
+      _showNoteInput = false;
+    }
+
+    _nameController = TextEditingController(text: _name);
+    _notesController = TextEditingController(text: _notes);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _loadTemplates();
+      }
+    });
+  }
+
+  Future<void> _loadTemplates() async {
+    try {
+      final recent = context.read<TransactionBloc>().state.allTransactions;
+      final tpls = await QuickTemplateService.getTemplates(recentTransactions: recent);
+      if (mounted) {
+        setState(() {
+          _templates = tpls.where((t) => t.isIncome == _isIncome).toList();
+        });
+      }
+    } catch (_) {
+      final tpls = await QuickTemplateService.getTemplates();
+      if (mounted) {
+        setState(() {
+          _templates = tpls.where((t) => t.isIncome == _isIncome).toList();
+        });
+      }
     }
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _amountController.dispose();
     _notesController.dispose();
     super.dispose();
   }
 
   int get _calculatedXpReward {
-    int xp = _isIncome ? 30 : 15;
-    if (_notesController.text.trim().isNotEmpty) {
-      xp += 5;
+    return GamificationEngine.calculateTransactionXp(
+      isIncome: _isIncome,
+      hasNotes: _notes.trim().isNotEmpty,
+    );
+  }
+
+  void _applyTemplate(QuickTemplate template) {
+    HapticFeedback.lightImpact();
+    setState(() {
+      _name = template.name;
+      _nameController.text = template.name;
+      _selectedCategory = template.category;
+      _amountInput = template.defaultAmount == template.defaultAmount.roundToDouble()
+          ? template.defaultAmount.toInt().toString()
+          : template.defaultAmount.toStringAsFixed(2);
+    });
+  }
+
+  Future<void> _pinCurrentAsTemplate() async {
+    final currentLang = Localizations.localeOf(context).languageCode;
+    final isThai = currentLang == 'th';
+    final name = _name.trim().isNotEmpty
+        ? _name.trim()
+        : CategoryItem.getLocalizedCategoryName(_selectedCategory, currentLang);
+    final amountVal = SmartNumpad.parseEvaluatedAmount(_amountInput);
+
+    final newTpl = QuickTemplate(
+      id: 'template_${DateTime.now().millisecondsSinceEpoch}',
+      name: name,
+      category: _selectedCategory,
+      defaultAmount: amountVal > 0 ? amountVal : (_isIncome ? 100.0 : 50.0),
+      isIncome: _isIncome,
+      isPinned: true,
+    );
+
+    await QuickTemplateService.pinTemplate(newTpl);
+    HapticFeedback.mediumImpact();
+    await _loadTemplates();
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            isThai
+                ? 'ปักหมุด "$name" เป็นแม่แบบด่วนแล้ว ⭐'
+                : 'Pinned "$name" as QuickTemplate ⭐',
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
     }
-    return xp;
   }
 
   void _saveTransaction() {
-    final name = _nameController.text.trim();
-    final amountText = _amountController.text.trim();
-    final amountVal = double.tryParse(amountText);
-
-    if (name.isEmpty) {
+    final amountVal = SmartNumpad.parseEvaluatedAmount(_amountInput);
+    if (amountVal <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('กรุณากรอกชื่อรายการ')),
+        const SnackBar(
+          content: Text('กรุณาระบุจำนวนเงิน'),
+          duration: Duration(seconds: 2),
+        ),
       );
       return;
     }
 
-    if (amountVal == null || amountVal <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('กรุณากรอกจำนวนเงินที่ถูกต้อง')),
-      );
-      return;
-    }
+    final currentLang = Localizations.localeOf(context).languageCode;
+    final categoryDisplayName = CategoryItem.getLocalizedCategoryName(
+      _selectedCategory,
+      currentLang,
+    );
+
+    final finalName = _name.trim().isNotEmpty
+        ? _name.trim()
+        : categoryDisplayName;
+
+    final id = widget.initialTransaction?.id ??
+        'tx_${DateTime.now().millisecondsSinceEpoch}';
 
     final finalAmount = _isIncome ? amountVal : -amountVal;
-    final notes = _notesController.text.trim().isEmpty ? null : _notesController.text.trim();
+
+    final tx = TransactionItem(
+      id: id,
+      name: finalName,
+      amount: finalAmount,
+      date: _selectedDate,
+      category: _selectedCategory,
+      cleared: _isCleared,
+      notes: _notes.trim().isNotEmpty ? _notes.trim() : null,
+      expGained: _calculatedXpReward,
+    );
 
     if (widget.initialTransaction != null) {
-      final updated = widget.initialTransaction!.copyWith(
-        name: name,
-        amount: finalAmount,
-        category: _isIncome ? 'Income' : _selectedCategory,
-        date: _selectedDate,
-        cleared: _isCleared,
-        notes: notes,
-      );
-      context.read<TransactionBloc>().add(UpdateTransactionItemEvent(updated));
+      context.read<TransactionBloc>().add(UpdateTransactionItemEvent(tx));
     } else {
-      final newTx = TransactionItem(
-        id: 'tx_${DateTime.now().millisecondsSinceEpoch}',
-        name: name,
-        amount: finalAmount,
-        category: _isIncome ? 'Income' : _selectedCategory,
-        date: _selectedDate,
-        cleared: _isCleared,
-        notes: notes,
-      );
-      context.read<TransactionBloc>().add(AddTransactionItemEvent(newTx));
+      context.read<TransactionBloc>().add(AddTransactionItemEvent(tx));
     }
 
-    context.read<DashboardBloc>().add(const LoadDashboardData());
-    context.read<GamificationBloc>().add(const LoadGamificationDataEvent());
-
     Navigator.of(context).pop();
+
+    showFloatingXpToast(
+      context: context,
+      xpGained: _calculatedXpReward,
+      message: _isIncome ? 'บันทึกรายรับสำเร็จ' : 'บันทึกรายจ่ายสำเร็จ',
+    );
   }
 
   @override
@@ -146,436 +230,455 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final surfaceColor = PColor.surface(context);
     final borderColor = PColor.line(context);
-    final isEditing = widget.initialTransaction != null;
-    final i18n = AppLocalizations(context).transaction;
     final currentLang = Localizations.localeOf(context).languageCode;
+    final isThai = currentLang == 'th';
 
     final categories = CategoryItem.defaultCategories
         .where((c) => _isIncome ? c.isIncome : !c.isIncome)
         .toList();
 
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
+    return Container(
+      decoration: BoxDecoration(
+        color: surfaceColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border.all(color: borderColor),
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: surfaceColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          border: Border.all(color: borderColor, width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: isDark ? Colors.black54 : const Color(0x1A142D2B),
-              blurRadius: 24,
-              offset: const Offset(0, -4),
+      padding: EdgeInsets.only(
+        top: 12,
+        bottom: MediaQuery.of(context).padding.bottom + 8,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+          // Drag Handle
+          Center(
+            child: Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: PColor.inkFaint(context).withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-          ],
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Grab Handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
+          ),
+          const SizedBox(height: 10),
+
+          // Header Row: Type Toggle (Expense / Income) & Date Pill & Close
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              children: [
+                // Type Segmented Control
+                Container(
+                  padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                    color: PColor.line(context),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Title & Type Switcher
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      isEditing ? i18n.edit_transaction_title : i18n.quick_add_title,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: PColor.ink(context),
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  // Segmented Switcher (Expense / Income)
-                  Container(
-                    padding: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      color: PColor.surfaceSubtle(context),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: borderColor, width: 1),
-                    ),
-                    child: Row(
-                      children: [
-                        _buildTypeButton(
-                          label: i18n.filter_expense,
-                          isSelected: !_isIncome,
-                          activeColor: PColor.rose(context),
-                          onTap: () => setState(() {
-                            _isIncome = false;
-                            if (_selectedCategory == 'Income') {
-                              _selectedCategory = 'Food';
-                            }
-                          }),
-                        ),
-                        _buildTypeButton(
-                          label: i18n.filter_income,
-                          isSelected: _isIncome,
-                          activeColor: PColor.jade(context),
-                          onTap: () => setState(() {
-                            _isIncome = true;
-                            _selectedCategory = 'Income';
-                          }),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Amount Input
-              Text(
-                i18n.amount_thb,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: PColor.inkSoft(context),
-                ),
-              ),
-              const SizedBox(height: 6),
-              TextField(
-                controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                style: TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: _isIncome ? PColor.jadeInk(context) : PColor.roseInk(context),
-                ),
-                decoration: InputDecoration(
-                  prefixText: '฿ ',
-                  prefixStyle: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: _isIncome ? PColor.jade(context) : PColor.rose(context),
-                  ),
-                  hintText: '0.00',
-                  filled: true,
-                  fillColor: PColor.surfaceSubtle(context),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: borderColor),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: borderColor),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: PColor.primary(context), width: 1.5),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-
-              // Transaction Name Input
-              Text(
-                i18n.transaction_name,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: PColor.inkSoft(context),
-                ),
-              ),
-              const SizedBox(height: 6),
-              TextField(
-                controller: _nameController,
-                style: TextStyle(color: PColor.ink(context)),
-                decoration: InputDecoration(
-                  hintText: i18n.transaction_name_hint,
-                  filled: true,
-                  fillColor: PColor.surfaceSubtle(context),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: borderColor),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: borderColor),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: PColor.primary(context), width: 1.5),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-
-              // Category & Date Selection Row
-              Row(
-                children: [
-                  // Category Dropdown
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          i18n.category,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: PColor.inkSoft(context),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            color: PColor.surfaceSubtle(context),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: borderColor),
-                          ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: _selectedCategory,
-                              isExpanded: true,
-                              dropdownColor: surfaceColor,
-                              items: categories.map((cat) {
-                                return DropdownMenuItem(
-                                  value: cat.id,
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 8,
-                                        height: 8,
-                                        decoration: BoxDecoration(
-                                          color: cat.color,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          CategoryItem.getLocalizedCategoryName(cat.id, currentLang),
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: PColor.ink(context),
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (val) {
-                                if (val != null) {
-                                  setState(() => _selectedCategory = val);
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-
-                  // Date Picker Button
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          i18n.date,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: PColor.inkSoft(context),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        InkWell(
-                          onTap: () async {
-                            final initial = DateTime.tryParse(_selectedDate) ?? DateTime.now();
-                            final picked = await showDatePicker(
-                              context: context,
-                              initialDate: initial,
-                              firstDate: DateTime(2020),
-                              lastDate: DateTime(2035),
-                            );
-                            if (picked != null) {
-                              setState(() {
-                                _selectedDate = DateFormat('yyyy-MM-dd').format(picked);
-                              });
-                            }
-                          },
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
-                            decoration: BoxDecoration(
-                              color: PColor.surfaceSubtle(context),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: borderColor),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.calendar_today_outlined, size: 16, color: PColor.inkSoft(context)),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    _selectedDate,
-                                    style: TextStyle(
-                                      fontFamily: 'monospace',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: PColor.ink(context),
-                                    ),
-                                    maxLines: 1,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-
-              // Notes Input & Cleared Checkbox
-              Text(
-                i18n.notes,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: PColor.inkSoft(context),
-                ),
-              ),
-              const SizedBox(height: 6),
-              TextField(
-                controller: _notesController,
-                maxLines: 2,
-                style: TextStyle(color: PColor.ink(context), fontSize: 13),
-                onChanged: (_) => setState(() {}),
-                decoration: InputDecoration(
-                  hintText: i18n.notes_hint,
-                  filled: true,
-                  fillColor: PColor.surfaceSubtle(context),
-                  contentPadding: const EdgeInsets.all(12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: borderColor),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: borderColor),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: PColor.primary(context), width: 1.5),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              // Cleared Checkbox
-              Row(
-                children: [
-                  Checkbox(
-                    value: _isCleared,
-                    activeColor: PColor.primary(context),
-                    onChanged: (val) {
-                      setState(() => _isCleared = val ?? true);
-                    },
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() => _isCleared = !_isCleared),
-                      child: Text(
-                        currentLang == 'th' ? 'ทำเครื่องหมายตรวจสอบแล้ว (Cleared)' : 'Mark as Cleared',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: PColor.ink(context),
-                          fontWeight: FontWeight.w500,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 18),
-
-              // Submit Button with XP Reward Badge
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _saveTransaction,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: PColor.primary(context),
-                    foregroundColor: isDark ? PColor.darkBase : Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    elevation: 0,
+                    color: PColor.surfaceSubtle(context),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: borderColor),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.check_rounded, size: 18),
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(
-                          isEditing ? i18n.edit_transaction_title : i18n.save_transaction,
-                          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                      _buildTypeButton(
+                        label: isThai ? 'รายจ่าย' : 'Expense',
+                        isSelected: !_isIncome,
+                        activeColor: PColor.rose(context),
+                        onTap: () {
+                          setState(() {
+                            _isIncome = false;
+                            _selectedCategory = 'Food';
+                            _loadTemplates();
+                          });
+                        },
                       ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: (isDark ? PColor.darkBase : Colors.white).withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Text(
-                          '+$_calculatedXpReward XP',
-                          style: TextStyle(
-                            fontFamily: 'monospace',
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: isDark ? PColor.darkBase : Colors.white,
-                          ),
-                        ),
+                      _buildTypeButton(
+                        label: isThai ? 'รายรับ' : 'Income',
+                        isSelected: _isIncome,
+                        activeColor: PColor.jade(context),
+                        onTap: () {
+                          setState(() {
+                            _isIncome = true;
+                            _selectedCategory = 'Income';
+                            _loadTemplates();
+                          });
+                        },
                       ),
                     ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-            ],
+                const Spacer(),
+
+                // Date Picker Pill
+                InkWell(
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.tryParse(_selectedDate) ?? DateTime.now(),
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime(2030),
+                    );
+                    if (picked != null) {
+                      setState(() {
+                        _selectedDate = DateFormat('yyyy-MM-dd').format(picked);
+                      });
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(6),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: PColor.surfaceSubtle(context),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: borderColor),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.calendar_today_rounded, size: 10, color: PColor.inkSoft(context)),
+                        const SizedBox(width: 2),
+                        Text(
+                          _selectedDate,
+                          style: TextStyle(
+                            fontFamily: 'monospace',
+                            fontSize: 9,
+                            fontWeight: FontWeight.w600,
+                            color: PColor.ink(context),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 2),
+
+                // Close Button
+                InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  borderRadius: BorderRadius.circular(14),
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Icon(Icons.close_rounded, size: 16, color: PColor.inkSoft(context)),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+          const SizedBox(height: 10),
+
+          // QuickTemplate Chips Ribbon
+          if (_templates.isNotEmpty)
+            SizedBox(
+              height: 32,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: _templates.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 6),
+                itemBuilder: (context, idx) {
+                  final tpl = _templates[idx];
+                  return ActionChip(
+                    avatar: Icon(
+                      tpl.isPinned ? Icons.star_rounded : Icons.flash_on_rounded,
+                      size: 13,
+                      color: PColor.amberInk(context),
+                    ),
+                    label: Text(
+                      '${tpl.name} ฿${tpl.defaultAmount.toStringAsFixed(0)}',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: PColor.ink(context),
+                      ),
+                    ),
+                    backgroundColor: PColor.surfaceSubtle(context),
+                    side: BorderSide(color: borderColor),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    onPressed: () => _applyTemplate(tpl),
+                  );
+                },
+              ),
+            ),
+          const SizedBox(height: 10),
+
+          // Amount & Title Display Box
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: PColor.surfaceSubtle(context),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: borderColor),
+            ),
+            child: Column(
+              children: [
+                // Top: Item Name / Note & Action buttons & XP Reward Badge
+                Row(
+                  children: [
+                    Expanded(
+                      child: _isEditingName
+                          ? TextField(
+                              controller: _nameController,
+                              autofocus: true,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: PColor.ink(context),
+                              ),
+                              decoration: InputDecoration(
+                                hintText: isThai ? 'ชื่อรายการ (เช่น กาแฟ)' : 'Transaction name',
+                                isDense: true,
+                                contentPadding: EdgeInsets.zero,
+                                border: InputBorder.none,
+                              ),
+                              onSubmitted: (val) {
+                                setState(() {
+                                  _name = val;
+                                  _isEditingName = false;
+                                });
+                              },
+                            )
+                          : InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _isEditingName = true;
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      _name.isNotEmpty
+                                          ? _name
+                                          : CategoryItem.getLocalizedCategoryName(_selectedCategory, currentLang),
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: PColor.ink(context),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Icon(Icons.edit_outlined, size: 13, color: PColor.inkSoft(context)),
+                                ],
+                              ),
+                            ),
+                    ),
+                    const SizedBox(width: 6),
+
+                    // Pin as QuickTemplate Action Button
+                    Tooltip(
+                      message: isThai ? 'ปักหมุดเป็นแม่แบบด่วน' : 'Pin as QuickTemplate',
+                      child: InkWell(
+                        onTap: _pinCurrentAsTemplate,
+                        borderRadius: BorderRadius.circular(6),
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Icon(
+                            Icons.star_border_rounded,
+                            size: 17,
+                            color: PColor.amberInk(context),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+
+                    // Note Input Toggle Button
+                    Tooltip(
+                      message: isThai ? 'เพิ่มบันทึกช่วยจำ' : 'Add Note',
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            _showNoteInput = !_showNoteInput;
+                          });
+                        },
+                        borderRadius: BorderRadius.circular(6),
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Icon(
+                            _notes.isNotEmpty ? Icons.sticky_note_2_rounded : Icons.note_add_outlined,
+                            size: 16,
+                            color: _notes.isNotEmpty ? PColor.primary(context) : PColor.inkSoft(context),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+
+                    // XP Reward Badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: PColor.jadeSoft(context),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        '+$_calculatedXpReward XP',
+                        style: TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          color: PColor.jadeInk(context),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Expandable Note Input Row
+                if (_showNoteInput || _notes.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: surfaceColor,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: borderColor),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit_note_rounded, size: 16, color: PColor.primary(context)),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: TextField(
+                            controller: _notesController,
+                            style: TextStyle(fontSize: 12, color: PColor.ink(context)),
+                            decoration: InputDecoration(
+                              hintText: isThai ? 'บันทึกช่วยจำ (+5 XP)' : 'Add note (+5 XP)',
+                              hintStyle: TextStyle(fontSize: 11, color: PColor.inkFaint(context)),
+                              isDense: true,
+                              contentPadding: EdgeInsets.zero,
+                              border: InputBorder.none,
+                            ),
+                            onChanged: (val) {
+                              setState(() {
+                                _notes = val;
+                              });
+                            },
+                          ),
+                        ),
+                        if (_notes.isNotEmpty)
+                          InkWell(
+                            onTap: () {
+                              _notesController.clear();
+                              setState(() {
+                                _notes = '';
+                              });
+                            },
+                            child: Icon(Icons.clear_rounded, size: 14, color: PColor.inkSoft(context)),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 6),
+
+                // Large Amount Typography Display
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Text(
+                      '฿',
+                      style: TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: _isIncome ? PColor.jadeInk(context) : PColor.roseInk(context),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        _amountInput.isEmpty ? '0.00' : _amountInput,
+                        style: TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 28,
+                          fontWeight: FontWeight.w900,
+                          color: _amountInput.isEmpty
+                              ? PColor.inkFaint(context)
+                              : (_isIncome ? PColor.jadeInk(context) : PColor.roseInk(context)),
+                        ),
+                        textAlign: TextAlign.right,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // Category Ribbon Selector
+          SizedBox(
+            height: 38,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: categories.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 6),
+              itemBuilder: (context, idx) {
+                final cat = categories[idx];
+                final isSelected = cat.name == _selectedCategory;
+                final catName = cat.getLocalizedName(context);
+
+                return ChoiceChip(
+                  label: Text(
+                    catName,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                      color: isSelected
+                          ? (isDark ? PColor.darkBase : Colors.white)
+                          : PColor.ink(context),
+                    ),
+                  ),
+                  selected: isSelected,
+                  selectedColor: PColor.primary(context),
+                  backgroundColor: PColor.surfaceSubtle(context),
+                  side: BorderSide(
+                    color: isSelected ? Colors.transparent : borderColor,
+                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  onSelected: (selected) {
+                    if (selected) {
+                      setState(() {
+                        _selectedCategory = cat.name;
+                        if (!_isEditingName && _name.isEmpty) {
+                          _nameController.text = '';
+                        }
+                      });
+                    }
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 4),
+
+          // SmartNumpad Keyboard
+          SmartNumpad(
+            rawInput: _amountInput,
+            onInputChanged: (val) {
+              setState(() {
+                _amountInput = val;
+              });
+            },
+            onSubmit: _saveTransaction,
+            canSubmit: SmartNumpad.parseEvaluatedAmount(_amountInput) > 0,
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildTypeButton({
     required String label,
@@ -585,19 +688,19 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(9),
+      borderRadius: BorderRadius.circular(6),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
         decoration: BoxDecoration(
-          color: isSelected ? activeColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(9),
+          color: isSelected ? activeColor.withValues(alpha: 0.15) : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
         ),
         child: Text(
           label,
           style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: isSelected ? Colors.white : PColor.inkSoft(context),
+            fontSize: 10,
+            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+            color: isSelected ? activeColor : PColor.inkSoft(context),
           ),
         ),
       ),

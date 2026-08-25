@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
+import 'package:toastification/toastification.dart';
 import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
 import 'package:mobile_app_standard/domain/repositories/budget_repository.dart';
 import 'package:mobile_app_standard/domain/repositories/gamification_repository.dart';
@@ -31,8 +34,12 @@ void main() {
   late DashboardBloc dashboardBloc;
   late BudgetBloc budgetBloc;
   late LanguageBloc languageBloc;
+  late Directory tempDir;
 
   setUp(() async {
+    tempDir = await Directory.systemTemp.createTemp('hive_test_dialogs');
+    Hive.init(tempDir.path);
+
     db = AppDatabase.forTesting(NativeDatabase.memory());
     await db.initDatabase();
     if (!locator.isRegistered<AppDatabase>()) {
@@ -76,6 +83,10 @@ void main() {
     await gamificationBloc.close();
     await appGlobalBloc.close();
     await db.close();
+    await Hive.close();
+    if (await tempDir.exists()) {
+      await tempDir.delete(recursive: true);
+    }
     await locator.reset();
   });
 
@@ -84,26 +95,28 @@ void main() {
     required double width,
     double height = 800,
   }) {
-    return MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      locale: const Locale('th'),
-      home: MediaQuery(
-        data: MediaQueryData(
-          size: Size(width, height),
-          padding: const EdgeInsets.only(top: 24),
-        ),
-        child: MultiBlocProvider(
-          providers: [
-            BlocProvider<AppGlobalBloc>.value(value: appGlobalBloc),
-            BlocProvider<GamificationBloc>.value(value: gamificationBloc),
-            BlocProvider<TransactionBloc>.value(value: transactionBloc),
-            BlocProvider<DashboardBloc>.value(value: dashboardBloc),
-            BlocProvider<BudgetBloc>.value(value: budgetBloc),
-            BlocProvider<LanguageBloc>.value(value: languageBloc),
-          ],
-          child: Scaffold(
-            body: Center(child: child),
+    return ToastificationWrapper(
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('th'),
+        home: MediaQuery(
+          data: MediaQueryData(
+            size: Size(width, height),
+            padding: const EdgeInsets.only(top: 24),
+          ),
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<AppGlobalBloc>.value(value: appGlobalBloc),
+              BlocProvider<GamificationBloc>.value(value: gamificationBloc),
+              BlocProvider<TransactionBloc>.value(value: transactionBloc),
+              BlocProvider<DashboardBloc>.value(value: dashboardBloc),
+              BlocProvider<BudgetBloc>.value(value: budgetBloc),
+              BlocProvider<LanguageBloc>.value(value: languageBloc),
+            ],
+            child: Scaffold(
+              body: Center(child: child),
+            ),
           ),
         ),
       ),
