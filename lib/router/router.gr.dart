@@ -59,17 +59,17 @@ class DashboardRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [HomePage]
-class HomeRoute extends PageRouteInfo<void> {
-  const HomeRoute({List<PageRouteInfo>? children})
-    : super(HomeRoute.name, initialChildren: children);
+/// [MainShellPage]
+class MainShellRoute extends PageRouteInfo<void> {
+  const MainShellRoute({List<PageRouteInfo>? children})
+    : super(MainShellRoute.name, initialChildren: children);
 
-  static const String name = 'HomeRoute';
+  static const String name = 'MainShellRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const HomePage();
+      return const MainShellPage();
     },
   );
 }
@@ -86,22 +86,6 @@ class QuestRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const QuestPage();
-    },
-  );
-}
-
-/// generated route for
-/// [TodoPage]
-class TodoRoute extends PageRouteInfo<void> {
-  const TodoRoute({List<PageRouteInfo>? children})
-    : super(TodoRoute.name, initialChildren: children);
-
-  static const String name = 'TodoRoute';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      return const TodoPage();
     },
   );
 }

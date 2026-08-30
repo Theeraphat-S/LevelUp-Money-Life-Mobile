@@ -1,8 +1,8 @@
-import 'package:drift/drift.dart';
+﻿import 'package:drift/drift.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
-import 'package:mobile_app_standard/domain/models/gamification/user_profile.dart';
-import 'package:mobile_app_standard/domain/services/gamification_engine.dart';
+import 'package:levelup_money_life/domain/datasource/app_database.dart';
+import 'package:levelup_money_life/domain/models/gamification/user_profile.dart';
+import 'package:levelup_money_life/domain/services/gamification_engine.dart';
 
 abstract class UserRepositoryInterface {
   Future<UserProfile> getUserProfile();

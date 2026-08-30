@@ -1,19 +1,19 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
-import 'package:mobile_app_standard/feature/budget/bloc/budget_bloc.dart';
-import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_bloc.dart';
-import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_event.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
-import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
-import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
-import 'package:mobile_app_standard/i18n/i18n.dart';
-import 'package:mobile_app_standard/locator.dart';
-import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
-import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
+import 'package:levelup_money_life/domain/datasource/app_database.dart';
+import 'package:levelup_money_life/feature/budget/bloc/budget_bloc.dart';
+import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_bloc.dart';
+import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_event.dart';
+import 'package:levelup_money_life/feature/gamification/bloc/gamification_bloc.dart';
+import 'package:levelup_money_life/feature/gamification/bloc/gamification_event.dart';
+import 'package:levelup_money_life/feature/transaction/bloc/transaction_bloc.dart';
+import 'package:levelup_money_life/feature/transaction/bloc/transaction_event.dart';
+import 'package:levelup_money_life/i18n/i18n.dart';
+import 'package:levelup_money_life/locator.dart';
+import 'package:levelup_money_life/shared/bloc/app/app_bloc.dart';
+import 'package:levelup_money_life/shared/tokens/p_colors.dart';
 
 class DataManagerDialog extends StatefulWidget {
   const DataManagerDialog({super.key});

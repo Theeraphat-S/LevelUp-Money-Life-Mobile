@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:mobile_app_standard/i18n/i18n.dart';
-import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:levelup_money_life/i18n/i18n.dart';
+import 'package:levelup_money_life/shared/tokens/p_colors.dart';
 
 class LevelUpDialog extends StatelessWidget {
   final int level;

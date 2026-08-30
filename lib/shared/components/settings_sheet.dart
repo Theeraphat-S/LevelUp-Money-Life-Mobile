@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_state.dart';
-import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
-import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
-import 'package:mobile_app_standard/shared/bloc/language/language_event.dart';
-import 'package:mobile_app_standard/shared/bloc/language/language_state.dart';
-import 'package:mobile_app_standard/shared/components/data_manager_dialog.dart';
-import 'package:mobile_app_standard/shared/components/xp_progress_bar.dart';
-import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
+import 'package:levelup_money_life/feature/gamification/bloc/gamification_bloc.dart';
+import 'package:levelup_money_life/feature/gamification/bloc/gamification_state.dart';
+import 'package:levelup_money_life/shared/bloc/app/app_bloc.dart';
+import 'package:levelup_money_life/shared/bloc/language/language_bloc.dart';
+import 'package:levelup_money_life/shared/bloc/language/language_event.dart';
+import 'package:levelup_money_life/shared/bloc/language/language_state.dart';
+import 'package:levelup_money_life/shared/components/data_manager_dialog.dart';
+import 'package:levelup_money_life/shared/components/xp_progress_bar.dart';
+import 'package:levelup_money_life/shared/tokens/p_colors.dart';
 
 class SettingsSheet extends StatelessWidget {
   const SettingsSheet({super.key});

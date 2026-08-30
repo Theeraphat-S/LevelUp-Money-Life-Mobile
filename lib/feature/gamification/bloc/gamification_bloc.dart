@@ -1,8 +1,8 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app_standard/domain/repositories/gamification_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/user_repository.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_state.dart';
+﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:levelup_money_life/domain/repositories/gamification_repository.dart';
+import 'package:levelup_money_life/domain/repositories/user_repository.dart';
+import 'package:levelup_money_life/feature/gamification/bloc/gamification_event.dart';
+import 'package:levelup_money_life/feature/gamification/bloc/gamification_state.dart';
 
 class GamificationBloc extends Bloc<GamificationEvent, GamificationState> {
   final GamificationRepositoryInterface gamificationRepository;

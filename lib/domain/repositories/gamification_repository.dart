@@ -1,9 +1,9 @@
-import 'package:drift/drift.dart';
-import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
-import 'package:mobile_app_standard/domain/models/budget/allocation_item.dart';
-import 'package:mobile_app_standard/domain/models/gamification/quest.dart';
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
-import 'package:mobile_app_standard/domain/services/gamification_engine.dart';
+﻿import 'package:drift/drift.dart';
+import 'package:levelup_money_life/domain/datasource/app_database.dart';
+import 'package:levelup_money_life/domain/models/budget/allocation_item.dart';
+import 'package:levelup_money_life/domain/models/gamification/quest.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
+import 'package:levelup_money_life/domain/services/gamification_engine.dart';
 
 abstract class GamificationRepositoryInterface {
   Future<List<QuestItem>> getDailyQuests();

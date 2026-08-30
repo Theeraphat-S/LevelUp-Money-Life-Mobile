@@ -1,11 +1,10 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:mobile_app_standard/feature/analytics/pages/analytics_page.dart';
-import 'package:mobile_app_standard/feature/budget/pages/budget_page.dart';
-import 'package:mobile_app_standard/feature/dashboard/pages/dashboard_page.dart';
-import 'package:mobile_app_standard/feature/gamification/pages/quest_page.dart';
-import 'package:mobile_app_standard/feature/home/pages/home_page.dart';
-import 'package:mobile_app_standard/feature/todo/pages/todo_page.dart';
-import 'package:mobile_app_standard/feature/transaction/pages/transaction_page.dart';
+import 'package:levelup_money_life/feature/analytics/pages/analytics_page.dart';
+import 'package:levelup_money_life/feature/budget/pages/budget_page.dart';
+import 'package:levelup_money_life/feature/dashboard/pages/dashboard_page.dart';
+import 'package:levelup_money_life/feature/gamification/pages/quest_page.dart';
+import 'package:levelup_money_life/feature/main_shell/pages/main_shell_page.dart';
+import 'package:levelup_money_life/feature/transaction/pages/transaction_page.dart';
 
 part 'router.gr.dart'; // ไฟล์ที่สร้างโดย auto_route_generator
 
@@ -13,34 +12,17 @@ part 'router.gr.dart'; // ไฟล์ที่สร้างโดย auto_rou
 class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
-        CustomRoute(
-          page: DashboardRoute.page,
+        AutoRoute(
+          page: MainShellRoute.page,
           initial: true,
-          transitionsBuilder: TransitionsBuilders.noTransition,
-        ),
-        CustomRoute(
-          page: TransactionRoute.page,
-          transitionsBuilder: TransitionsBuilders.noTransition,
-        ),
-        CustomRoute(
-          page: BudgetRoute.page,
-          transitionsBuilder: TransitionsBuilders.noTransition,
-        ),
-        CustomRoute(
-          page: AnalyticsRoute.page,
-          transitionsBuilder: TransitionsBuilders.noTransition,
-        ),
-        CustomRoute(
-          page: QuestRoute.page,
-          transitionsBuilder: TransitionsBuilders.noTransition,
-        ),
-        CustomRoute(
-          page: HomeRoute.page,
-          transitionsBuilder: TransitionsBuilders.noTransition,
-        ),
-        CustomRoute(
-          page: TodoRoute.page,
-          transitionsBuilder: TransitionsBuilders.noTransition,
+          children: [
+            AutoRoute(page: DashboardRoute.page, initial: true),
+            AutoRoute(page: TransactionRoute.page),
+            AutoRoute(page: BudgetRoute.page),
+            AutoRoute(page: AnalyticsRoute.page),
+            AutoRoute(page: QuestRoute.page),
+          ],
         ),
       ];
 }
+

@@ -1,11 +1,11 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
-import 'package:mobile_app_standard/domain/repositories/budget_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/gamification_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/transaction_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/user_repository.dart';
-import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_event.dart';
-import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_state.dart';
+﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
+import 'package:levelup_money_life/domain/repositories/budget_repository.dart';
+import 'package:levelup_money_life/domain/repositories/gamification_repository.dart';
+import 'package:levelup_money_life/domain/repositories/transaction_repository.dart';
+import 'package:levelup_money_life/domain/repositories/user_repository.dart';
+import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_event.dart';
+import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final UserRepositoryInterface userRepository;

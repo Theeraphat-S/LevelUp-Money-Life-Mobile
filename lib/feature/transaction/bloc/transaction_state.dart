@@ -1,6 +1,6 @@
-import 'package:equatable/equatable.dart';
-import 'package:mobile_app_standard/domain/models/transaction/category_item.dart';
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
+﻿import 'package:equatable/equatable.dart';
+import 'package:levelup_money_life/domain/models/transaction/category_item.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 
 enum TransactionStatus { initial, loading, success, failure }
 enum TransactionSortField { date, amount, name, category }

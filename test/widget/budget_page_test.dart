@@ -1,19 +1,19 @@
-import 'package:drift/native.dart';
+﻿import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
-import 'package:mobile_app_standard/domain/repositories/budget_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/gamification_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/transaction_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/user_repository.dart';
-import 'package:mobile_app_standard/feature/budget/bloc/budget_bloc.dart';
-import 'package:mobile_app_standard/feature/budget/pages/budget_page.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
-import 'package:mobile_app_standard/i18n/i18n.dart';
-import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
-import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
+import 'package:levelup_money_life/domain/datasource/app_database.dart';
+import 'package:levelup_money_life/domain/repositories/budget_repository.dart';
+import 'package:levelup_money_life/domain/repositories/gamification_repository.dart';
+import 'package:levelup_money_life/domain/repositories/transaction_repository.dart';
+import 'package:levelup_money_life/domain/repositories/user_repository.dart';
+import 'package:levelup_money_life/feature/budget/bloc/budget_bloc.dart';
+import 'package:levelup_money_life/feature/budget/pages/budget_page.dart';
+import 'package:levelup_money_life/feature/gamification/bloc/gamification_bloc.dart';
+import 'package:levelup_money_life/feature/gamification/bloc/gamification_event.dart';
+import 'package:levelup_money_life/i18n/i18n.dart';
+import 'package:levelup_money_life/shared/bloc/app/app_bloc.dart';
+import 'package:levelup_money_life/shared/bloc/language/language_bloc.dart';
 
 void main() {
   late AppDatabase db;

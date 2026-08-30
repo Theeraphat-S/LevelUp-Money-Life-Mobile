@@ -1,7 +1,7 @@
-import 'package:equatable/equatable.dart';
-import 'package:mobile_app_standard/domain/models/gamification/achievement.dart';
-import 'package:mobile_app_standard/domain/models/gamification/quest.dart';
-import 'package:mobile_app_standard/domain/models/gamification/user_profile.dart';
+﻿import 'package:equatable/equatable.dart';
+import 'package:levelup_money_life/domain/models/gamification/achievement.dart';
+import 'package:levelup_money_life/domain/models/gamification/quest.dart';
+import 'package:levelup_money_life/domain/models/gamification/user_profile.dart';
 
 enum GamificationStatus { initial, loading, success, failure }
 

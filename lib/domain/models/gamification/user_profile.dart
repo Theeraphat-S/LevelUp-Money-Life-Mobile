@@ -1,4 +1,4 @@
-import 'package:mobile_app_standard/domain/services/gamification_engine.dart';
+﻿import 'package:levelup_money_life/domain/services/gamification_engine.dart';
 
 class UserProfile {
   final String id;

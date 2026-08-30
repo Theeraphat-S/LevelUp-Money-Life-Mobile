@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:mobile_app_standard/domain/models/gamification/quest.dart';
-import 'package:mobile_app_standard/shared/tokens/p_radius.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:levelup_money_life/domain/models/gamification/quest.dart';
+import 'package:levelup_money_life/shared/tokens/p_radius.dart';
 
 class DailyQuestsSection extends StatelessWidget {
   final List<QuestItem> quests;

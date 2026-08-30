@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toastification/toastification.dart';
-import 'package:mobile_app_standard/config/config.dart';
-import 'package:mobile_app_standard/feature/budget/bloc/budget_bloc.dart';
-import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_bloc.dart';
-import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_event.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_event.dart';
-import 'package:mobile_app_standard/feature/home/bloc/websocket/websocket_bloc.dart';
-import 'package:mobile_app_standard/feature/todo/bloc/todo_bloc.dart';
-import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
-import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
-import 'package:mobile_app_standard/i18n/i18n.dart';
-import 'package:mobile_app_standard/locator.dart';
-import 'package:mobile_app_standard/router/router.dart';
-import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
-import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
-import 'package:mobile_app_standard/shared/bloc/language/language_event.dart';
-import 'package:mobile_app_standard/shared/bloc/language/language_state.dart';
-import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
+import 'package:levelup_money_life/config/config.dart';
+import 'package:levelup_money_life/feature/budget/bloc/budget_bloc.dart';
+import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_bloc.dart';
+import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_event.dart';
+import 'package:levelup_money_life/feature/gamification/bloc/gamification_bloc.dart';
+import 'package:levelup_money_life/feature/gamification/bloc/gamification_event.dart';
+import 'package:levelup_money_life/feature/transaction/bloc/transaction_bloc.dart';
+import 'package:levelup_money_life/feature/transaction/bloc/transaction_event.dart';
+import 'package:levelup_money_life/i18n/i18n.dart';
+import 'package:levelup_money_life/locator.dart';
+import 'package:levelup_money_life/router/router.dart';
+import 'package:levelup_money_life/shared/bloc/app/app_bloc.dart';
+import 'package:levelup_money_life/shared/bloc/language/language_bloc.dart';
+import 'package:levelup_money_life/shared/bloc/language/language_event.dart';
+import 'package:levelup_money_life/shared/bloc/language/language_state.dart';
+import 'package:levelup_money_life/shared/tokens/p_colors.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,10 +45,6 @@ Future<void> main() async {
         BlocProvider<GamificationBloc>(
           create: (context) =>
               locator<GamificationBloc>()..add(const LoadGamificationDataEvent()),
-        ),
-        BlocProvider<TodoBloc>(create: (context) => locator<TodoBloc>()),
-        BlocProvider<WebsocketBloc>(
-          create: (context) => locator<WebsocketBloc>(),
         ),
         BlocProvider<LanguageBloc>(
           create: (context) =>

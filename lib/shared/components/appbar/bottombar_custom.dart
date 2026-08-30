@@ -1,48 +1,21 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:mobile_app_standard/i18n/i18n.dart';
-import 'package:mobile_app_standard/router/router.dart';
-import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
+import 'package:levelup_money_life/i18n/i18n.dart';
+import 'package:levelup_money_life/shared/tokens/p_colors.dart';
 
-class BottomBarCustom extends HookWidget {
-  final String currentRouteName;
+class BottomBarCustom extends StatelessWidget {
+  final int activeIndex;
+  final ValueChanged<int> onItemTapped;
 
-  const BottomBarCustom({super.key, required this.currentRouteName});
-
-  int _getIndexFromRoute(String routeName) {
-    if (routeName == DashboardRoute.name) return 0;
-    if (routeName == TransactionRoute.name) return 1;
-    if (routeName == BudgetRoute.name) return 2;
-    if (routeName == AnalyticsRoute.name) return 3;
-    if (routeName == QuestRoute.name) return 4;
-    return 0;
-  }
+  const BottomBarCustom({
+    super.key,
+    required this.activeIndex,
+    required this.onItemTapped,
+  });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final selectedIndex = useState(_getIndexFromRoute(currentRouteName));
 
-    useEffect(() {
-      selectedIndex.value = _getIndexFromRoute(currentRouteName);
-      return null;
-    }, [currentRouteName]);
-
-    void onItemTapped(int index) {
-      if (index == 0 && currentRouteName != DashboardRoute.name) {
-        context.router.push(const DashboardRoute());
-      } else if (index == 1 && currentRouteName != TransactionRoute.name) {
-        context.router.push(const TransactionRoute());
-      } else if (index == 2 && currentRouteName != BudgetRoute.name) {
-        context.router.push(const BudgetRoute());
-      } else if (index == 3 && currentRouteName != AnalyticsRoute.name) {
-        context.router.push(const AnalyticsRoute());
-      } else if (index == 4 && currentRouteName != QuestRoute.name) {
-        context.router.push(const QuestRoute());
-      }
-      selectedIndex.value = index;
-    }
 
     final surfaceColor = PColor.surface(context);
     final activeColor = PColor.primary(context);
@@ -76,7 +49,7 @@ class BottomBarCustom extends HookWidget {
               _buildNavItem(
                 context: context,
                 index: 0,
-                selectedIndex: selectedIndex.value,
+                selectedIndex: activeIndex,
                 icon: Icons.dashboard_outlined,
                 activeIcon: Icons.dashboard_rounded,
                 label: i18n.nav_overview,
@@ -87,7 +60,7 @@ class BottomBarCustom extends HookWidget {
               _buildNavItem(
                 context: context,
                 index: 1,
-                selectedIndex: selectedIndex.value,
+                selectedIndex: activeIndex,
                 icon: Icons.receipt_long_outlined,
                 activeIcon: Icons.receipt_long_rounded,
                 label: i18n.nav_transactions,
@@ -98,7 +71,7 @@ class BottomBarCustom extends HookWidget {
               _buildNavItem(
                 context: context,
                 index: 2,
-                selectedIndex: selectedIndex.value,
+                selectedIndex: activeIndex,
                 icon: Icons.pie_chart_outline_rounded,
                 activeIcon: Icons.pie_chart_rounded,
                 label: i18n.nav_budget,
@@ -109,7 +82,7 @@ class BottomBarCustom extends HookWidget {
               _buildNavItem(
                 context: context,
                 index: 3,
-                selectedIndex: selectedIndex.value,
+                selectedIndex: activeIndex,
                 icon: Icons.analytics_outlined,
                 activeIcon: Icons.analytics_rounded,
                 label: i18n.nav_analytics,
@@ -120,7 +93,7 @@ class BottomBarCustom extends HookWidget {
               _buildNavItem(
                 context: context,
                 index: 4,
-                selectedIndex: selectedIndex.value,
+                selectedIndex: activeIndex,
                 icon: Icons.military_tech_outlined,
                 activeIcon: Icons.military_tech_rounded,
                 label: i18n.nav_quests,

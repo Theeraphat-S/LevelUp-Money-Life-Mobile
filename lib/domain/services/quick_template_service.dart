@@ -1,6 +1,6 @@
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mobile_app_standard/domain/models/transaction/quick_template.dart';
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
+﻿import 'package:hive_flutter/hive_flutter.dart';
+import 'package:levelup_money_life/domain/models/transaction/quick_template.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 
 class QuickTemplateService {
   static const String boxName = 'quick_templates_box';

@@ -1,368 +1,10 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'app_datebase.dart';
+part of 'app_database.dart';
 
 // ignore_for_file: type=lint
-class $TodoItemsTable extends TodoItems
-    with TableInfo<$TodoItemsTable, TodoItem> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $TodoItemsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _titleMeta = const VerificationMeta('title');
-  @override
-  late final GeneratedColumn<String> title = GeneratedColumn<String>(
-    'title',
-    aliasedName,
-    false,
-    additionalChecks: GeneratedColumn.checkTextLength(
-      minTextLength: 6,
-      maxTextLength: 32,
-    ),
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _contentMeta = const VerificationMeta(
-    'content',
-  );
-  @override
-  late final GeneratedColumn<String> content = GeneratedColumn<String>(
-    'body',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _priorityMeta = const VerificationMeta(
-    'priority',
-  );
-  @override
-  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
-    'priority',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    title,
-    content,
-    createdAt,
-    priority,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'todo_items';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<TodoItem> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('title')) {
-      context.handle(
-        _titleMeta,
-        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_titleMeta);
-    }
-    if (data.containsKey('body')) {
-      context.handle(
-        _contentMeta,
-        content.isAcceptableOrUnknown(data['body']!, _contentMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_contentMeta);
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    }
-    if (data.containsKey('priority')) {
-      context.handle(
-        _priorityMeta,
-        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  TodoItem map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TodoItem(
-      id:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}id'],
-          )!,
-      title:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}title'],
-          )!,
-      content:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}body'],
-          )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      ),
-      priority:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}priority'],
-          )!,
-    );
-  }
-
-  @override
-  $TodoItemsTable createAlias(String alias) {
-    return $TodoItemsTable(attachedDatabase, alias);
-  }
-}
-
-class TodoItem extends DataClass implements Insertable<TodoItem> {
-  final int id;
-  final String title;
-  final String content;
-  final DateTime? createdAt;
-  final int priority;
-  const TodoItem({
-    required this.id,
-    required this.title,
-    required this.content,
-    this.createdAt,
-    required this.priority,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['title'] = Variable<String>(title);
-    map['body'] = Variable<String>(content);
-    if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<DateTime>(createdAt);
-    }
-    map['priority'] = Variable<int>(priority);
-    return map;
-  }
-
-  TodoItemsCompanion toCompanion(bool nullToAbsent) {
-    return TodoItemsCompanion(
-      id: Value(id),
-      title: Value(title),
-      content: Value(content),
-      createdAt:
-          createdAt == null && nullToAbsent
-              ? const Value.absent()
-              : Value(createdAt),
-      priority: Value(priority),
-    );
-  }
-
-  factory TodoItem.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TodoItem(
-      id: serializer.fromJson<int>(json['id']),
-      title: serializer.fromJson<String>(json['title']),
-      content: serializer.fromJson<String>(json['content']),
-      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
-      priority: serializer.fromJson<int>(json['priority']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'title': serializer.toJson<String>(title),
-      'content': serializer.toJson<String>(content),
-      'createdAt': serializer.toJson<DateTime?>(createdAt),
-      'priority': serializer.toJson<int>(priority),
-    };
-  }
-
-  TodoItem copyWith({
-    int? id,
-    String? title,
-    String? content,
-    Value<DateTime?> createdAt = const Value.absent(),
-    int? priority,
-  }) => TodoItem(
-    id: id ?? this.id,
-    title: title ?? this.title,
-    content: content ?? this.content,
-    createdAt: createdAt.present ? createdAt.value : this.createdAt,
-    priority: priority ?? this.priority,
-  );
-  TodoItem copyWithCompanion(TodoItemsCompanion data) {
-    return TodoItem(
-      id: data.id.present ? data.id.value : this.id,
-      title: data.title.present ? data.title.value : this.title,
-      content: data.content.present ? data.content.value : this.content,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      priority: data.priority.present ? data.priority.value : this.priority,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('TodoItem(')
-          ..write('id: $id, ')
-          ..write('title: $title, ')
-          ..write('content: $content, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('priority: $priority')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, title, content, createdAt, priority);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is TodoItem &&
-          other.id == this.id &&
-          other.title == this.title &&
-          other.content == this.content &&
-          other.createdAt == this.createdAt &&
-          other.priority == this.priority);
-}
-
-class TodoItemsCompanion extends UpdateCompanion<TodoItem> {
-  final Value<int> id;
-  final Value<String> title;
-  final Value<String> content;
-  final Value<DateTime?> createdAt;
-  final Value<int> priority;
-  const TodoItemsCompanion({
-    this.id = const Value.absent(),
-    this.title = const Value.absent(),
-    this.content = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.priority = const Value.absent(),
-  });
-  TodoItemsCompanion.insert({
-    this.id = const Value.absent(),
-    required String title,
-    required String content,
-    this.createdAt = const Value.absent(),
-    this.priority = const Value.absent(),
-  }) : title = Value(title),
-       content = Value(content);
-  static Insertable<TodoItem> custom({
-    Expression<int>? id,
-    Expression<String>? title,
-    Expression<String>? content,
-    Expression<DateTime>? createdAt,
-    Expression<int>? priority,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (title != null) 'title': title,
-      if (content != null) 'body': content,
-      if (createdAt != null) 'created_at': createdAt,
-      if (priority != null) 'priority': priority,
-    });
-  }
-
-  TodoItemsCompanion copyWith({
-    Value<int>? id,
-    Value<String>? title,
-    Value<String>? content,
-    Value<DateTime?>? createdAt,
-    Value<int>? priority,
-  }) {
-    return TodoItemsCompanion(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      content: content ?? this.content,
-      createdAt: createdAt ?? this.createdAt,
-      priority: priority ?? this.priority,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (title.present) {
-      map['title'] = Variable<String>(title.value);
-    }
-    if (content.present) {
-      map['body'] = Variable<String>(content.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (priority.present) {
-      map['priority'] = Variable<int>(priority.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('TodoItemsCompanion(')
-          ..write('id: $id, ')
-          ..write('title: $title, ')
-          ..write('content: $content, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('priority: $priority')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $TransactionsTable extends Transactions
-    with TableInfo<$TransactionsTable, TransactionEntry> {
+    with TableInfo<$TransactionsTable, TransactionData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -480,7 +122,7 @@ class $TransactionsTable extends Transactions
   static const String $name = 'transactions';
   @override
   VerificationContext validateIntegrity(
-    Insertable<TransactionEntry> instance, {
+    Insertable<TransactionData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -552,9 +194,9 @@ class $TransactionsTable extends Transactions
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  TransactionEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+  TransactionData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TransactionEntry(
+    return TransactionData(
       id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -607,8 +249,7 @@ class $TransactionsTable extends Transactions
   }
 }
 
-class TransactionEntry extends DataClass
-    implements Insertable<TransactionEntry> {
+class TransactionData extends DataClass implements Insertable<TransactionData> {
   final String id;
   final String name;
   final double amount;
@@ -618,7 +259,7 @@ class TransactionEntry extends DataClass
   final String? notes;
   final int expGained;
   final DateTime? createdAt;
-  const TransactionEntry({
+  const TransactionData({
     required this.id,
     required this.name,
     required this.amount,
@@ -666,12 +307,12 @@ class TransactionEntry extends DataClass
     );
   }
 
-  factory TransactionEntry.fromJson(
+  factory TransactionData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TransactionEntry(
+    return TransactionData(
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       amount: serializer.fromJson<double>(json['amount']),
@@ -699,7 +340,7 @@ class TransactionEntry extends DataClass
     };
   }
 
-  TransactionEntry copyWith({
+  TransactionData copyWith({
     String? id,
     String? name,
     double? amount,
@@ -709,7 +350,7 @@ class TransactionEntry extends DataClass
     Value<String?> notes = const Value.absent(),
     int? expGained,
     Value<DateTime?> createdAt = const Value.absent(),
-  }) => TransactionEntry(
+  }) => TransactionData(
     id: id ?? this.id,
     name: name ?? this.name,
     amount: amount ?? this.amount,
@@ -720,8 +361,8 @@ class TransactionEntry extends DataClass
     expGained: expGained ?? this.expGained,
     createdAt: createdAt.present ? createdAt.value : this.createdAt,
   );
-  TransactionEntry copyWithCompanion(TransactionsCompanion data) {
-    return TransactionEntry(
+  TransactionData copyWithCompanion(TransactionsCompanion data) {
+    return TransactionData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       amount: data.amount.present ? data.amount.value : this.amount,
@@ -736,7 +377,7 @@ class TransactionEntry extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('TransactionEntry(')
+    return (StringBuffer('TransactionData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('amount: $amount, ')
@@ -765,7 +406,7 @@ class TransactionEntry extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is TransactionEntry &&
+      (other is TransactionData &&
           other.id == this.id &&
           other.name == this.name &&
           other.amount == this.amount &&
@@ -777,7 +418,7 @@ class TransactionEntry extends DataClass
           other.createdAt == this.createdAt);
 }
 
-class TransactionsCompanion extends UpdateCompanion<TransactionEntry> {
+class TransactionsCompanion extends UpdateCompanion<TransactionData> {
   final Value<String> id;
   final Value<String> name;
   final Value<double> amount;
@@ -816,7 +457,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionEntry> {
        amount = Value(amount),
        date = Value(date),
        category = Value(category);
-  static Insertable<TransactionEntry> custom({
+  static Insertable<TransactionData> custom({
     Expression<String>? id,
     Expression<String>? name,
     Expression<double>? amount,
@@ -923,7 +564,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionEntry> {
 }
 
 class $AllocationsTable extends Allocations
-    with TableInfo<$AllocationsTable, AllocationEntry> {
+    with TableInfo<$AllocationsTable, AllocationData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -975,7 +616,7 @@ class $AllocationsTable extends Allocations
   static const String $name = 'allocations';
   @override
   VerificationContext validateIntegrity(
-    Insertable<AllocationEntry> instance, {
+    Insertable<AllocationData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1015,9 +656,9 @@ class $AllocationsTable extends Allocations
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  AllocationEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+  AllocationData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return AllocationEntry(
+    return AllocationData(
       id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -1047,12 +688,12 @@ class $AllocationsTable extends Allocations
   }
 }
 
-class AllocationEntry extends DataClass implements Insertable<AllocationEntry> {
+class AllocationData extends DataClass implements Insertable<AllocationData> {
   final String id;
   final String label;
   final int percent;
   final String color;
-  const AllocationEntry({
+  const AllocationData({
     required this.id,
     required this.label,
     required this.percent,
@@ -1077,12 +718,12 @@ class AllocationEntry extends DataClass implements Insertable<AllocationEntry> {
     );
   }
 
-  factory AllocationEntry.fromJson(
+  factory AllocationData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return AllocationEntry(
+    return AllocationData(
       id: serializer.fromJson<String>(json['id']),
       label: serializer.fromJson<String>(json['label']),
       percent: serializer.fromJson<int>(json['percent']),
@@ -1100,19 +741,19 @@ class AllocationEntry extends DataClass implements Insertable<AllocationEntry> {
     };
   }
 
-  AllocationEntry copyWith({
+  AllocationData copyWith({
     String? id,
     String? label,
     int? percent,
     String? color,
-  }) => AllocationEntry(
+  }) => AllocationData(
     id: id ?? this.id,
     label: label ?? this.label,
     percent: percent ?? this.percent,
     color: color ?? this.color,
   );
-  AllocationEntry copyWithCompanion(AllocationsCompanion data) {
-    return AllocationEntry(
+  AllocationData copyWithCompanion(AllocationsCompanion data) {
+    return AllocationData(
       id: data.id.present ? data.id.value : this.id,
       label: data.label.present ? data.label.value : this.label,
       percent: data.percent.present ? data.percent.value : this.percent,
@@ -1122,7 +763,7 @@ class AllocationEntry extends DataClass implements Insertable<AllocationEntry> {
 
   @override
   String toString() {
-    return (StringBuffer('AllocationEntry(')
+    return (StringBuffer('AllocationData(')
           ..write('id: $id, ')
           ..write('label: $label, ')
           ..write('percent: $percent, ')
@@ -1136,14 +777,14 @@ class AllocationEntry extends DataClass implements Insertable<AllocationEntry> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is AllocationEntry &&
+      (other is AllocationData &&
           other.id == this.id &&
           other.label == this.label &&
           other.percent == this.percent &&
           other.color == this.color);
 }
 
-class AllocationsCompanion extends UpdateCompanion<AllocationEntry> {
+class AllocationsCompanion extends UpdateCompanion<AllocationData> {
   final Value<String> id;
   final Value<String> label;
   final Value<int> percent;
@@ -1166,7 +807,7 @@ class AllocationsCompanion extends UpdateCompanion<AllocationEntry> {
        label = Value(label),
        percent = Value(percent),
        color = Value(color);
-  static Insertable<AllocationEntry> custom({
+  static Insertable<AllocationData> custom({
     Expression<String>? id,
     Expression<String>? label,
     Expression<int>? percent,
@@ -1232,7 +873,7 @@ class AllocationsCompanion extends UpdateCompanion<AllocationEntry> {
   }
 }
 
-class $QuestsTable extends Quests with TableInfo<$QuestsTable, QuestEntry> {
+class $QuestsTable extends Quests with TableInfo<$QuestsTable, QuestData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1306,7 +947,7 @@ class $QuestsTable extends Quests with TableInfo<$QuestsTable, QuestEntry> {
   static const String $name = 'quests';
   @override
   VerificationContext validateIntegrity(
-    Insertable<QuestEntry> instance, {
+    Insertable<QuestData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1357,9 +998,9 @@ class $QuestsTable extends Quests with TableInfo<$QuestsTable, QuestEntry> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  QuestEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+  QuestData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return QuestEntry(
+    return QuestData(
       id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -1399,14 +1040,14 @@ class $QuestsTable extends Quests with TableInfo<$QuestsTable, QuestEntry> {
   }
 }
 
-class QuestEntry extends DataClass implements Insertable<QuestEntry> {
+class QuestData extends DataClass implements Insertable<QuestData> {
   final String id;
   final String title;
   final String date;
   final int xp;
   final bool done;
   final String category;
-  const QuestEntry({
+  const QuestData({
     required this.id,
     required this.title,
     required this.date,
@@ -1437,12 +1078,12 @@ class QuestEntry extends DataClass implements Insertable<QuestEntry> {
     );
   }
 
-  factory QuestEntry.fromJson(
+  factory QuestData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return QuestEntry(
+    return QuestData(
       id: serializer.fromJson<String>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       date: serializer.fromJson<String>(json['date']),
@@ -1464,14 +1105,14 @@ class QuestEntry extends DataClass implements Insertable<QuestEntry> {
     };
   }
 
-  QuestEntry copyWith({
+  QuestData copyWith({
     String? id,
     String? title,
     String? date,
     int? xp,
     bool? done,
     String? category,
-  }) => QuestEntry(
+  }) => QuestData(
     id: id ?? this.id,
     title: title ?? this.title,
     date: date ?? this.date,
@@ -1479,8 +1120,8 @@ class QuestEntry extends DataClass implements Insertable<QuestEntry> {
     done: done ?? this.done,
     category: category ?? this.category,
   );
-  QuestEntry copyWithCompanion(QuestsCompanion data) {
-    return QuestEntry(
+  QuestData copyWithCompanion(QuestsCompanion data) {
+    return QuestData(
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
       date: data.date.present ? data.date.value : this.date,
@@ -1492,7 +1133,7 @@ class QuestEntry extends DataClass implements Insertable<QuestEntry> {
 
   @override
   String toString() {
-    return (StringBuffer('QuestEntry(')
+    return (StringBuffer('QuestData(')
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('date: $date, ')
@@ -1508,7 +1149,7 @@ class QuestEntry extends DataClass implements Insertable<QuestEntry> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is QuestEntry &&
+      (other is QuestData &&
           other.id == this.id &&
           other.title == this.title &&
           other.date == this.date &&
@@ -1517,7 +1158,7 @@ class QuestEntry extends DataClass implements Insertable<QuestEntry> {
           other.category == this.category);
 }
 
-class QuestsCompanion extends UpdateCompanion<QuestEntry> {
+class QuestsCompanion extends UpdateCompanion<QuestData> {
   final Value<String> id;
   final Value<String> title;
   final Value<String> date;
@@ -1547,7 +1188,7 @@ class QuestsCompanion extends UpdateCompanion<QuestEntry> {
        date = Value(date),
        xp = Value(xp),
        category = Value(category);
-  static Insertable<QuestEntry> custom({
+  static Insertable<QuestData> custom({
     Expression<String>? id,
     Expression<String>? title,
     Expression<String>? date,
@@ -1630,7 +1271,7 @@ class QuestsCompanion extends UpdateCompanion<QuestEntry> {
 }
 
 class $UserProfilesTable extends UserProfiles
-    with TableInfo<$UserProfilesTable, UserProfileEntry> {
+    with TableInfo<$UserProfilesTable, UserProfileData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1705,7 +1346,7 @@ class $UserProfilesTable extends UserProfiles
   static const String $name = 'user_profiles';
   @override
   VerificationContext validateIntegrity(
-    Insertable<UserProfileEntry> instance, {
+    Insertable<UserProfileData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1748,9 +1389,9 @@ class $UserProfilesTable extends UserProfiles
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  UserProfileEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+  UserProfileData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return UserProfileEntry(
+    return UserProfileData(
       id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -1785,14 +1426,13 @@ class $UserProfilesTable extends UserProfiles
   }
 }
 
-class UserProfileEntry extends DataClass
-    implements Insertable<UserProfileEntry> {
+class UserProfileData extends DataClass implements Insertable<UserProfileData> {
   final String id;
   final String name;
   final int totalXp;
   final int streakDays;
   final String lastActiveDate;
-  const UserProfileEntry({
+  const UserProfileData({
     required this.id,
     required this.name,
     required this.totalXp,
@@ -1820,12 +1460,12 @@ class UserProfileEntry extends DataClass
     );
   }
 
-  factory UserProfileEntry.fromJson(
+  factory UserProfileData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return UserProfileEntry(
+    return UserProfileData(
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       totalXp: serializer.fromJson<int>(json['totalXp']),
@@ -1845,21 +1485,21 @@ class UserProfileEntry extends DataClass
     };
   }
 
-  UserProfileEntry copyWith({
+  UserProfileData copyWith({
     String? id,
     String? name,
     int? totalXp,
     int? streakDays,
     String? lastActiveDate,
-  }) => UserProfileEntry(
+  }) => UserProfileData(
     id: id ?? this.id,
     name: name ?? this.name,
     totalXp: totalXp ?? this.totalXp,
     streakDays: streakDays ?? this.streakDays,
     lastActiveDate: lastActiveDate ?? this.lastActiveDate,
   );
-  UserProfileEntry copyWithCompanion(UserProfilesCompanion data) {
-    return UserProfileEntry(
+  UserProfileData copyWithCompanion(UserProfilesCompanion data) {
+    return UserProfileData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       totalXp: data.totalXp.present ? data.totalXp.value : this.totalXp,
@@ -1874,7 +1514,7 @@ class UserProfileEntry extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('UserProfileEntry(')
+    return (StringBuffer('UserProfileData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('totalXp: $totalXp, ')
@@ -1890,7 +1530,7 @@ class UserProfileEntry extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is UserProfileEntry &&
+      (other is UserProfileData &&
           other.id == this.id &&
           other.name == this.name &&
           other.totalXp == this.totalXp &&
@@ -1898,7 +1538,7 @@ class UserProfileEntry extends DataClass
           other.lastActiveDate == this.lastActiveDate);
 }
 
-class UserProfilesCompanion extends UpdateCompanion<UserProfileEntry> {
+class UserProfilesCompanion extends UpdateCompanion<UserProfileData> {
   final Value<String> id;
   final Value<String> name;
   final Value<int> totalXp;
@@ -1921,7 +1561,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfileEntry> {
     required String lastActiveDate,
     this.rowid = const Value.absent(),
   }) : lastActiveDate = Value(lastActiveDate);
-  static Insertable<UserProfileEntry> custom({
+  static Insertable<UserProfileData> custom({
     Expression<String>? id,
     Expression<String>? name,
     Expression<int>? totalXp,
@@ -1996,7 +1636,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfileEntry> {
 }
 
 class $UnlockedAchievementsTable extends UnlockedAchievements
-    with TableInfo<$UnlockedAchievementsTable, UnlockedAchievementEntry> {
+    with TableInfo<$UnlockedAchievementsTable, UnlockedAchievementData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -2030,7 +1670,7 @@ class $UnlockedAchievementsTable extends UnlockedAchievements
   static const String $name = 'unlocked_achievements';
   @override
   VerificationContext validateIntegrity(
-    Insertable<UnlockedAchievementEntry> instance, {
+    Insertable<UnlockedAchievementData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -2054,12 +1694,12 @@ class $UnlockedAchievementsTable extends UnlockedAchievements
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  UnlockedAchievementEntry map(
+  UnlockedAchievementData map(
     Map<String, dynamic> data, {
     String? tablePrefix,
   }) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return UnlockedAchievementEntry(
+    return UnlockedAchievementData(
       id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -2079,11 +1719,11 @@ class $UnlockedAchievementsTable extends UnlockedAchievements
   }
 }
 
-class UnlockedAchievementEntry extends DataClass
-    implements Insertable<UnlockedAchievementEntry> {
+class UnlockedAchievementData extends DataClass
+    implements Insertable<UnlockedAchievementData> {
   final String id;
   final String unlockedAt;
-  const UnlockedAchievementEntry({required this.id, required this.unlockedAt});
+  const UnlockedAchievementData({required this.id, required this.unlockedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2099,12 +1739,12 @@ class UnlockedAchievementEntry extends DataClass
     );
   }
 
-  factory UnlockedAchievementEntry.fromJson(
+  factory UnlockedAchievementData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return UnlockedAchievementEntry(
+    return UnlockedAchievementData(
       id: serializer.fromJson<String>(json['id']),
       unlockedAt: serializer.fromJson<String>(json['unlockedAt']),
     );
@@ -2118,15 +1758,15 @@ class UnlockedAchievementEntry extends DataClass
     };
   }
 
-  UnlockedAchievementEntry copyWith({String? id, String? unlockedAt}) =>
-      UnlockedAchievementEntry(
+  UnlockedAchievementData copyWith({String? id, String? unlockedAt}) =>
+      UnlockedAchievementData(
         id: id ?? this.id,
         unlockedAt: unlockedAt ?? this.unlockedAt,
       );
-  UnlockedAchievementEntry copyWithCompanion(
+  UnlockedAchievementData copyWithCompanion(
     UnlockedAchievementsCompanion data,
   ) {
-    return UnlockedAchievementEntry(
+    return UnlockedAchievementData(
       id: data.id.present ? data.id.value : this.id,
       unlockedAt:
           data.unlockedAt.present ? data.unlockedAt.value : this.unlockedAt,
@@ -2135,7 +1775,7 @@ class UnlockedAchievementEntry extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('UnlockedAchievementEntry(')
+    return (StringBuffer('UnlockedAchievementData(')
           ..write('id: $id, ')
           ..write('unlockedAt: $unlockedAt')
           ..write(')'))
@@ -2147,13 +1787,13 @@ class UnlockedAchievementEntry extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is UnlockedAchievementEntry &&
+      (other is UnlockedAchievementData &&
           other.id == this.id &&
           other.unlockedAt == this.unlockedAt);
 }
 
 class UnlockedAchievementsCompanion
-    extends UpdateCompanion<UnlockedAchievementEntry> {
+    extends UpdateCompanion<UnlockedAchievementData> {
   final Value<String> id;
   final Value<String> unlockedAt;
   final Value<int> rowid;
@@ -2168,7 +1808,7 @@ class UnlockedAchievementsCompanion
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        unlockedAt = Value(unlockedAt);
-  static Insertable<UnlockedAchievementEntry> custom({
+  static Insertable<UnlockedAchievementData> custom({
     Expression<String>? id,
     Expression<String>? unlockedAt,
     Expression<int>? rowid,
@@ -2219,7 +1859,7 @@ class UnlockedAchievementsCompanion
 }
 
 class $AppSettingsTable extends AppSettings
-    with TableInfo<$AppSettingsTable, AppSettingEntry> {
+    with TableInfo<$AppSettingsTable, AppSettingData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -2251,7 +1891,7 @@ class $AppSettingsTable extends AppSettings
   static const String $name = 'app_settings';
   @override
   VerificationContext validateIntegrity(
-    Insertable<AppSettingEntry> instance, {
+    Insertable<AppSettingData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -2278,9 +1918,9 @@ class $AppSettingsTable extends AppSettings
   @override
   Set<GeneratedColumn> get $primaryKey => {key};
   @override
-  AppSettingEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+  AppSettingData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return AppSettingEntry(
+    return AppSettingData(
       key:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -2300,10 +1940,10 @@ class $AppSettingsTable extends AppSettings
   }
 }
 
-class AppSettingEntry extends DataClass implements Insertable<AppSettingEntry> {
+class AppSettingData extends DataClass implements Insertable<AppSettingData> {
   final String key;
   final String value;
-  const AppSettingEntry({required this.key, required this.value});
+  const AppSettingData({required this.key, required this.value});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2316,12 +1956,12 @@ class AppSettingEntry extends DataClass implements Insertable<AppSettingEntry> {
     return AppSettingsCompanion(key: Value(key), value: Value(value));
   }
 
-  factory AppSettingEntry.fromJson(
+  factory AppSettingData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return AppSettingEntry(
+    return AppSettingData(
       key: serializer.fromJson<String>(json['key']),
       value: serializer.fromJson<String>(json['value']),
     );
@@ -2335,10 +1975,10 @@ class AppSettingEntry extends DataClass implements Insertable<AppSettingEntry> {
     };
   }
 
-  AppSettingEntry copyWith({String? key, String? value}) =>
-      AppSettingEntry(key: key ?? this.key, value: value ?? this.value);
-  AppSettingEntry copyWithCompanion(AppSettingsCompanion data) {
-    return AppSettingEntry(
+  AppSettingData copyWith({String? key, String? value}) =>
+      AppSettingData(key: key ?? this.key, value: value ?? this.value);
+  AppSettingData copyWithCompanion(AppSettingsCompanion data) {
+    return AppSettingData(
       key: data.key.present ? data.key.value : this.key,
       value: data.value.present ? data.value.value : this.value,
     );
@@ -2346,7 +1986,7 @@ class AppSettingEntry extends DataClass implements Insertable<AppSettingEntry> {
 
   @override
   String toString() {
-    return (StringBuffer('AppSettingEntry(')
+    return (StringBuffer('AppSettingData(')
           ..write('key: $key, ')
           ..write('value: $value')
           ..write(')'))
@@ -2358,12 +1998,12 @@ class AppSettingEntry extends DataClass implements Insertable<AppSettingEntry> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is AppSettingEntry &&
+      (other is AppSettingData &&
           other.key == this.key &&
           other.value == this.value);
 }
 
-class AppSettingsCompanion extends UpdateCompanion<AppSettingEntry> {
+class AppSettingsCompanion extends UpdateCompanion<AppSettingData> {
   final Value<String> key;
   final Value<String> value;
   final Value<int> rowid;
@@ -2378,7 +2018,7 @@ class AppSettingsCompanion extends UpdateCompanion<AppSettingEntry> {
     this.rowid = const Value.absent(),
   }) : key = Value(key),
        value = Value(value);
-  static Insertable<AppSettingEntry> custom({
+  static Insertable<AppSettingData> custom({
     Expression<String>? key,
     Expression<String>? value,
     Expression<int>? rowid,
@@ -2431,7 +2071,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSettingEntry> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
-  late final $TodoItemsTable todoItems = $TodoItemsTable(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
   late final $AllocationsTable allocations = $AllocationsTable(this);
   late final $QuestsTable quests = $QuestsTable(this);
@@ -2444,7 +2083,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-    todoItems,
     transactions,
     allocations,
     quests,
@@ -2454,201 +2092,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   ];
 }
 
-typedef $$TodoItemsTableCreateCompanionBuilder =
-    TodoItemsCompanion Function({
-      Value<int> id,
-      required String title,
-      required String content,
-      Value<DateTime?> createdAt,
-      Value<int> priority,
-    });
-typedef $$TodoItemsTableUpdateCompanionBuilder =
-    TodoItemsCompanion Function({
-      Value<int> id,
-      Value<String> title,
-      Value<String> content,
-      Value<DateTime?> createdAt,
-      Value<int> priority,
-    });
-
-class $$TodoItemsTableFilterComposer
-    extends Composer<_$AppDatabase, $TodoItemsTable> {
-  $$TodoItemsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get content => $composableBuilder(
-    column: $table.content,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get priority => $composableBuilder(
-    column: $table.priority,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$TodoItemsTableOrderingComposer
-    extends Composer<_$AppDatabase, $TodoItemsTable> {
-  $$TodoItemsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get content => $composableBuilder(
-    column: $table.content,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get priority => $composableBuilder(
-    column: $table.priority,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$TodoItemsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $TodoItemsTable> {
-  $$TodoItemsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get title =>
-      $composableBuilder(column: $table.title, builder: (column) => column);
-
-  GeneratedColumn<String> get content =>
-      $composableBuilder(column: $table.content, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<int> get priority =>
-      $composableBuilder(column: $table.priority, builder: (column) => column);
-}
-
-class $$TodoItemsTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $TodoItemsTable,
-          TodoItem,
-          $$TodoItemsTableFilterComposer,
-          $$TodoItemsTableOrderingComposer,
-          $$TodoItemsTableAnnotationComposer,
-          $$TodoItemsTableCreateCompanionBuilder,
-          $$TodoItemsTableUpdateCompanionBuilder,
-          (TodoItem, BaseReferences<_$AppDatabase, $TodoItemsTable, TodoItem>),
-          TodoItem,
-          PrefetchHooks Function()
-        > {
-  $$TodoItemsTableTableManager(_$AppDatabase db, $TodoItemsTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer:
-              () => $$TodoItemsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer:
-              () => $$TodoItemsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer:
-              () => $$TodoItemsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> title = const Value.absent(),
-                Value<String> content = const Value.absent(),
-                Value<DateTime?> createdAt = const Value.absent(),
-                Value<int> priority = const Value.absent(),
-              }) => TodoItemsCompanion(
-                id: id,
-                title: title,
-                content: content,
-                createdAt: createdAt,
-                priority: priority,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String title,
-                required String content,
-                Value<DateTime?> createdAt = const Value.absent(),
-                Value<int> priority = const Value.absent(),
-              }) => TodoItemsCompanion.insert(
-                id: id,
-                title: title,
-                content: content,
-                createdAt: createdAt,
-                priority: priority,
-              ),
-          withReferenceMapper:
-              (p0) =>
-                  p0
-                      .map(
-                        (e) => (
-                          e.readTable(table),
-                          BaseReferences(db, table, e),
-                        ),
-                      )
-                      .toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$TodoItemsTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $TodoItemsTable,
-      TodoItem,
-      $$TodoItemsTableFilterComposer,
-      $$TodoItemsTableOrderingComposer,
-      $$TodoItemsTableAnnotationComposer,
-      $$TodoItemsTableCreateCompanionBuilder,
-      $$TodoItemsTableUpdateCompanionBuilder,
-      (TodoItem, BaseReferences<_$AppDatabase, $TodoItemsTable, TodoItem>),
-      TodoItem,
-      PrefetchHooks Function()
-    >;
 typedef $$TransactionsTableCreateCompanionBuilder =
     TransactionsCompanion Function({
       required String id,
@@ -2828,17 +2271,17 @@ class $$TransactionsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $TransactionsTable,
-          TransactionEntry,
+          TransactionData,
           $$TransactionsTableFilterComposer,
           $$TransactionsTableOrderingComposer,
           $$TransactionsTableAnnotationComposer,
           $$TransactionsTableCreateCompanionBuilder,
           $$TransactionsTableUpdateCompanionBuilder,
           (
-            TransactionEntry,
-            BaseReferences<_$AppDatabase, $TransactionsTable, TransactionEntry>,
+            TransactionData,
+            BaseReferences<_$AppDatabase, $TransactionsTable, TransactionData>,
           ),
-          TransactionEntry,
+          TransactionData,
           PrefetchHooks Function()
         > {
   $$TransactionsTableTableManager(_$AppDatabase db, $TransactionsTable table)
@@ -2920,17 +2363,17 @@ typedef $$TransactionsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $TransactionsTable,
-      TransactionEntry,
+      TransactionData,
       $$TransactionsTableFilterComposer,
       $$TransactionsTableOrderingComposer,
       $$TransactionsTableAnnotationComposer,
       $$TransactionsTableCreateCompanionBuilder,
       $$TransactionsTableUpdateCompanionBuilder,
       (
-        TransactionEntry,
-        BaseReferences<_$AppDatabase, $TransactionsTable, TransactionEntry>,
+        TransactionData,
+        BaseReferences<_$AppDatabase, $TransactionsTable, TransactionData>,
       ),
-      TransactionEntry,
+      TransactionData,
       PrefetchHooks Function()
     >;
 typedef $$AllocationsTableCreateCompanionBuilder =
@@ -3037,17 +2480,17 @@ class $$AllocationsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $AllocationsTable,
-          AllocationEntry,
+          AllocationData,
           $$AllocationsTableFilterComposer,
           $$AllocationsTableOrderingComposer,
           $$AllocationsTableAnnotationComposer,
           $$AllocationsTableCreateCompanionBuilder,
           $$AllocationsTableUpdateCompanionBuilder,
           (
-            AllocationEntry,
-            BaseReferences<_$AppDatabase, $AllocationsTable, AllocationEntry>,
+            AllocationData,
+            BaseReferences<_$AppDatabase, $AllocationsTable, AllocationData>,
           ),
-          AllocationEntry,
+          AllocationData,
           PrefetchHooks Function()
         > {
   $$AllocationsTableTableManager(_$AppDatabase db, $AllocationsTable table)
@@ -3109,17 +2552,17 @@ typedef $$AllocationsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $AllocationsTable,
-      AllocationEntry,
+      AllocationData,
       $$AllocationsTableFilterComposer,
       $$AllocationsTableOrderingComposer,
       $$AllocationsTableAnnotationComposer,
       $$AllocationsTableCreateCompanionBuilder,
       $$AllocationsTableUpdateCompanionBuilder,
       (
-        AllocationEntry,
-        BaseReferences<_$AppDatabase, $AllocationsTable, AllocationEntry>,
+        AllocationData,
+        BaseReferences<_$AppDatabase, $AllocationsTable, AllocationData>,
       ),
-      AllocationEntry,
+      AllocationData,
       PrefetchHooks Function()
     >;
 typedef $$QuestsTableCreateCompanionBuilder =
@@ -3256,14 +2699,14 @@ class $$QuestsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $QuestsTable,
-          QuestEntry,
+          QuestData,
           $$QuestsTableFilterComposer,
           $$QuestsTableOrderingComposer,
           $$QuestsTableAnnotationComposer,
           $$QuestsTableCreateCompanionBuilder,
           $$QuestsTableUpdateCompanionBuilder,
-          (QuestEntry, BaseReferences<_$AppDatabase, $QuestsTable, QuestEntry>),
-          QuestEntry,
+          (QuestData, BaseReferences<_$AppDatabase, $QuestsTable, QuestData>),
+          QuestData,
           PrefetchHooks Function()
         > {
   $$QuestsTableTableManager(_$AppDatabase db, $QuestsTable table)
@@ -3332,14 +2775,14 @@ typedef $$QuestsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $QuestsTable,
-      QuestEntry,
+      QuestData,
       $$QuestsTableFilterComposer,
       $$QuestsTableOrderingComposer,
       $$QuestsTableAnnotationComposer,
       $$QuestsTableCreateCompanionBuilder,
       $$QuestsTableUpdateCompanionBuilder,
-      (QuestEntry, BaseReferences<_$AppDatabase, $QuestsTable, QuestEntry>),
-      QuestEntry,
+      (QuestData, BaseReferences<_$AppDatabase, $QuestsTable, QuestData>),
+      QuestData,
       PrefetchHooks Function()
     >;
 typedef $$UserProfilesTableCreateCompanionBuilder =
@@ -3465,17 +2908,17 @@ class $$UserProfilesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $UserProfilesTable,
-          UserProfileEntry,
+          UserProfileData,
           $$UserProfilesTableFilterComposer,
           $$UserProfilesTableOrderingComposer,
           $$UserProfilesTableAnnotationComposer,
           $$UserProfilesTableCreateCompanionBuilder,
           $$UserProfilesTableUpdateCompanionBuilder,
           (
-            UserProfileEntry,
-            BaseReferences<_$AppDatabase, $UserProfilesTable, UserProfileEntry>,
+            UserProfileData,
+            BaseReferences<_$AppDatabase, $UserProfilesTable, UserProfileData>,
           ),
-          UserProfileEntry,
+          UserProfileData,
           PrefetchHooks Function()
         > {
   $$UserProfilesTableTableManager(_$AppDatabase db, $UserProfilesTable table)
@@ -3541,17 +2984,17 @@ typedef $$UserProfilesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $UserProfilesTable,
-      UserProfileEntry,
+      UserProfileData,
       $$UserProfilesTableFilterComposer,
       $$UserProfilesTableOrderingComposer,
       $$UserProfilesTableAnnotationComposer,
       $$UserProfilesTableCreateCompanionBuilder,
       $$UserProfilesTableUpdateCompanionBuilder,
       (
-        UserProfileEntry,
-        BaseReferences<_$AppDatabase, $UserProfilesTable, UserProfileEntry>,
+        UserProfileData,
+        BaseReferences<_$AppDatabase, $UserProfilesTable, UserProfileData>,
       ),
-      UserProfileEntry,
+      UserProfileData,
       PrefetchHooks Function()
     >;
 typedef $$UnlockedAchievementsTableCreateCompanionBuilder =
@@ -3630,21 +3073,21 @@ class $$UnlockedAchievementsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $UnlockedAchievementsTable,
-          UnlockedAchievementEntry,
+          UnlockedAchievementData,
           $$UnlockedAchievementsTableFilterComposer,
           $$UnlockedAchievementsTableOrderingComposer,
           $$UnlockedAchievementsTableAnnotationComposer,
           $$UnlockedAchievementsTableCreateCompanionBuilder,
           $$UnlockedAchievementsTableUpdateCompanionBuilder,
           (
-            UnlockedAchievementEntry,
+            UnlockedAchievementData,
             BaseReferences<
               _$AppDatabase,
               $UnlockedAchievementsTable,
-              UnlockedAchievementEntry
+              UnlockedAchievementData
             >,
           ),
-          UnlockedAchievementEntry,
+          UnlockedAchievementData,
           PrefetchHooks Function()
         > {
   $$UnlockedAchievementsTableTableManager(
@@ -3708,21 +3151,21 @@ typedef $$UnlockedAchievementsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $UnlockedAchievementsTable,
-      UnlockedAchievementEntry,
+      UnlockedAchievementData,
       $$UnlockedAchievementsTableFilterComposer,
       $$UnlockedAchievementsTableOrderingComposer,
       $$UnlockedAchievementsTableAnnotationComposer,
       $$UnlockedAchievementsTableCreateCompanionBuilder,
       $$UnlockedAchievementsTableUpdateCompanionBuilder,
       (
-        UnlockedAchievementEntry,
+        UnlockedAchievementData,
         BaseReferences<
           _$AppDatabase,
           $UnlockedAchievementsTable,
-          UnlockedAchievementEntry
+          UnlockedAchievementData
         >,
       ),
-      UnlockedAchievementEntry,
+      UnlockedAchievementData,
       PrefetchHooks Function()
     >;
 typedef $$AppSettingsTableCreateCompanionBuilder =
@@ -3799,17 +3242,17 @@ class $$AppSettingsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $AppSettingsTable,
-          AppSettingEntry,
+          AppSettingData,
           $$AppSettingsTableFilterComposer,
           $$AppSettingsTableOrderingComposer,
           $$AppSettingsTableAnnotationComposer,
           $$AppSettingsTableCreateCompanionBuilder,
           $$AppSettingsTableUpdateCompanionBuilder,
           (
-            AppSettingEntry,
-            BaseReferences<_$AppDatabase, $AppSettingsTable, AppSettingEntry>,
+            AppSettingData,
+            BaseReferences<_$AppDatabase, $AppSettingsTable, AppSettingData>,
           ),
-          AppSettingEntry,
+          AppSettingData,
           PrefetchHooks Function()
         > {
   $$AppSettingsTableTableManager(_$AppDatabase db, $AppSettingsTable table)
@@ -3859,25 +3302,23 @@ typedef $$AppSettingsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $AppSettingsTable,
-      AppSettingEntry,
+      AppSettingData,
       $$AppSettingsTableFilterComposer,
       $$AppSettingsTableOrderingComposer,
       $$AppSettingsTableAnnotationComposer,
       $$AppSettingsTableCreateCompanionBuilder,
       $$AppSettingsTableUpdateCompanionBuilder,
       (
-        AppSettingEntry,
-        BaseReferences<_$AppDatabase, $AppSettingsTable, AppSettingEntry>,
+        AppSettingData,
+        BaseReferences<_$AppDatabase, $AppSettingsTable, AppSettingData>,
       ),
-      AppSettingEntry,
+      AppSettingData,
       PrefetchHooks Function()
     >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
-  $$TodoItemsTableTableManager get todoItems =>
-      $$TodoItemsTableTableManager(_db, _db.todoItems);
   $$TransactionsTableTableManager get transactions =>
       $$TransactionsTableTableManager(_db, _db.transactions);
   $$AllocationsTableTableManager get allocations =>

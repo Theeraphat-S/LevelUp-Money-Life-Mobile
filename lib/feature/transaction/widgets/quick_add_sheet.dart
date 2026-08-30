@@ -1,17 +1,17 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_app_standard/domain/models/transaction/category_item.dart';
-import 'package:mobile_app_standard/domain/models/transaction/quick_template.dart';
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
-import 'package:mobile_app_standard/domain/services/gamification_engine.dart';
-import 'package:mobile_app_standard/domain/services/quick_template_service.dart';
-import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
-import 'package:mobile_app_standard/feature/transaction/bloc/transaction_event.dart';
-import 'package:mobile_app_standard/shared/components/smart_numpad.dart';
-import 'package:mobile_app_standard/shared/components/toasts/floating_xp_toast.dart';
-import 'package:mobile_app_standard/shared/tokens/p_colors.dart';
+import 'package:levelup_money_life/domain/models/transaction/category_item.dart';
+import 'package:levelup_money_life/domain/models/transaction/quick_template.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
+import 'package:levelup_money_life/domain/services/gamification_engine.dart';
+import 'package:levelup_money_life/domain/services/quick_template_service.dart';
+import 'package:levelup_money_life/feature/transaction/bloc/transaction_bloc.dart';
+import 'package:levelup_money_life/feature/transaction/bloc/transaction_event.dart';
+import 'package:levelup_money_life/shared/components/smart_numpad.dart';
+import 'package:levelup_money_life/shared/components/toasts/floating_xp_toast.dart';
+import 'package:levelup_money_life/shared/tokens/p_colors.dart';
 
 class QuickAddSheet extends StatefulWidget {
   final TransactionItem? initialTransaction;

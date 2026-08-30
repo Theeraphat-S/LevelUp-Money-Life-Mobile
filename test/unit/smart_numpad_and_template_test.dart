@@ -1,7 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_app_standard/domain/models/transaction/quick_template.dart';
-import 'package:mobile_app_standard/domain/services/gamification_engine.dart';
-import 'package:mobile_app_standard/shared/components/smart_numpad.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:levelup_money_life/domain/models/transaction/quick_template.dart';
+import 'package:levelup_money_life/domain/services/gamification_engine.dart';
+import 'package:levelup_money_life/shared/components/smart_numpad.dart';
 
 void main() {
   group('SmartNumpad Arithmetic & Expression Parsing Tests', () {

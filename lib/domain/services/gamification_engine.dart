@@ -1,8 +1,8 @@
-import 'package:intl/intl.dart';
-import 'package:mobile_app_standard/domain/models/budget/allocation_item.dart';
-import 'package:mobile_app_standard/domain/models/gamification/achievement.dart';
-import 'package:mobile_app_standard/domain/models/gamification/quest.dart';
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
+﻿import 'package:intl/intl.dart';
+import 'package:levelup_money_life/domain/models/budget/allocation_item.dart';
+import 'package:levelup_money_life/domain/models/gamification/achievement.dart';
+import 'package:levelup_money_life/domain/models/gamification/quest.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 
 class LevelProgression {
   final int level;

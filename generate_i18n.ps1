@@ -1,4 +1,4 @@
-# PowerShell script to generate i18n localization files
+﻿# PowerShell script to generate i18n localization files
 $ErrorActionPreference = "Stop"
 
 $LocalsDir = Join-Path $PSScriptRoot "lib\i18n\locals"
@@ -57,7 +57,7 @@ $sb = [System.Text.StringBuilder]::new()
 
 foreach ($dir in $directories) {
     $pageName = $dir.Name
-    [void]$sb.AppendLine("import 'package:mobile_app_standard/i18n/locals/${pageName}/${pageName}_localizations.dart';")
+    [void]$sb.AppendLine("import 'package:levelup_money_life/i18n/locals/${pageName}/${pageName}_localizations.dart';")
 }
 
 [void]$sb.AppendLine("")

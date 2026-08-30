@@ -1,8 +1,8 @@
-import 'package:equatable/equatable.dart';
-import 'package:mobile_app_standard/domain/models/budget/budget_item.dart';
-import 'package:mobile_app_standard/domain/models/gamification/quest.dart';
-import 'package:mobile_app_standard/domain/models/gamification/user_profile.dart';
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
+﻿import 'package:equatable/equatable.dart';
+import 'package:levelup_money_life/domain/models/budget/budget_item.dart';
+import 'package:levelup_money_life/domain/models/gamification/quest.dart';
+import 'package:levelup_money_life/domain/models/gamification/user_profile.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 
 enum DashboardStatus { initial, loading, success, failure }
 

@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-@DataClassName('TransactionEntry')
+@DataClassName('TransactionData')
 class Transactions extends Table {
   TextColumn get id => text()();
   TextColumn get name => text()();
@@ -16,7 +16,7 @@ class Transactions extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DataClassName('AllocationEntry')
+@DataClassName('AllocationData')
 class Allocations extends Table {
   TextColumn get id => text()();
   TextColumn get label => text()();
@@ -27,7 +27,7 @@ class Allocations extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DataClassName('QuestEntry')
+@DataClassName('QuestData')
 class Quests extends Table {
   TextColumn get id => text()();
   TextColumn get title => text()();
@@ -40,7 +40,7 @@ class Quests extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DataClassName('UserProfileEntry')
+@DataClassName('UserProfileData')
 class UserProfiles extends Table {
   TextColumn get id => text().withDefault(const Constant('user_main'))();
   TextColumn get name => text().withDefault(const Constant('Finance Commander'))();
@@ -52,7 +52,7 @@ class UserProfiles extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DataClassName('UnlockedAchievementEntry')
+@DataClassName('UnlockedAchievementData')
 class UnlockedAchievements extends Table {
   TextColumn get id => text()();
   TextColumn get unlockedAt => text()();
@@ -61,7 +61,7 @@ class UnlockedAchievements extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DataClassName('AppSettingEntry')
+@DataClassName('AppSettingData')
 class AppSettings extends Table {
   TextColumn get key => text()();
   TextColumn get value => text()();
@@ -69,3 +69,4 @@ class AppSettings extends Table {
   @override
   Set<Column> get primaryKey => {key};
 }
+
