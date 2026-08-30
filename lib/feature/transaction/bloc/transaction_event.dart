@@ -1,6 +1,6 @@
-import 'package:equatable/equatable.dart';
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
-import 'package:mobile_app_standard/feature/transaction/bloc/transaction_state.dart';
+﻿import 'package:equatable/equatable.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
+import 'package:levelup_money_life/feature/transaction/bloc/transaction_state.dart';
 
 abstract class TransactionEvent extends Equatable {
   const TransactionEvent();

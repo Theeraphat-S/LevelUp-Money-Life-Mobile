@@ -2,18 +2,16 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_app_standard/domain/datasource/hive_config.dart';
-import 'package:mobile_app_standard/domain/datasource/tables.dart';
-import 'package:mobile_app_standard/domain/models/budget/allocation_item.dart';
-import 'package:mobile_app_standard/domain/models/gamification/quest.dart';
-import 'package:mobile_app_standard/domain/models/todo_table.dart';
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
-import 'package:mobile_app_standard/domain/services/gamification_engine.dart';
+import 'package:levelup_money_life/domain/datasource/hive_config.dart';
+import 'package:levelup_money_life/domain/datasource/tables.dart';
+import 'package:levelup_money_life/domain/models/budget/allocation_item.dart';
+import 'package:levelup_money_life/domain/models/gamification/quest.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
+import 'package:levelup_money_life/domain/services/gamification_engine.dart';
 
-part 'app_datebase.g.dart';
+part 'app_database.g.dart';
 
 @DriftDatabase(tables: [
-  TodoItems,
   Transactions,
   Allocations,
   Quests,
@@ -38,9 +36,6 @@ class AppDatabase extends _$AppDatabase {
           await m.createAll();
         },
         onUpgrade: (Migrator m, int from, int to) async {
-          if (from < 2) {
-            await m.addColumn(todoItems, todoItems.priority);
-          }
           if (from < 3) {
             await m.createTable(transactions);
             await m.createTable(allocations);

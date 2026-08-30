@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 
 # กำหนด path ของ directory
 LOCALS_DIR="./lib/i18n/locals"
@@ -38,7 +38,7 @@ EOF
 for dir in "$LOCALS_DIR"/*; do
     if [ -d "$dir" ]; then
         page_name=$(basename "$dir")
-        echo "import 'package:mobile_app_standard/i18n/locals/${page_name}/${page_name}_localizations.dart';" >> "$I18N_FILE"
+        echo "import 'package:levelup_money_life/i18n/locals/${page_name}/${page_name}_localizations.dart';" >> "$I18N_FILE"
     fi
 done
 

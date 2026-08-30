@@ -1,11 +1,11 @@
-import 'package:drift/native.dart';
+﻿import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
-import 'package:mobile_app_standard/domain/repositories/budget_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/gamification_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/transaction_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/user_repository.dart';
+import 'package:levelup_money_life/domain/datasource/app_database.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
+import 'package:levelup_money_life/domain/repositories/budget_repository.dart';
+import 'package:levelup_money_life/domain/repositories/gamification_repository.dart';
+import 'package:levelup_money_life/domain/repositories/transaction_repository.dart';
+import 'package:levelup_money_life/domain/repositories/user_repository.dart';
 
 void main() {
   late AppDatabase db;

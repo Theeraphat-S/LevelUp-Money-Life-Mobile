@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:mobile_app_standard/domain/models/gamification/user_profile.dart';
-import 'package:mobile_app_standard/shared/tokens/p_radius.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:levelup_money_life/domain/models/gamification/user_profile.dart';
+import 'package:levelup_money_life/shared/tokens/p_radius.dart';
 
 class RpgHudCard extends StatelessWidget {
   final UserProfile user;

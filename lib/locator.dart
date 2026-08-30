@@ -1,23 +1,17 @@
 import 'package:get_it/get_it.dart';
-import 'package:mobile_app_standard/domain/datasource/app_datebase.dart';
-import 'package:mobile_app_standard/domain/datasource/hive_config.dart';
-import 'package:mobile_app_standard/domain/http_client/api_client.dart';
-import 'package:mobile_app_standard/domain/http_client/ip.dart';
-import 'package:mobile_app_standard/domain/http_client/websocket.dart';
-import 'package:mobile_app_standard/domain/repositories/budget_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/gamification_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/todo_repo.dart';
-import 'package:mobile_app_standard/domain/repositories/transaction_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/user_repository.dart';
-import 'package:mobile_app_standard/domain/services/quick_template_service.dart';
-import 'package:mobile_app_standard/feature/budget/bloc/budget_bloc.dart';
-import 'package:mobile_app_standard/feature/dashboard/bloc/dashboard_bloc.dart';
-import 'package:mobile_app_standard/feature/gamification/bloc/gamification_bloc.dart';
-import 'package:mobile_app_standard/feature/home/bloc/websocket/websocket_bloc.dart';
-import 'package:mobile_app_standard/feature/todo/bloc/todo_bloc.dart';
-import 'package:mobile_app_standard/feature/transaction/bloc/transaction_bloc.dart';
-import 'package:mobile_app_standard/shared/bloc/app/app_bloc.dart';
-import 'package:mobile_app_standard/shared/bloc/language/language_bloc.dart';
+import 'package:levelup_money_life/domain/datasource/app_database.dart';
+import 'package:levelup_money_life/domain/datasource/hive_config.dart';
+import 'package:levelup_money_life/domain/repositories/budget_repository.dart';
+import 'package:levelup_money_life/domain/repositories/gamification_repository.dart';
+import 'package:levelup_money_life/domain/repositories/transaction_repository.dart';
+import 'package:levelup_money_life/domain/repositories/user_repository.dart';
+import 'package:levelup_money_life/domain/services/quick_template_service.dart';
+import 'package:levelup_money_life/feature/budget/bloc/budget_bloc.dart';
+import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_bloc.dart';
+import 'package:levelup_money_life/feature/gamification/bloc/gamification_bloc.dart';
+import 'package:levelup_money_life/feature/transaction/bloc/transaction_bloc.dart';
+import 'package:levelup_money_life/shared/bloc/app/app_bloc.dart';
+import 'package:levelup_money_life/shared/bloc/language/language_bloc.dart';
 
 final locator = GetIt.instance;
 
@@ -30,12 +24,7 @@ Future<void> initLocator() async {
   await db.initDatabase();
   locator.registerSingleton<AppDatabase>(db);
 
-  // 2. Register Http / API Clients (for external or websocket utilities)
-  locator.registerLazySingleton<ApiClient>(ApiClient.new);
-  locator.registerLazySingleton<IpClient>(IpClient.new);
-  locator.registerLazySingleton<WebSocketClient>(WebSocketClient.new);
-
-  // 3. Register Repositories (Backed by Drift SQLite)
+  // 2. Register Repositories (Backed by Drift SQLite)
   locator.registerLazySingleton<UserRepositoryInterface>(
       () => UserRepository(locator<AppDatabase>()));
   locator.registerLazySingleton<TransactionRepositoryInterface>(
@@ -44,10 +33,8 @@ Future<void> initLocator() async {
       () => GamificationRepository(locator<AppDatabase>()));
   locator.registerLazySingleton<BudgetRepositoryInterface>(
       () => BudgetRepository(locator<AppDatabase>()));
-  locator.registerLazySingleton<TodoRepositoryInterface>(
-      () => TodoRepository(locator<AppDatabase>()));
 
-  // 4. Register Blocs
+  // 3. Register Blocs
   locator.registerFactory<AppGlobalBloc>(
       () => AppGlobalBloc(locator<AppDatabase>()));
 
@@ -75,8 +62,7 @@ Future<void> initLocator() async {
         userRepository: locator<UserRepositoryInterface>(),
       ));
 
-  locator.registerLazySingleton<TodoBloc>(TodoBloc.new);
-  locator.registerLazySingleton<WebsocketBloc>(WebsocketBloc.new);
   locator.registerLazySingleton<LanguageBloc>(
       () => LanguageBloc(locator<AppDatabase>()));
 }
+

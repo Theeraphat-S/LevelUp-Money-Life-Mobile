@@ -1,4 +1,4 @@
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
+﻿import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 
 class CreateTransactionRequest {
   final String title;

@@ -1,11 +1,11 @@
-import 'package:equatable/equatable.dart';
+﻿import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app_standard/domain/models/budget/allocation_item.dart';
-import 'package:mobile_app_standard/domain/models/transaction/category_item.dart';
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
-import 'package:mobile_app_standard/domain/repositories/budget_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/gamification_repository.dart';
-import 'package:mobile_app_standard/domain/repositories/transaction_repository.dart';
+import 'package:levelup_money_life/domain/models/budget/allocation_item.dart';
+import 'package:levelup_money_life/domain/models/transaction/category_item.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
+import 'package:levelup_money_life/domain/repositories/budget_repository.dart';
+import 'package:levelup_money_life/domain/repositories/gamification_repository.dart';
+import 'package:levelup_money_life/domain/repositories/transaction_repository.dart';
 
 // State
 enum BudgetStatus { initial, loading, success, failure }

@@ -1,5 +1,5 @@
-name: mobile_app_standard
-description: "A new Flutter project."
+name: levelup_money_life
+description: "LevelUp Money Life Mobile Application"
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 flavors:

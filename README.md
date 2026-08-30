@@ -1,4 +1,4 @@
-# LevelUp Money Life (Mobile App) 🚀
+﻿# LevelUp Money Life (Mobile App) 🚀
 
 <div align="center">
 
@@ -306,7 +306,7 @@ fvm flutter run --flavor prod -t lib/main.dart --dart-define=flavor=prod
 ### Drift (SQLite)
 
 - จัดเก็บตารางข้อมูลหลักแบบ Relation
-- ไฟล์คอนฟิก: [app_datebase.dart](file:///lib/domain/datasource/app_datebase.dart)
+- ไฟล์คอนฟิก: [app_database.dart](file:///lib/domain/datasource/app_database.dart)
 - วิธีดึงไฟล์ฐานข้อมูลจาก Android Emulator ออกมาดู:
   ```bash
   adb exec-out run-as com.fldp.mobileApp cat /data/data/com.fldp.mobileApp.dev/app_flutter/db.sqlite > local_db.sqlite

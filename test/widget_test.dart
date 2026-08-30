@@ -1,7 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_app_standard/domain/models/budget/allocation_item.dart';
-import 'package:mobile_app_standard/domain/models/transaction/category_item.dart';
-import 'package:mobile_app_standard/domain/models/transaction/transaction_item.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:levelup_money_life/domain/models/budget/allocation_item.dart';
+import 'package:levelup_money_life/domain/models/transaction/category_item.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 
 void main() {
   group('LevelUp Money Life Domain Tests', () {
