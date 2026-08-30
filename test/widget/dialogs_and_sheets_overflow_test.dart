@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +21,7 @@ import 'package:levelup_money_life/locator.dart';
 import 'package:levelup_money_life/shared/bloc/app/app_bloc.dart';
 import 'package:levelup_money_life/shared/bloc/language/language_bloc.dart';
 import 'package:levelup_money_life/shared/components/data_manager_dialog.dart';
+import 'package:levelup_money_life/feature/gamification/widgets/level_up_dialog.dart';
 
 void main() {
   late AppDatabase db;
@@ -182,6 +183,33 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(DataManagerDialog), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('LevelUpDialog renders and animates confetti without error',
+        (tester) async {
+      tester.view.physicalSize = const Size(320, 700);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        buildTestableWidget(
+          child: const LevelUpDialog(
+            level: 5,
+            rankTitle: 'Financial Master',
+          ),
+          width: 320,
+          height: 700,
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(seconds: 2));
+
+      expect(find.byType(LevelUpDialog), findsOneWidget);
+      expect(find.text('LEVEL UP!'), findsOneWidget);
+      expect(find.text('Claim & Continue 🚀'), findsNothing); // Locale is 'th'
+      expect(find.text('รับพลังและก้าวต่อไป 🚀'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });
