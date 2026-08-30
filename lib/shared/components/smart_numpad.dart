@@ -155,7 +155,7 @@ class SmartNumpad extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       onTap: isAction
                           ? () {
-                              HapticFeedback.mediumImpact();
+                              HapticFeedback.heavyImpact();
                               onSubmit();
                             }
                           : () => _onKeyPress(key),

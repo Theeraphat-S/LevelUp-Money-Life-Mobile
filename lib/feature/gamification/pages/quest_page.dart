@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,8 +26,27 @@ class QuestPage extends StatelessWidget {
   }
 }
 
-class _QuestPageView extends StatelessWidget {
+class _QuestPageView extends StatefulWidget {
   const _QuestPageView();
+
+  @override
+  State<_QuestPageView> createState() => _QuestPageViewState();
+}
+
+class _QuestPageViewState extends State<_QuestPageView> {
+  late ConfettiController _confettiController;
+
+  @override
+  void initState() {
+    super.initState();
+    _confettiController = ConfettiController(duration: const Duration(milliseconds: 800));
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,54 +57,57 @@ class _QuestPageView extends StatelessWidget {
       length: 2,
       child: Scaffold(
         backgroundColor: PColor.base(context),
-        body: Column(
+        body: Stack(
           children: [
-            // Tab Selector Strip
-            Container(
-              color: PColor.surface(context),
-              child: TabBar(
-                indicatorColor: PColor.primary(context),
-                labelColor: PColor.primary(context),
-                unselectedLabelColor: PColor.inkSoft(context),
-                labelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
-                tabs: [
-                  Tab(icon: const Icon(Icons.checklist_rounded), text: i18n.tab_daily_quests),
-                  Tab(icon: const Icon(Icons.military_tech_rounded), text: i18n.tab_achievements),
-                ],
-              ),
-            ),
-            const Divider(height: 1, thickness: 1),
+            Column(
+              children: [
+                // Tab Selector Strip
+                Container(
+                  color: PColor.surface(context),
+                  child: TabBar(
+                    indicatorColor: PColor.primary(context),
+                    labelColor: PColor.primary(context),
+                    unselectedLabelColor: PColor.inkSoft(context),
+                    labelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                    tabs: [
+                      Tab(icon: const Icon(Icons.checklist_rounded), text: i18n.tab_daily_quests),
+                      Tab(icon: const Icon(Icons.military_tech_rounded), text: i18n.tab_achievements),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1, thickness: 1),
 
-            // Tab Views
-            Expanded(
-              child: BlocConsumer<GamificationBloc, GamificationState>(
-                listener: (context, state) {
-                  if (state.message != null) {
-                    final xpMatch = RegExp(r'\+(\d+)\s*XP').firstMatch(state.message!);
-                    final xp = xpMatch != null ? int.tryParse(xpMatch.group(1) ?? '0') ?? 10 : 10;
+                // Tab Views
+                Expanded(
+                  child: BlocConsumer<GamificationBloc, GamificationState>(
+                    listener: (context, state) {
+                      if (state.message != null) {
+                        final xpMatch = RegExp(r'\+(\d+)\s*XP').firstMatch(state.message!);
+                        final xp = xpMatch != null ? int.tryParse(xpMatch.group(1) ?? '0') ?? 10 : 10;
 
-                    if (state.message!.contains('XP')) {
-                      showFloatingXpToast(
-                        context: context,
-                        xpGained: xp,
-                        message: state.message!,
-                        icon: Icons.military_tech_rounded,
-                      );
-                    } else {
-                      showSuccessToast(
-                        context: context,
-                        title: state.message!,
-                      );
-                    }
-                    context.read<DashboardBloc>().add(const LoadDashboardData());
-                  }
-                  if (state.errorMessage != null) {
-                    showErrorToast(
-                      context: context,
-                      description: state.errorMessage!,
-                    );
-                  }
-                },
+                        if (state.message!.contains('XP')) {
+                          _confettiController.play();
+                          showFloatingXpToast(
+                            context: context,
+                            xpGained: xp,
+                            message: state.message!,
+                            icon: Icons.military_tech_rounded,
+                          );
+                        } else {
+                          showSuccessToast(
+                            context: context,
+                            title: state.message!,
+                          );
+                        }
+                        context.read<DashboardBloc>().add(const LoadDashboardData());
+                      }
+                      if (state.errorMessage != null) {
+                        showErrorToast(
+                          context: context,
+                          description: state.errorMessage!,
+                        );
+                      }
+                    },
                 builder: (context, state) {
                   if (state.status == GamificationStatus.loading &&
                       state.dailyQuests.isEmpty) {
@@ -356,7 +379,27 @@ class _QuestPageView extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+        Align(
+          alignment: Alignment.topCenter,
+          child: ConfettiWidget(
+            confettiController: _confettiController,
+            blastDirectionality: BlastDirectionality.explosive,
+            shouldLoop: false,
+            colors: const [
+              Color(0xFFFFD700), // Gold
+              Color(0xFFF59E0B), // Amber
+              Color(0xFF10B981), // Emerald
+              Color(0xFF059669), // Jade
+              Color(0xFF34D399), // Mint Jade
+            ],
+            numberOfParticles: 25,
+            gravity: 0.3,
+            emissionFrequency: 0.05,
+          ),
+        ),
+      ],
+    ),
+  ),
+);
   }
 }

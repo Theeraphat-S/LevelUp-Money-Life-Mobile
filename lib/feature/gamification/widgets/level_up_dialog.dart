@@ -184,12 +184,12 @@ class _LevelUpDialogState extends State<LevelUpDialog> {
             blastDirectionality: BlastDirectionality.explosive,
             shouldLoop: false,
             colors: const [
-              Colors.amber,
-              Colors.orange,
-              Colors.green,
-              Colors.teal,
-              Colors.blueAccent,
-              Colors.pinkAccent,
+              Color(0xFFFFD700), // Gold
+              Color(0xFFF59E0B), // Amber
+              Color(0xFF10B981), // Emerald
+              Color(0xFF059669), // Jade
+              Color(0xFF34D399), // Mint Jade
+              Color(0xFFFBBF24), // Warm Gold
             ],
             numberOfParticles: 35,
             gravity: 0.25,
