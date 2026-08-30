@@ -4,7 +4,7 @@ part of 'app_database.dart';
 
 // ignore_for_file: type=lint
 class $TransactionsTable extends Transactions
-    with TableInfo<$TransactionsTable, TransactionEntry> {
+    with TableInfo<$TransactionsTable, TransactionData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -122,7 +122,7 @@ class $TransactionsTable extends Transactions
   static const String $name = 'transactions';
   @override
   VerificationContext validateIntegrity(
-    Insertable<TransactionEntry> instance, {
+    Insertable<TransactionData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -194,9 +194,9 @@ class $TransactionsTable extends Transactions
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  TransactionEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+  TransactionData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TransactionEntry(
+    return TransactionData(
       id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -249,8 +249,7 @@ class $TransactionsTable extends Transactions
   }
 }
 
-class TransactionEntry extends DataClass
-    implements Insertable<TransactionEntry> {
+class TransactionData extends DataClass implements Insertable<TransactionData> {
   final String id;
   final String name;
   final double amount;
@@ -260,7 +259,7 @@ class TransactionEntry extends DataClass
   final String? notes;
   final int expGained;
   final DateTime? createdAt;
-  const TransactionEntry({
+  const TransactionData({
     required this.id,
     required this.name,
     required this.amount,
@@ -308,12 +307,12 @@ class TransactionEntry extends DataClass
     );
   }
 
-  factory TransactionEntry.fromJson(
+  factory TransactionData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TransactionEntry(
+    return TransactionData(
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       amount: serializer.fromJson<double>(json['amount']),
@@ -341,7 +340,7 @@ class TransactionEntry extends DataClass
     };
   }
 
-  TransactionEntry copyWith({
+  TransactionData copyWith({
     String? id,
     String? name,
     double? amount,
@@ -351,7 +350,7 @@ class TransactionEntry extends DataClass
     Value<String?> notes = const Value.absent(),
     int? expGained,
     Value<DateTime?> createdAt = const Value.absent(),
-  }) => TransactionEntry(
+  }) => TransactionData(
     id: id ?? this.id,
     name: name ?? this.name,
     amount: amount ?? this.amount,
@@ -362,8 +361,8 @@ class TransactionEntry extends DataClass
     expGained: expGained ?? this.expGained,
     createdAt: createdAt.present ? createdAt.value : this.createdAt,
   );
-  TransactionEntry copyWithCompanion(TransactionsCompanion data) {
-    return TransactionEntry(
+  TransactionData copyWithCompanion(TransactionsCompanion data) {
+    return TransactionData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       amount: data.amount.present ? data.amount.value : this.amount,
@@ -378,7 +377,7 @@ class TransactionEntry extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('TransactionEntry(')
+    return (StringBuffer('TransactionData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('amount: $amount, ')
@@ -407,7 +406,7 @@ class TransactionEntry extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is TransactionEntry &&
+      (other is TransactionData &&
           other.id == this.id &&
           other.name == this.name &&
           other.amount == this.amount &&
@@ -419,7 +418,7 @@ class TransactionEntry extends DataClass
           other.createdAt == this.createdAt);
 }
 
-class TransactionsCompanion extends UpdateCompanion<TransactionEntry> {
+class TransactionsCompanion extends UpdateCompanion<TransactionData> {
   final Value<String> id;
   final Value<String> name;
   final Value<double> amount;
@@ -458,7 +457,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionEntry> {
        amount = Value(amount),
        date = Value(date),
        category = Value(category);
-  static Insertable<TransactionEntry> custom({
+  static Insertable<TransactionData> custom({
     Expression<String>? id,
     Expression<String>? name,
     Expression<double>? amount,
@@ -565,7 +564,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionEntry> {
 }
 
 class $AllocationsTable extends Allocations
-    with TableInfo<$AllocationsTable, AllocationEntry> {
+    with TableInfo<$AllocationsTable, AllocationData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -617,7 +616,7 @@ class $AllocationsTable extends Allocations
   static const String $name = 'allocations';
   @override
   VerificationContext validateIntegrity(
-    Insertable<AllocationEntry> instance, {
+    Insertable<AllocationData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -657,9 +656,9 @@ class $AllocationsTable extends Allocations
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  AllocationEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+  AllocationData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return AllocationEntry(
+    return AllocationData(
       id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -689,12 +688,12 @@ class $AllocationsTable extends Allocations
   }
 }
 
-class AllocationEntry extends DataClass implements Insertable<AllocationEntry> {
+class AllocationData extends DataClass implements Insertable<AllocationData> {
   final String id;
   final String label;
   final int percent;
   final String color;
-  const AllocationEntry({
+  const AllocationData({
     required this.id,
     required this.label,
     required this.percent,
@@ -719,12 +718,12 @@ class AllocationEntry extends DataClass implements Insertable<AllocationEntry> {
     );
   }
 
-  factory AllocationEntry.fromJson(
+  factory AllocationData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return AllocationEntry(
+    return AllocationData(
       id: serializer.fromJson<String>(json['id']),
       label: serializer.fromJson<String>(json['label']),
       percent: serializer.fromJson<int>(json['percent']),
@@ -742,19 +741,19 @@ class AllocationEntry extends DataClass implements Insertable<AllocationEntry> {
     };
   }
 
-  AllocationEntry copyWith({
+  AllocationData copyWith({
     String? id,
     String? label,
     int? percent,
     String? color,
-  }) => AllocationEntry(
+  }) => AllocationData(
     id: id ?? this.id,
     label: label ?? this.label,
     percent: percent ?? this.percent,
     color: color ?? this.color,
   );
-  AllocationEntry copyWithCompanion(AllocationsCompanion data) {
-    return AllocationEntry(
+  AllocationData copyWithCompanion(AllocationsCompanion data) {
+    return AllocationData(
       id: data.id.present ? data.id.value : this.id,
       label: data.label.present ? data.label.value : this.label,
       percent: data.percent.present ? data.percent.value : this.percent,
@@ -764,7 +763,7 @@ class AllocationEntry extends DataClass implements Insertable<AllocationEntry> {
 
   @override
   String toString() {
-    return (StringBuffer('AllocationEntry(')
+    return (StringBuffer('AllocationData(')
           ..write('id: $id, ')
           ..write('label: $label, ')
           ..write('percent: $percent, ')
@@ -778,14 +777,14 @@ class AllocationEntry extends DataClass implements Insertable<AllocationEntry> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is AllocationEntry &&
+      (other is AllocationData &&
           other.id == this.id &&
           other.label == this.label &&
           other.percent == this.percent &&
           other.color == this.color);
 }
 
-class AllocationsCompanion extends UpdateCompanion<AllocationEntry> {
+class AllocationsCompanion extends UpdateCompanion<AllocationData> {
   final Value<String> id;
   final Value<String> label;
   final Value<int> percent;
@@ -808,7 +807,7 @@ class AllocationsCompanion extends UpdateCompanion<AllocationEntry> {
        label = Value(label),
        percent = Value(percent),
        color = Value(color);
-  static Insertable<AllocationEntry> custom({
+  static Insertable<AllocationData> custom({
     Expression<String>? id,
     Expression<String>? label,
     Expression<int>? percent,
@@ -874,7 +873,7 @@ class AllocationsCompanion extends UpdateCompanion<AllocationEntry> {
   }
 }
 
-class $QuestsTable extends Quests with TableInfo<$QuestsTable, QuestEntry> {
+class $QuestsTable extends Quests with TableInfo<$QuestsTable, QuestData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -948,7 +947,7 @@ class $QuestsTable extends Quests with TableInfo<$QuestsTable, QuestEntry> {
   static const String $name = 'quests';
   @override
   VerificationContext validateIntegrity(
-    Insertable<QuestEntry> instance, {
+    Insertable<QuestData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -999,9 +998,9 @@ class $QuestsTable extends Quests with TableInfo<$QuestsTable, QuestEntry> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  QuestEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+  QuestData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return QuestEntry(
+    return QuestData(
       id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -1041,14 +1040,14 @@ class $QuestsTable extends Quests with TableInfo<$QuestsTable, QuestEntry> {
   }
 }
 
-class QuestEntry extends DataClass implements Insertable<QuestEntry> {
+class QuestData extends DataClass implements Insertable<QuestData> {
   final String id;
   final String title;
   final String date;
   final int xp;
   final bool done;
   final String category;
-  const QuestEntry({
+  const QuestData({
     required this.id,
     required this.title,
     required this.date,
@@ -1079,12 +1078,12 @@ class QuestEntry extends DataClass implements Insertable<QuestEntry> {
     );
   }
 
-  factory QuestEntry.fromJson(
+  factory QuestData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return QuestEntry(
+    return QuestData(
       id: serializer.fromJson<String>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       date: serializer.fromJson<String>(json['date']),
@@ -1106,14 +1105,14 @@ class QuestEntry extends DataClass implements Insertable<QuestEntry> {
     };
   }
 
-  QuestEntry copyWith({
+  QuestData copyWith({
     String? id,
     String? title,
     String? date,
     int? xp,
     bool? done,
     String? category,
-  }) => QuestEntry(
+  }) => QuestData(
     id: id ?? this.id,
     title: title ?? this.title,
     date: date ?? this.date,
@@ -1121,8 +1120,8 @@ class QuestEntry extends DataClass implements Insertable<QuestEntry> {
     done: done ?? this.done,
     category: category ?? this.category,
   );
-  QuestEntry copyWithCompanion(QuestsCompanion data) {
-    return QuestEntry(
+  QuestData copyWithCompanion(QuestsCompanion data) {
+    return QuestData(
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
       date: data.date.present ? data.date.value : this.date,
@@ -1134,7 +1133,7 @@ class QuestEntry extends DataClass implements Insertable<QuestEntry> {
 
   @override
   String toString() {
-    return (StringBuffer('QuestEntry(')
+    return (StringBuffer('QuestData(')
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('date: $date, ')
@@ -1150,7 +1149,7 @@ class QuestEntry extends DataClass implements Insertable<QuestEntry> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is QuestEntry &&
+      (other is QuestData &&
           other.id == this.id &&
           other.title == this.title &&
           other.date == this.date &&
@@ -1159,7 +1158,7 @@ class QuestEntry extends DataClass implements Insertable<QuestEntry> {
           other.category == this.category);
 }
 
-class QuestsCompanion extends UpdateCompanion<QuestEntry> {
+class QuestsCompanion extends UpdateCompanion<QuestData> {
   final Value<String> id;
   final Value<String> title;
   final Value<String> date;
@@ -1189,7 +1188,7 @@ class QuestsCompanion extends UpdateCompanion<QuestEntry> {
        date = Value(date),
        xp = Value(xp),
        category = Value(category);
-  static Insertable<QuestEntry> custom({
+  static Insertable<QuestData> custom({
     Expression<String>? id,
     Expression<String>? title,
     Expression<String>? date,
@@ -1272,7 +1271,7 @@ class QuestsCompanion extends UpdateCompanion<QuestEntry> {
 }
 
 class $UserProfilesTable extends UserProfiles
-    with TableInfo<$UserProfilesTable, UserProfileEntry> {
+    with TableInfo<$UserProfilesTable, UserProfileData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1347,7 +1346,7 @@ class $UserProfilesTable extends UserProfiles
   static const String $name = 'user_profiles';
   @override
   VerificationContext validateIntegrity(
-    Insertable<UserProfileEntry> instance, {
+    Insertable<UserProfileData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1390,9 +1389,9 @@ class $UserProfilesTable extends UserProfiles
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  UserProfileEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+  UserProfileData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return UserProfileEntry(
+    return UserProfileData(
       id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -1427,14 +1426,13 @@ class $UserProfilesTable extends UserProfiles
   }
 }
 
-class UserProfileEntry extends DataClass
-    implements Insertable<UserProfileEntry> {
+class UserProfileData extends DataClass implements Insertable<UserProfileData> {
   final String id;
   final String name;
   final int totalXp;
   final int streakDays;
   final String lastActiveDate;
-  const UserProfileEntry({
+  const UserProfileData({
     required this.id,
     required this.name,
     required this.totalXp,
@@ -1462,12 +1460,12 @@ class UserProfileEntry extends DataClass
     );
   }
 
-  factory UserProfileEntry.fromJson(
+  factory UserProfileData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return UserProfileEntry(
+    return UserProfileData(
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       totalXp: serializer.fromJson<int>(json['totalXp']),
@@ -1487,21 +1485,21 @@ class UserProfileEntry extends DataClass
     };
   }
 
-  UserProfileEntry copyWith({
+  UserProfileData copyWith({
     String? id,
     String? name,
     int? totalXp,
     int? streakDays,
     String? lastActiveDate,
-  }) => UserProfileEntry(
+  }) => UserProfileData(
     id: id ?? this.id,
     name: name ?? this.name,
     totalXp: totalXp ?? this.totalXp,
     streakDays: streakDays ?? this.streakDays,
     lastActiveDate: lastActiveDate ?? this.lastActiveDate,
   );
-  UserProfileEntry copyWithCompanion(UserProfilesCompanion data) {
-    return UserProfileEntry(
+  UserProfileData copyWithCompanion(UserProfilesCompanion data) {
+    return UserProfileData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       totalXp: data.totalXp.present ? data.totalXp.value : this.totalXp,
@@ -1516,7 +1514,7 @@ class UserProfileEntry extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('UserProfileEntry(')
+    return (StringBuffer('UserProfileData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('totalXp: $totalXp, ')
@@ -1532,7 +1530,7 @@ class UserProfileEntry extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is UserProfileEntry &&
+      (other is UserProfileData &&
           other.id == this.id &&
           other.name == this.name &&
           other.totalXp == this.totalXp &&
@@ -1540,7 +1538,7 @@ class UserProfileEntry extends DataClass
           other.lastActiveDate == this.lastActiveDate);
 }
 
-class UserProfilesCompanion extends UpdateCompanion<UserProfileEntry> {
+class UserProfilesCompanion extends UpdateCompanion<UserProfileData> {
   final Value<String> id;
   final Value<String> name;
   final Value<int> totalXp;
@@ -1563,7 +1561,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfileEntry> {
     required String lastActiveDate,
     this.rowid = const Value.absent(),
   }) : lastActiveDate = Value(lastActiveDate);
-  static Insertable<UserProfileEntry> custom({
+  static Insertable<UserProfileData> custom({
     Expression<String>? id,
     Expression<String>? name,
     Expression<int>? totalXp,
@@ -1638,7 +1636,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfileEntry> {
 }
 
 class $UnlockedAchievementsTable extends UnlockedAchievements
-    with TableInfo<$UnlockedAchievementsTable, UnlockedAchievementEntry> {
+    with TableInfo<$UnlockedAchievementsTable, UnlockedAchievementData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1672,7 +1670,7 @@ class $UnlockedAchievementsTable extends UnlockedAchievements
   static const String $name = 'unlocked_achievements';
   @override
   VerificationContext validateIntegrity(
-    Insertable<UnlockedAchievementEntry> instance, {
+    Insertable<UnlockedAchievementData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1696,12 +1694,12 @@ class $UnlockedAchievementsTable extends UnlockedAchievements
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  UnlockedAchievementEntry map(
+  UnlockedAchievementData map(
     Map<String, dynamic> data, {
     String? tablePrefix,
   }) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return UnlockedAchievementEntry(
+    return UnlockedAchievementData(
       id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -1721,11 +1719,11 @@ class $UnlockedAchievementsTable extends UnlockedAchievements
   }
 }
 
-class UnlockedAchievementEntry extends DataClass
-    implements Insertable<UnlockedAchievementEntry> {
+class UnlockedAchievementData extends DataClass
+    implements Insertable<UnlockedAchievementData> {
   final String id;
   final String unlockedAt;
-  const UnlockedAchievementEntry({required this.id, required this.unlockedAt});
+  const UnlockedAchievementData({required this.id, required this.unlockedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1741,12 +1739,12 @@ class UnlockedAchievementEntry extends DataClass
     );
   }
 
-  factory UnlockedAchievementEntry.fromJson(
+  factory UnlockedAchievementData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return UnlockedAchievementEntry(
+    return UnlockedAchievementData(
       id: serializer.fromJson<String>(json['id']),
       unlockedAt: serializer.fromJson<String>(json['unlockedAt']),
     );
@@ -1760,15 +1758,15 @@ class UnlockedAchievementEntry extends DataClass
     };
   }
 
-  UnlockedAchievementEntry copyWith({String? id, String? unlockedAt}) =>
-      UnlockedAchievementEntry(
+  UnlockedAchievementData copyWith({String? id, String? unlockedAt}) =>
+      UnlockedAchievementData(
         id: id ?? this.id,
         unlockedAt: unlockedAt ?? this.unlockedAt,
       );
-  UnlockedAchievementEntry copyWithCompanion(
+  UnlockedAchievementData copyWithCompanion(
     UnlockedAchievementsCompanion data,
   ) {
-    return UnlockedAchievementEntry(
+    return UnlockedAchievementData(
       id: data.id.present ? data.id.value : this.id,
       unlockedAt:
           data.unlockedAt.present ? data.unlockedAt.value : this.unlockedAt,
@@ -1777,7 +1775,7 @@ class UnlockedAchievementEntry extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('UnlockedAchievementEntry(')
+    return (StringBuffer('UnlockedAchievementData(')
           ..write('id: $id, ')
           ..write('unlockedAt: $unlockedAt')
           ..write(')'))
@@ -1789,13 +1787,13 @@ class UnlockedAchievementEntry extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is UnlockedAchievementEntry &&
+      (other is UnlockedAchievementData &&
           other.id == this.id &&
           other.unlockedAt == this.unlockedAt);
 }
 
 class UnlockedAchievementsCompanion
-    extends UpdateCompanion<UnlockedAchievementEntry> {
+    extends UpdateCompanion<UnlockedAchievementData> {
   final Value<String> id;
   final Value<String> unlockedAt;
   final Value<int> rowid;
@@ -1810,7 +1808,7 @@ class UnlockedAchievementsCompanion
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        unlockedAt = Value(unlockedAt);
-  static Insertable<UnlockedAchievementEntry> custom({
+  static Insertable<UnlockedAchievementData> custom({
     Expression<String>? id,
     Expression<String>? unlockedAt,
     Expression<int>? rowid,
@@ -1861,7 +1859,7 @@ class UnlockedAchievementsCompanion
 }
 
 class $AppSettingsTable extends AppSettings
-    with TableInfo<$AppSettingsTable, AppSettingEntry> {
+    with TableInfo<$AppSettingsTable, AppSettingData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1893,7 +1891,7 @@ class $AppSettingsTable extends AppSettings
   static const String $name = 'app_settings';
   @override
   VerificationContext validateIntegrity(
-    Insertable<AppSettingEntry> instance, {
+    Insertable<AppSettingData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1920,9 +1918,9 @@ class $AppSettingsTable extends AppSettings
   @override
   Set<GeneratedColumn> get $primaryKey => {key};
   @override
-  AppSettingEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+  AppSettingData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return AppSettingEntry(
+    return AppSettingData(
       key:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -1942,10 +1940,10 @@ class $AppSettingsTable extends AppSettings
   }
 }
 
-class AppSettingEntry extends DataClass implements Insertable<AppSettingEntry> {
+class AppSettingData extends DataClass implements Insertable<AppSettingData> {
   final String key;
   final String value;
-  const AppSettingEntry({required this.key, required this.value});
+  const AppSettingData({required this.key, required this.value});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1958,12 +1956,12 @@ class AppSettingEntry extends DataClass implements Insertable<AppSettingEntry> {
     return AppSettingsCompanion(key: Value(key), value: Value(value));
   }
 
-  factory AppSettingEntry.fromJson(
+  factory AppSettingData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return AppSettingEntry(
+    return AppSettingData(
       key: serializer.fromJson<String>(json['key']),
       value: serializer.fromJson<String>(json['value']),
     );
@@ -1977,10 +1975,10 @@ class AppSettingEntry extends DataClass implements Insertable<AppSettingEntry> {
     };
   }
 
-  AppSettingEntry copyWith({String? key, String? value}) =>
-      AppSettingEntry(key: key ?? this.key, value: value ?? this.value);
-  AppSettingEntry copyWithCompanion(AppSettingsCompanion data) {
-    return AppSettingEntry(
+  AppSettingData copyWith({String? key, String? value}) =>
+      AppSettingData(key: key ?? this.key, value: value ?? this.value);
+  AppSettingData copyWithCompanion(AppSettingsCompanion data) {
+    return AppSettingData(
       key: data.key.present ? data.key.value : this.key,
       value: data.value.present ? data.value.value : this.value,
     );
@@ -1988,7 +1986,7 @@ class AppSettingEntry extends DataClass implements Insertable<AppSettingEntry> {
 
   @override
   String toString() {
-    return (StringBuffer('AppSettingEntry(')
+    return (StringBuffer('AppSettingData(')
           ..write('key: $key, ')
           ..write('value: $value')
           ..write(')'))
@@ -2000,12 +1998,12 @@ class AppSettingEntry extends DataClass implements Insertable<AppSettingEntry> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is AppSettingEntry &&
+      (other is AppSettingData &&
           other.key == this.key &&
           other.value == this.value);
 }
 
-class AppSettingsCompanion extends UpdateCompanion<AppSettingEntry> {
+class AppSettingsCompanion extends UpdateCompanion<AppSettingData> {
   final Value<String> key;
   final Value<String> value;
   final Value<int> rowid;
@@ -2020,7 +2018,7 @@ class AppSettingsCompanion extends UpdateCompanion<AppSettingEntry> {
     this.rowid = const Value.absent(),
   }) : key = Value(key),
        value = Value(value);
-  static Insertable<AppSettingEntry> custom({
+  static Insertable<AppSettingData> custom({
     Expression<String>? key,
     Expression<String>? value,
     Expression<int>? rowid,
@@ -2273,17 +2271,17 @@ class $$TransactionsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $TransactionsTable,
-          TransactionEntry,
+          TransactionData,
           $$TransactionsTableFilterComposer,
           $$TransactionsTableOrderingComposer,
           $$TransactionsTableAnnotationComposer,
           $$TransactionsTableCreateCompanionBuilder,
           $$TransactionsTableUpdateCompanionBuilder,
           (
-            TransactionEntry,
-            BaseReferences<_$AppDatabase, $TransactionsTable, TransactionEntry>,
+            TransactionData,
+            BaseReferences<_$AppDatabase, $TransactionsTable, TransactionData>,
           ),
-          TransactionEntry,
+          TransactionData,
           PrefetchHooks Function()
         > {
   $$TransactionsTableTableManager(_$AppDatabase db, $TransactionsTable table)
@@ -2365,17 +2363,17 @@ typedef $$TransactionsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $TransactionsTable,
-      TransactionEntry,
+      TransactionData,
       $$TransactionsTableFilterComposer,
       $$TransactionsTableOrderingComposer,
       $$TransactionsTableAnnotationComposer,
       $$TransactionsTableCreateCompanionBuilder,
       $$TransactionsTableUpdateCompanionBuilder,
       (
-        TransactionEntry,
-        BaseReferences<_$AppDatabase, $TransactionsTable, TransactionEntry>,
+        TransactionData,
+        BaseReferences<_$AppDatabase, $TransactionsTable, TransactionData>,
       ),
-      TransactionEntry,
+      TransactionData,
       PrefetchHooks Function()
     >;
 typedef $$AllocationsTableCreateCompanionBuilder =
@@ -2482,17 +2480,17 @@ class $$AllocationsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $AllocationsTable,
-          AllocationEntry,
+          AllocationData,
           $$AllocationsTableFilterComposer,
           $$AllocationsTableOrderingComposer,
           $$AllocationsTableAnnotationComposer,
           $$AllocationsTableCreateCompanionBuilder,
           $$AllocationsTableUpdateCompanionBuilder,
           (
-            AllocationEntry,
-            BaseReferences<_$AppDatabase, $AllocationsTable, AllocationEntry>,
+            AllocationData,
+            BaseReferences<_$AppDatabase, $AllocationsTable, AllocationData>,
           ),
-          AllocationEntry,
+          AllocationData,
           PrefetchHooks Function()
         > {
   $$AllocationsTableTableManager(_$AppDatabase db, $AllocationsTable table)
@@ -2554,17 +2552,17 @@ typedef $$AllocationsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $AllocationsTable,
-      AllocationEntry,
+      AllocationData,
       $$AllocationsTableFilterComposer,
       $$AllocationsTableOrderingComposer,
       $$AllocationsTableAnnotationComposer,
       $$AllocationsTableCreateCompanionBuilder,
       $$AllocationsTableUpdateCompanionBuilder,
       (
-        AllocationEntry,
-        BaseReferences<_$AppDatabase, $AllocationsTable, AllocationEntry>,
+        AllocationData,
+        BaseReferences<_$AppDatabase, $AllocationsTable, AllocationData>,
       ),
-      AllocationEntry,
+      AllocationData,
       PrefetchHooks Function()
     >;
 typedef $$QuestsTableCreateCompanionBuilder =
@@ -2701,14 +2699,14 @@ class $$QuestsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $QuestsTable,
-          QuestEntry,
+          QuestData,
           $$QuestsTableFilterComposer,
           $$QuestsTableOrderingComposer,
           $$QuestsTableAnnotationComposer,
           $$QuestsTableCreateCompanionBuilder,
           $$QuestsTableUpdateCompanionBuilder,
-          (QuestEntry, BaseReferences<_$AppDatabase, $QuestsTable, QuestEntry>),
-          QuestEntry,
+          (QuestData, BaseReferences<_$AppDatabase, $QuestsTable, QuestData>),
+          QuestData,
           PrefetchHooks Function()
         > {
   $$QuestsTableTableManager(_$AppDatabase db, $QuestsTable table)
@@ -2777,14 +2775,14 @@ typedef $$QuestsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $QuestsTable,
-      QuestEntry,
+      QuestData,
       $$QuestsTableFilterComposer,
       $$QuestsTableOrderingComposer,
       $$QuestsTableAnnotationComposer,
       $$QuestsTableCreateCompanionBuilder,
       $$QuestsTableUpdateCompanionBuilder,
-      (QuestEntry, BaseReferences<_$AppDatabase, $QuestsTable, QuestEntry>),
-      QuestEntry,
+      (QuestData, BaseReferences<_$AppDatabase, $QuestsTable, QuestData>),
+      QuestData,
       PrefetchHooks Function()
     >;
 typedef $$UserProfilesTableCreateCompanionBuilder =
@@ -2910,17 +2908,17 @@ class $$UserProfilesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $UserProfilesTable,
-          UserProfileEntry,
+          UserProfileData,
           $$UserProfilesTableFilterComposer,
           $$UserProfilesTableOrderingComposer,
           $$UserProfilesTableAnnotationComposer,
           $$UserProfilesTableCreateCompanionBuilder,
           $$UserProfilesTableUpdateCompanionBuilder,
           (
-            UserProfileEntry,
-            BaseReferences<_$AppDatabase, $UserProfilesTable, UserProfileEntry>,
+            UserProfileData,
+            BaseReferences<_$AppDatabase, $UserProfilesTable, UserProfileData>,
           ),
-          UserProfileEntry,
+          UserProfileData,
           PrefetchHooks Function()
         > {
   $$UserProfilesTableTableManager(_$AppDatabase db, $UserProfilesTable table)
@@ -2986,17 +2984,17 @@ typedef $$UserProfilesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $UserProfilesTable,
-      UserProfileEntry,
+      UserProfileData,
       $$UserProfilesTableFilterComposer,
       $$UserProfilesTableOrderingComposer,
       $$UserProfilesTableAnnotationComposer,
       $$UserProfilesTableCreateCompanionBuilder,
       $$UserProfilesTableUpdateCompanionBuilder,
       (
-        UserProfileEntry,
-        BaseReferences<_$AppDatabase, $UserProfilesTable, UserProfileEntry>,
+        UserProfileData,
+        BaseReferences<_$AppDatabase, $UserProfilesTable, UserProfileData>,
       ),
-      UserProfileEntry,
+      UserProfileData,
       PrefetchHooks Function()
     >;
 typedef $$UnlockedAchievementsTableCreateCompanionBuilder =
@@ -3075,21 +3073,21 @@ class $$UnlockedAchievementsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $UnlockedAchievementsTable,
-          UnlockedAchievementEntry,
+          UnlockedAchievementData,
           $$UnlockedAchievementsTableFilterComposer,
           $$UnlockedAchievementsTableOrderingComposer,
           $$UnlockedAchievementsTableAnnotationComposer,
           $$UnlockedAchievementsTableCreateCompanionBuilder,
           $$UnlockedAchievementsTableUpdateCompanionBuilder,
           (
-            UnlockedAchievementEntry,
+            UnlockedAchievementData,
             BaseReferences<
               _$AppDatabase,
               $UnlockedAchievementsTable,
-              UnlockedAchievementEntry
+              UnlockedAchievementData
             >,
           ),
-          UnlockedAchievementEntry,
+          UnlockedAchievementData,
           PrefetchHooks Function()
         > {
   $$UnlockedAchievementsTableTableManager(
@@ -3153,21 +3151,21 @@ typedef $$UnlockedAchievementsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $UnlockedAchievementsTable,
-      UnlockedAchievementEntry,
+      UnlockedAchievementData,
       $$UnlockedAchievementsTableFilterComposer,
       $$UnlockedAchievementsTableOrderingComposer,
       $$UnlockedAchievementsTableAnnotationComposer,
       $$UnlockedAchievementsTableCreateCompanionBuilder,
       $$UnlockedAchievementsTableUpdateCompanionBuilder,
       (
-        UnlockedAchievementEntry,
+        UnlockedAchievementData,
         BaseReferences<
           _$AppDatabase,
           $UnlockedAchievementsTable,
-          UnlockedAchievementEntry
+          UnlockedAchievementData
         >,
       ),
-      UnlockedAchievementEntry,
+      UnlockedAchievementData,
       PrefetchHooks Function()
     >;
 typedef $$AppSettingsTableCreateCompanionBuilder =
@@ -3244,17 +3242,17 @@ class $$AppSettingsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $AppSettingsTable,
-          AppSettingEntry,
+          AppSettingData,
           $$AppSettingsTableFilterComposer,
           $$AppSettingsTableOrderingComposer,
           $$AppSettingsTableAnnotationComposer,
           $$AppSettingsTableCreateCompanionBuilder,
           $$AppSettingsTableUpdateCompanionBuilder,
           (
-            AppSettingEntry,
-            BaseReferences<_$AppDatabase, $AppSettingsTable, AppSettingEntry>,
+            AppSettingData,
+            BaseReferences<_$AppDatabase, $AppSettingsTable, AppSettingData>,
           ),
-          AppSettingEntry,
+          AppSettingData,
           PrefetchHooks Function()
         > {
   $$AppSettingsTableTableManager(_$AppDatabase db, $AppSettingsTable table)
@@ -3304,17 +3302,17 @@ typedef $$AppSettingsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $AppSettingsTable,
-      AppSettingEntry,
+      AppSettingData,
       $$AppSettingsTableFilterComposer,
       $$AppSettingsTableOrderingComposer,
       $$AppSettingsTableAnnotationComposer,
       $$AppSettingsTableCreateCompanionBuilder,
       $$AppSettingsTableUpdateCompanionBuilder,
       (
-        AppSettingEntry,
-        BaseReferences<_$AppDatabase, $AppSettingsTable, AppSettingEntry>,
+        AppSettingData,
+        BaseReferences<_$AppDatabase, $AppSettingsTable, AppSettingData>,
       ),
-      AppSettingEntry,
+      AppSettingData,
       PrefetchHooks Function()
     >;
 
