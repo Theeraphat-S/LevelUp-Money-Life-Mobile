@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_bloc.dart';
 import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_event.dart';
@@ -8,6 +9,8 @@ import 'package:levelup_money_life/feature/gamification/bloc/gamification_event.
 import 'package:levelup_money_life/feature/gamification/bloc/gamification_state.dart';
 import 'package:levelup_money_life/i18n/i18n.dart';
 import 'package:levelup_money_life/shared/components/bento_card.dart';
+import 'package:levelup_money_life/shared/components/toasts/floating_xp_toast.dart';
+import 'package:levelup_money_life/shared/components/toasts/toast_helper.dart';
 import 'package:levelup_money_life/shared/components/xp_progress_bar.dart';
 import 'package:levelup_money_life/shared/tokens/p_colors.dart';
 
@@ -57,13 +60,29 @@ class _QuestPageView extends StatelessWidget {
               child: BlocConsumer<GamificationBloc, GamificationState>(
                 listener: (context, state) {
                   if (state.message != null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.message!),
-                        backgroundColor: PColor.jadeLight,
-                      ),
-                    );
+                    final xpMatch = RegExp(r'\+(\d+)\s*XP').firstMatch(state.message!);
+                    final xp = xpMatch != null ? int.tryParse(xpMatch.group(1) ?? '0') ?? 10 : 10;
+
+                    if (state.message!.contains('XP')) {
+                      showFloatingXpToast(
+                        context: context,
+                        xpGained: xp,
+                        message: state.message!,
+                        icon: Icons.military_tech_rounded,
+                      );
+                    } else {
+                      showSuccessToast(
+                        context: context,
+                        title: state.message!,
+                      );
+                    }
                     context.read<DashboardBloc>().add(const LoadDashboardData());
+                  }
+                  if (state.errorMessage != null) {
+                    showErrorToast(
+                      context: context,
+                      description: state.errorMessage!,
+                    );
                   }
                 },
                 builder: (context, state) {
@@ -147,6 +166,7 @@ class _QuestPageView extends StatelessWidget {
                                         value: quest.done,
                                         activeColor: PColor.primary(context),
                                         onChanged: (_) {
+                                          HapticFeedback.mediumImpact();
                                           context
                                               .read<GamificationBloc>()
                                               .add(ToggleQuestEvent(quest.id));

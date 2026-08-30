@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:levelup_money_life/shared/tokens/p_colors.dart';
 
@@ -17,7 +17,7 @@ class SmartNumpad extends StatelessWidget {
   });
 
   void _onKeyPress(String key) {
-    HapticFeedback.selectionClick();
+    HapticFeedback.lightImpact();
 
     if (key == 'C') {
       onInputChanged('');
@@ -134,65 +134,56 @@ class SmartNumpad extends StatelessWidget {
                 final isAction = key == '✓';
                 final isOp = key == '+' || key == '-' || key == '⌫' || key == 'C';
 
+                final bgColor = isAction
+                    ? (canSubmit
+                        ? PColor.primary(context)
+                        : PColor.primary(context).withValues(alpha: 0.5))
+                    : (isOp
+                        ? PColor.surfaceSubtle(context)
+                        : PColor.surface(context));
+
+                final border = isAction
+                    ? null
+                    : Border.all(color: borderColor, width: 1);
+
                 return Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                    child: Material(
-                      color: isAction
-                          ? (canSubmit
-                              ? PColor.primary(context)
-                              : PColor.primary(context).withValues(alpha: 0.5))
-                          : (isOp
-                              ? PColor.surfaceSubtle(context)
-                              : PColor.surface(context)),
+                    child: _NumpadButton(
+                      backgroundColor: bgColor,
+                      border: border,
                       borderRadius: BorderRadius.circular(12),
-                      child: InkWell(
-                        onTap: isAction
-                            ? () {
-                                HapticFeedback.mediumImpact();
-                                onSubmit();
-                              }
-                            : () => _onKeyPress(key),
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          height: 48,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: isAction
-                                  ? Colors.transparent
-                                  : borderColor,
-                              width: 1,
-                            ),
-                          ),
-                          alignment: Alignment.center,
-                          child: isAction
-                              ? const Icon(
-                                  Icons.check_rounded,
-                                  color: Colors.white,
-                                  size: 24,
+                      onTap: isAction
+                          ? () {
+                              HapticFeedback.mediumImpact();
+                              onSubmit();
+                            }
+                          : () => _onKeyPress(key),
+                      child: isAction
+                          ? const Icon(
+                              Icons.check_rounded,
+                              color: Colors.white,
+                              size: 24,
+                            )
+                          : isOp && key == '⌫'
+                              ? Icon(
+                                  Icons.backspace_outlined,
+                                  size: 18,
+                                  color: PColor.ink(context),
                                 )
-                              : isOp && key == '⌫'
-                                  ? Icon(
-                                      Icons.backspace_outlined,
-                                      size: 18,
-                                      color: PColor.ink(context),
-                                    )
-                                  : Text(
-                                      key,
-                                      style: TextStyle(
-                                        fontFamily: 'monospace',
-                                        fontSize: 18,
-                                        fontWeight: isOp
-                                            ? FontWeight.w700
-                                            : FontWeight.w600,
-                                        color: isOp
-                                            ? PColor.primary(context)
-                                            : PColor.ink(context),
-                                      ),
-                                    ),
-                        ),
-                      ),
+                              : Text(
+                                  key,
+                                  style: TextStyle(
+                                    fontFamily: 'monospace',
+                                    fontSize: 18,
+                                    fontWeight: isOp
+                                        ? FontWeight.w700
+                                        : FontWeight.w600,
+                                    color: isOp
+                                        ? PColor.primary(context)
+                                        : PColor.ink(context),
+                                  ),
+                                ),
                     ),
                   ),
                 );
@@ -200,6 +191,88 @@ class SmartNumpad extends StatelessWidget {
             ),
           );
         }).toList(),
+      ),
+    );
+  }
+}
+
+class _NumpadButton extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+  final Color backgroundColor;
+  final Border? border;
+  final BorderRadius borderRadius;
+
+  const _NumpadButton({
+    required this.child,
+    required this.onTap,
+    required this.backgroundColor,
+    this.border,
+    required this.borderRadius,
+  });
+
+  @override
+  State<_NumpadButton> createState() => _NumpadButtonState();
+}
+
+class _NumpadButtonState extends State<_NumpadButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 80),
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.90).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _handleTapDown(TapDownDetails details) {
+    _controller.forward();
+  }
+
+  void _handleTapUp(TapUpDetails details) {
+    _controller.reverse();
+  }
+
+  void _handleTapCancel() {
+    _controller.reverse();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: widget.onTap != null ? _handleTapDown : null,
+      onTapUp: widget.onTap != null ? _handleTapUp : null,
+      onTapCancel: widget.onTap != null ? _handleTapCancel : null,
+      onTap: widget.onTap,
+      child: AnimatedBuilder(
+        animation: _scaleAnimation,
+        builder: (context, child) => Transform.scale(
+          scale: _scaleAnimation.value,
+          child: Container(
+            height: 48,
+            decoration: BoxDecoration(
+              color: widget.backgroundColor,
+              borderRadius: widget.borderRadius,
+              border: widget.border,
+            ),
+            alignment: Alignment.center,
+            child: widget.child,
+          ),
+        ),
       ),
     );
   }
